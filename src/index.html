@@ -1,0 +1,5035 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARKOUR-PRO</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a40;
+    --accent: #ff4d1c;
+    --accent2: #ff8c00;
+    --text: #f0f0f8;
+    --muted: #6b6b8a;
+    --success: #22c55e;
+    --danger: #ef4444;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND NOISE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; min-height: 100vh; position: relative; z-index: 1; }
+  .page.active { display: flex; flex-direction: column; }
+
+  /* ══════════════════════════════════════
+     AUTH PAGE
+  ══════════════════════════════════════ */
+  #page-auth {
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .auth-container {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .auth-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 4rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 0.2rem;
+    animation: logoIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .auth-tagline {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    font-family: 'JetBrains Mono', monospace;
+    animation: fadeUp 0.8s 0.2s both;
+  }
+
+  .auth-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeUp 0.8s 0.3s both;
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 0.75rem;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .auth-tab.active {
+    background: var(--accent);
+    color: white;
+  }
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    animation: fadeUp 0.8s 0.4s both;
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .input-group label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .input-group input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    outline: none;
+    width: 100%;
+  }
+
+  .input-group input:focus {
+    border-color: var(--accent);
+  }
+
+  .code-inputs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+
+  .code-inputs input {
+    width: 52px;
+    height: 60px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    font-weight: 600;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--accent);
+    outline: none;
+    transition: border-color 0.2s, transform 0.1s;
+  }
+
+  .code-inputs input:focus {
+    border-color: var(--accent);
+    transform: scale(1.05);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .auth-error {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--danger);
+    font-size: 0.85rem;
+    display: none;
+  }
+
+  .auth-error.show { display: block; }
+
+  /* ══════════════════════════════════════
+     APP LAYOUT
+  ══════════════════════════════════════ */
+  #page-app {
+    flex-direction: row;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 1.5rem 1.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sidebar-logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 8px rgba(255,77,28,.3));
+  }
+
+  .sidebar-logo-sub {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-section {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-section:last-child { border-bottom: none; }
+
+  .nav-section-title {
+    padding: 0.5rem 1.5rem;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    user-select: none;
+  }
+
+  .nav-item:hover { color: var(--text); background: var(--surface2); }
+
+  .nav-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(255,77,28,0.08);
+  }
+
+  .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  /* ── USER FOOTER ── */
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .user-info { display: flex; align-items: center; gap: 0.75rem; }
+
+  .user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .user-name { font-size: 0.85rem; font-weight: 500; }
+  .user-role { font-size: 0.7rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    flex: 1;
+    overflow-y: auto;
+    height: 100vh;
+  }
+
+  /* ══════════════════════════════════════
+     INNER VIEWS
+  ══════════════════════════════════════ */
+  .view { display: none; padding: 2.5rem; }
+  .view.active { display: block; }
+
+  /* ── ACCUEIL ── */
+  .home-hero {
+    margin-bottom: 3rem;
+  }
+
+  .home-greeting {
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.5rem;
+  }
+
+  .home-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .home-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .home-question {
+    font-size: 1.1rem;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .home-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .home-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(.16,1,.3,1);
+    position: relative;
+    overflow: hidden;
+  }
+  .home-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.4); }
+
+  .home-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform: scaleX(0);
+    transition: transform 0.3s;
+    transform-origin: left;
+  }
+
+  .home-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .home-card:hover::before { transform: scaleX(1); }
+
+  .home-card-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .home-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 1px; margin-bottom: 0.3rem; }
+  .home-card-sub { font-size: 0.8rem; color: var(--muted); }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-header-back {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.2s;
+  }
+  .page-header-back:hover { color: var(--accent); }
+
+  .page-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 2px;
+  }
+
+  .page-subtitle { font-size: 0.9rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* ── CARDS / PANELS ── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .panel-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  /* ── COMPET WIZARD ── */
+  .wizard-steps {
+    display: flex;
+    gap: 0;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+
+  .wizard-step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .wizard-step-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
+
+  .wizard-step.done .wizard-step-num { background: var(--success); border-color: var(--success); color: white; }
+  .wizard-step.current .wizard-step-num { background: var(--accent); border-color: var(--accent); color: white; }
+  .wizard-step.current { color: var(--text); }
+
+  .wizard-step-arrow { color: var(--border); font-size: 0.8rem; }
+
+  /* ── FORM ELEMENTS ── */
+  .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .form-field label {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .form-field input,
+  .form-field select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .form-field input:focus,
+  .form-field select:focus { border-color: var(--accent); }
+
+  .form-field select option { background: var(--surface2); }
+
+  .radio-group { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+
+  .radio-option {
+    flex: 1;
+    min-width: 120px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .radio-option:hover { border-color: var(--accent); color: var(--text); }
+  .radio-option.selected { border-color: var(--accent); background: rgba(255,77,28,0.1); color: var(--text); }
+  .radio-option .radio-icon { font-size: 1.5rem; margin-bottom: 0.3rem; }
+
+  /* ── PLAYER TAGS ── */
+  .player-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.8rem;
+    margin: 0.2rem;
+  }
+
+  .player-tag-remove {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .player-tag-remove:hover { color: var(--danger); }
+
+  .players-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    min-height: 48px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  /* ── CHASE TAG TIMER ── */
+  .chase-arena {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .chase-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .chase-role {
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+  }
+
+  .chase-role.chat { background: rgba(255,77,28,0.1); border: 1px solid rgba(255,77,28,0.3); }
+  .chase-role.souris { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); }
+
+  .chase-role-label {
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 0.5rem;
+  }
+
+  .chase-role.chat .chase-role-label { color: var(--accent); }
+  .chase-role.souris .chase-role-label { color: var(--success); }
+
+  .chase-role-emoji { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+  .chase-role-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+
+  .chase-role-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
+
+  .chase-role.chat .chase-role-score { color: var(--accent); }
+  .chase-role.souris .chase-role-score { color: var(--success); }
+
+  .chase-timer {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 5rem;
+    letter-spacing: 4px;
+    margin: 1rem 0;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 16px rgba(255,77,28,.4));
+  }
+
+  .chase-manche {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+  }
+
+  .chase-actions { display: flex; gap: 0.75rem; justify-content: center; margin-bottom: 1rem; }
+
+  .btn-chase {
+    flex: 1;
+    max-width: 200px;
+    padding: 1rem;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-touchee { background: var(--danger); color: white; }
+  .btn-echappee { background: var(--success); color: white; }
+  .btn-chase:hover { opacity: 0.85; transform: scale(1.02); }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--text); color: var(--text); }
+
+  .btn-danger-outline {
+    background: transparent;
+    border: 1px solid var(--danger);
+    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    color: var(--danger);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-danger-outline:hover { background: var(--danger); color: white; }
+
+  /* ── SPEEDRUN ── */
+  .speedrun-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .speedrun-table th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .speedrun-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgba(42,42,64,0.5);
+  }
+
+  .speedrun-table tr:hover td { background: var(--surface2); }
+
+  .time-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* ── HISTORIQUE ── */
+  .history-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .history-card:hover { border-color: var(--accent); transform: translateX(4px); }
+
+  .history-card-name { font-weight: 500; margin-bottom: 0.2rem; }
+
+  .history-card-meta {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .history-card-badge {
+    background: rgba(255,77,28,0.1);
+    border: 1px solid rgba(255,77,28,0.3);
+    border-radius: 20px;
+    padding: 0.2rem 0.7rem;
+    font-size: 0.7rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* ── JOUEURS ── */
+  .player-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+  }
+
+  .player-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .player-card:hover { border-color: var(--accent); }
+
+  .player-card-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 auto 0.75rem;
+    color: white;
+  }
+
+  .player-card-name { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; }
+  .player-card-sub { font-size: 0.7rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+
+  .player-card-actions {
+    margin-top: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .btn-icon {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.3rem 0.6rem;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+  }
+  .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-icon.danger:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* ── ACROBATIES ── */
+  .coming-soon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  .coming-soon-emoji { font-size: 4rem; animation: bounce 1.5s infinite; }
+
+  .coming-soon-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+
+  .coming-soon-msg { color: var(--muted); font-size: 0.9rem; max-width: 300px; line-height: 1.6; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  /* ── COMPTE ── */
+  .settings-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .settings-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+
+  .settings-label { font-size: 0.85rem; }
+  .settings-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.1rem; }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    animation: slideIn 0.3s ease;
+    max-width: 300px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .toast.success { border-color: var(--success); }
+  .toast.error { border-color: var(--danger); }
+  .toast-icon { font-size: 1rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes logoIn {
+    from { opacity: 0; transform: translateY(-20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .pulsing { animation: pulse 1s infinite; }
+
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .loading-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── TEAM BUILDER ── */
+  .tb-wrap { display: flex; gap: .75rem; }
+  .tb-pool {
+    width: 150px; min-width: 120px; max-width: 150px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .6rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .tb-pool-title {
+    font-size: .6rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    margin-bottom: .5rem;
+  }
+  .tb-pool-players { display: flex; flex-direction: column; gap: .25rem; min-height: 36px; }
+  .tb-player {
+    padding: .3rem .55rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: .78rem;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex; align-items: center; justify-content: space-between;
+    user-select: none;
+  }
+  .tb-player:hover { border-color: var(--accent); color: var(--accent); }
+  .tb-player.dragging { opacity: .4; }
+  .tb-teams { flex: 1; display: flex; flex-direction: column; gap: .5rem; }
+  .tb-team {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .6rem;
+    transition: border-color .2s;
+  }
+  .tb-team.drag-over { border-color: var(--accent); background: rgba(255,77,28,.05); }
+  .tb-team-header { display: flex; align-items: center; gap: .4rem; margin-bottom: .4rem; }
+  .tb-team-name {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 5px; padding: .25rem .5rem; color: var(--text);
+    font-family: 'DM Sans', sans-serif; font-size: .8rem; outline: none;
+  }
+  .tb-team-players { display: flex; flex-wrap: wrap; gap: .25rem; min-height: 28px; }
+  .tb-team-player {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .2rem .5rem; border-radius: 4px;
+    font-size: .75rem; cursor: grab; transition: all .15s;
+  }
+  .tb-team-player:hover { opacity: .8; }
+  .tb-order-list { margin-top: .4rem; border-top: 1px solid var(--border); padding-top: .3rem; }
+  .tb-order-item {
+    display: flex; align-items: center; gap: .4rem;
+    padding: .15rem .3rem; font-size: .72rem; color: var(--muted);
+  }
+  .tb-order-item .tb-order-btns { margin-left: auto; display: flex; gap: .15rem; }
+  .tb-order-btn {
+    background: none; border: 1px solid var(--border); border-radius: 3px;
+    color: var(--muted); cursor: pointer; padding: 0 .25rem; font-size: .65rem;
+    transition: all .15s;
+  }
+  .tb-order-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .tb-add-row { display: flex; gap: .35rem; margin-top: .4rem; min-width: 0; }
+  .tb-add-input {
+    flex: 1; min-width: 0; width: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 5px; padding: .25rem .5rem; color: var(--text);
+    font-size: .75rem; outline: none;
+  }
+  .tb-add-input:focus { border-color: var(--accent); }
+  @media (max-width: 600px) {
+    .tb-wrap { flex-direction: column; }
+    .tb-pool { width: 100%; }
+  }
+
+  /* ── FULLSCREEN ── */
+  :fullscreen { background: var(--bg) !important; overflow-y: auto; }
+  :-webkit-full-screen { background: var(--bg) !important; overflow-y: auto; }
+  :-moz-full-screen { background: var(--bg) !important; overflow-y: auto; }
+  :fullscreen .chase-arena { padding: 2rem; }
+  :fullscreen .page-header { padding: 1.5rem 2rem 0; }
+  :fullscreen #arena-teams-cards { max-width: 100%; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .sidebar {
+      position: fixed;
+      left: -260px;
+      top: 0;
+      height: 100vh;
+      z-index: 50;
+      transition: left 0.3s;
+    }
+    .sidebar.open { left: 0; }
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .mobile-menu-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.6rem;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+    .view { padding: 1.25rem; }
+    .chase-timer { font-size: 3.5rem; }
+    .home-title { font-size: 2.5rem; }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-header { display: none; }
+  }
+
+  /* sidebar overlay for mobile */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 49;
+  }
+  .sidebar-backdrop.active { display: block; }
+
+  /* ══ WELCOME / ONBOARDING ══ */
+  #page-welcome {
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg);
+  }
+  .welcome-card {
+    max-width: 480px;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    animation: fadeUp 0.6s both;
+  }
+  .welcome-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+  }
+  .welcome-emoji { font-size: 3rem; margin-bottom: 1rem; display: block; }
+  .welcome-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 0.75rem; }
+  .welcome-sub { color: var(--muted); font-size: 0.9rem; line-height: 1.6; margin-bottom: 2rem; }
+  .welcome-btn { width: 100%; }
+
+  /* ══ TUTO OVERLAY ══ */
+  #tuto-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    pointer-events: none;
+  }
+  #tuto-overlay.active { pointer-events: all; }
+  .tuto-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+  }
+  .tuto-bubble {
+    position: absolute;
+    background: var(--surface2);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    max-width: 280px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 9001;
+    animation: fadeUp 0.3s both;
+  }
+  .tuto-bubble::before {
+    content: '';
+    position: absolute;
+    width: 12px; height: 12px;
+    background: var(--surface2);
+    border-left: 1px solid var(--accent);
+    border-top: 1px solid var(--accent);
+    transform: rotate(45deg);
+    top: -7px; left: 20px;
+  }
+  .tuto-bubble.arrow-bottom::before {
+    top: auto; bottom: -7px;
+    transform: rotate(225deg);
+  }
+  .tuto-bubble.arrow-right::before {
+    top: 14px; left: auto; right: -7px;
+    transform: rotate(135deg);
+  }
+  .tuto-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--accent); }
+  .tuto-text { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 0.75rem; }
+  .tuto-nav { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; }
+  .tuto-dots { display: flex; gap: 4px; }
+  .tuto-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+  .tuto-dot.active { background: var(--accent); }
+  .tuto-skip { font-size: 0.75rem; color: var(--muted); background: none; border: none; cursor: pointer; }
+  .tuto-skip:hover { color: var(--text); }
+  .tuto-next { font-size: 0.8rem; padding: 0.4rem 1rem; }
+  .tuto-highlight {
+    position: absolute;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    box-shadow: 0 0 0 4px rgba(255,77,28,0.2);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 8999;
+  }
+
+  /* ══ PHOTO JOUEUR ══ */
+  .player-card-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    color: white;
+    flex-shrink: 0;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+  }
+  .player-card-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  .player-card-avatar:hover::after {
+    content: '📷';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.5);
+    font-size: 1rem;
+    border-radius: 50%;
+  }
+
+  /* ══ POPUP REORDER ══ */
+  #modal-reorder .modal { max-width: 360px; }
+  .reorder-player-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    cursor: grab;
+  }
+  .reorder-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; color: white;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .reorder-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .reorder-current {
+    background: rgba(255,77,28,0.1);
+    border-color: var(--accent);
+  }
+  .reorder-current-badge {
+    font-size: 0.65rem; color: var(--accent); font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px; text-transform: uppercase; margin-left: auto;
+  }
+
+  /* ══ AUTH : connexion rapide ══ */
+  .quick-login-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    animation: fadeUp 0.6s 0.1s both;
+  }
+  .quick-login-card:hover { border-color: var(--accent); }
+  .quick-login-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: white;
+  }
+  .quick-login-name { font-weight: 500; font-size: 0.95rem; }
+  .quick-login-hint { font-size: 0.75rem; color: var(--muted); }
+  .quick-login-arrow { margin-left: auto; color: var(--muted); }
+
+</style>
+</head>
+<body>
+
+
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="loading-logo">PARKOUR-PRO</div>
+  <div class="loading-spinner"></div>
+  <div id="loading-msg" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;animation:pulse 1.2s infinite">Chargement des assets...</div>
+</div>
+
+
+<!-- ══════════ WELCOME (1er lancement) ══════════ -->
+<div class="page" id="page-welcome">
+  <div class="welcome-card">
+    <div class="welcome-logo">PARKOUR-PRO</div>
+    <span class="welcome-emoji">🏃</span>
+    <div class="welcome-title">Bienvenue !</div>
+    <div class="welcome-sub">
+      L'application de gestion de compétitions de parkour.<br>
+      Commence par créer ton compte pour accéder à toutes les fonctionnalités.
+    </div>
+    <button class="btn-primary welcome-btn" onclick="showPage('page-auth'); switchAuthTab('register')">
+      Créer mon compte →
+    </button>
+    <div style="margin-top:1rem">
+      <button style="background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer" onclick="startTuto()">
+        Voir le tutoriel d'abord
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TUTO OVERLAY ══════════ -->
+<div id="tuto-overlay">
+  <div class="tuto-backdrop" onclick="skipTuto()"></div>
+  <div class="tuto-highlight" id="tuto-highlight"></div>
+  <div class="tuto-bubble" id="tuto-bubble">
+    <div class="tuto-title" id="tuto-title"></div>
+    <div class="tuto-text" id="tuto-text"></div>
+    <div class="tuto-nav">
+      <div class="tuto-dots" id="tuto-dots"></div>
+      <div style="display:flex;gap:.5rem;align-items:center">
+        <button class="tuto-skip" onclick="skipTuto()">Passer</button>
+        <button class="btn-primary tuto-next" id="tuto-next-btn" onclick="tutoNext()">Suivant →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODAL REORDER JOUEURS ══════════ -->
+<div class="modal-overlay" id="modal-reorder">
+  <div class="modal">
+    <div class="modal-title">Changer l'ordre de passage</div>
+    <div style="font-size:.8rem;color:var(--muted);margin-bottom:1rem">
+      Déplace les joueurs pour définir qui joue ensuite
+    </div>
+    <div id="reorder-list"></div>
+    <div class="modal-actions" style="margin-top:1rem">
+      <button class="btn-secondary" onclick="closeModal('modal-reorder')">Annuler</button>
+      <button class="btn-primary" onclick="applyReorder()">Valider</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ AUTH ══════════ -->
+<div class="page" id="page-auth">
+  <div class="auth-container">
+    <div class="auth-logo">PARKOUR-PRO</div>
+    <div class="auth-tagline">// compétition & performance</div>
+    <div id="quick-login-zone" style="display:none">
+      <div class="quick-login-card" onclick="focusQuickCode()">
+        <div class="quick-login-avatar" id="quick-avatar">?</div>
+        <div>
+          <div class="quick-login-name" id="quick-name">—</div>
+          <div class="quick-login-hint">Entrer le code secret</div>
+        </div>
+        <div class="quick-login-arrow">→</div>
+      </div>
+      <div class="input-group" style="margin-bottom:1rem">
+        <label>Code secret</label>
+        <div class="code-inputs" id="quick-code-inputs">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q0">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q1">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q2">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q3">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q4">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="q5">
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;margin-bottom:.75rem" onclick="handleQuickLogin()">Se connecter</button>
+      <div style="text-align:center">
+        <button style="background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer" onclick="showFullAuthForm()">
+          Autre compte / S'inscrire →
+        </button>
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Connexion</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Inscription</button>
+    </div>
+
+    <div class="auth-form" id="auth-form">
+      <div class="input-group">
+        <label>Nom d'utilisateur</label>
+        <input type="text" id="auth-username" placeholder="ton_pseudo" autocomplete="username">
+      </div>
+      <div class="input-group">
+        <label>Code secret (6 chiffres)</label>
+        <div class="code-inputs">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c0">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c1">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c2">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c3">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c4">
+          <input type="text" maxlength="1" inputmode="numeric" class="code-digit" id="c5">
+        </div>
+      </div>
+      <div class="auth-error" id="auth-error"></div>
+      <button class="btn-primary" id="auth-submit" onclick="handleAuth()">Se connecter</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div class="page" id="page-app">
+
+  <!-- SIDEBAR BACKDROP (mobile) -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-text">PARKOUR-PRO</div>
+      <div class="sidebar-logo-sub">v3.0</div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-item active" data-view="accueil" onclick="navigate('accueil')">
+        <span class="nav-icon">🏠</span> Accueil
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Chase Tag</div>
+      <div class="nav-item" data-view="chase-new" onclick="navigate('chase-new')">
+        <span class="nav-icon">➕</span> Nouvelle compétition
+      </div>
+      <div class="nav-item" data-view="chase-history" onclick="navigate('chase-history')">
+        <span class="nav-icon">📋</span> Historique
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Speedrun</div>
+      <div class="nav-item" data-view="speed-new" onclick="navigate('speed-new')">
+        <span class="nav-icon">➕</span> Nouvelle compétition
+      </div>
+      <div class="nav-item" data-view="speed-history" onclick="navigate('speed-history')">
+        <span class="nav-icon">📋</span> Historique
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Acrobaties</div>
+      <div class="nav-item" data-view="acro-new" onclick="navigate('acro-new')">
+        <span class="nav-icon">➕</span> Nouvelle compétition
+      </div>
+      <div class="nav-item" data-view="acro-history" onclick="navigate('acro-history')">
+        <span class="nav-icon">📋</span> Historique
+      </div>
+      <div class="nav-item" data-view="acro-bank" onclick="navigate('acro-bank')">
+        <span class="nav-icon">🎯</span> Banque de figures
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Joueurs</div>
+      <div class="nav-item" data-view="players" onclick="navigate('players')">
+        <span class="nav-icon">👤</span> Joueurs
+      </div>
+      <div class="nav-item" data-view="teams" onclick="navigate('teams')">
+        <span class="nav-icon">👥</span> Équipes
+      </div>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-item" data-view="account" onclick="navigate('account')">
+        <span class="nav-icon">⚙️</span> Mon compte
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="sidebar-avatar">?</div>
+        <div>
+          <div class="user-name" id="sidebar-username">—</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()">↩</button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main-content" id="main-content">
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <button class="mobile-menu-btn" onclick="openSidebar()">☰</button>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:2px">PARKOUR-PRO</span>
+    </div>
+
+    <!-- ── ACCUEIL ── -->
+    <div class="view active" id="view-accueil">
+      <div class="home-hero">
+        <div class="home-greeting">Bienvenue</div>
+        <div class="home-title">Bonjour, <span id="home-username">Athlète</span> 👋</div>
+        <div class="home-question">Quelle figure allez-vous faire aujourd'hui ?</div>
+      </div>
+      <div class="home-cards">
+        <div class="home-card" onclick="navigate('chase-new')">
+          <div class="home-card-icon">😼</div>
+          <div class="home-card-title">Chase Tag</div>
+          <div class="home-card-sub">Nouvelle compétition</div>
+        </div>
+        <div class="home-card" onclick="navigate('speed-new')">
+          <div class="home-card-icon">⚡</div>
+          <div class="home-card-title">Speedrun</div>
+          <div class="home-card-sub">Nouvelle compétition</div>
+        </div>
+        <div class="home-card" onclick="navigate('acro-new')">
+          <div class="home-card-icon">🤸</div>
+          <div class="home-card-title">Acrobaties</div>
+          <div class="home-card-sub">Bientôt disponible</div>
+        </div>
+        <div class="home-card" onclick="navigate('players')">
+          <div class="home-card-icon">👥</div>
+          <div class="home-card-title">Joueurs & Équipes</div>
+          <div class="home-card-sub">Gérer les participants</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHASE TAG NEW ── -->
+    <div class="view" id="view-chase-new">
+      <div class="page-header">
+        <div class="page-header-back" onclick="navigate('accueil')">← Accueil</div>
+        <div class="page-title">Chase Tag</div>
+        <div class="page-subtitle">Nouvelle compétition</div>
+      </div>
+
+      <div class="wizard-steps" id="chase-steps">
+        <div class="wizard-step current" id="chase-step-0"><div class="wizard-step-num">1</div> Nom</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="chase-step-1"><div class="wizard-step-num">2</div> Équipes</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="chase-step-2"><div class="wizard-step-num">3</div> Ordre</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="chase-step-3"><div class="wizard-step-num">4</div> Config</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="chase-step-4"><div class="wizard-step-num">5</div> Démarrer</div>
+      </div>
+
+      <!-- STEP 0: NOM -->
+      <div id="chase-s0">
+        <div class="panel">
+          <div class="panel-title">Nom de la compétition</div>
+          <div class="form-field">
+            <label>Nom</label>
+            <input type="text" id="chase-name" placeholder="Ex: Chase Tag Juillet 2025">
+          </div>
+
+        </div>
+        <button class="btn-primary" onclick="chaseNextStepBtn(0)">Continuer →</button>
+      </div>
+
+      <!-- STEP 1: ÉQUIPES + ORDRE -->
+      <div id="chase-s1" style="display:none">
+        <div id="chase-team-builder-root"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem">
+          <button class="btn-secondary" onclick="chasePrevStep(1)">← Retour</button>
+          <button class="btn-primary" onclick="chaseNextStepBtn(1)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: (vide, redirigé) -->
+      <div id="chase-s2" style="display:none"></div>
+
+      <!-- STEP 3: CONFIG -->
+      <div id="chase-s3" style="display:none">
+        <div class="panel">
+          <div class="panel-title">Configuration</div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Durée d'une manche (sec)</label>
+              <input type="number" id="chase-duration" value="30" min="5">
+            </div>
+            <div class="form-field">
+              <label>Nombre de manches (optionnel)</label>
+              <input type="number" id="chase-rounds" placeholder="Illimité" min="1">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Équipe qui commence en tant que <strong style="color:var(--accent)">CHAT 😼</strong></label>
+              <select id="chase-first-chat">
+                <option value="">— Sélectionner —</option>
+              </select>
+            </div>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin:.75rem 0 .5rem">Règles du parcours</div>
+          <textarea id="chase-rules" rows="3" placeholder="Règles spécifiques..." style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;resize:vertical;outline:none"></textarea>
+        </div>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-secondary" onclick="chasePrevStep(3)">← Retour</button>
+          <button class="btn-primary" onclick="chaseNextStepBtn(3)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: RÉCAP -->
+      <div id="chase-s4" style="display:none">
+        <div class="panel" style="margin-bottom:1.5rem">
+          <div class="panel-title">Récapitulatif</div>
+          <div id="chase-summary-content"></div>
+        </div>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-secondary" onclick="chasePrevStep(4)">← Retour</button>
+          <button class="btn-primary" id="btn-start-chase" onclick="startChaseCompetBtn()">🚀 Démarrer la compétition</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHASE TAG ARENA ── -->
+    <div class="view" id="view-chase-arena">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="page-title" id="arena-compet-name">Chase Tag</div>
+          <div class="page-subtitle pulsing" id="arena-manche-info">Manche 1</div>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn-secondary" onclick="toggleFullscreen()" style="font-size:.85rem" title="Plein écran">⛶</button>
+          <button class="btn-secondary" onclick="openScoresWindow()" style="font-size:.85rem" title="Scores sur autre écran">📺</button>
+        </div>
+      </div>
+      <div class="chase-arena">
+        <!-- Cartes fixes par équipe -->
+        <div id="arena-teams-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;width:100%;max-width:700px;margin-bottom:1.5rem"></div>
+
+        <div class="chase-timer" id="arena-timer">00:30.00</div>
+        <div class="chase-manche" id="arena-round-label">Manche 1 / ∞</div>
+
+        <!-- Panneau sélection manuelle -->
+        <div id="arena-manual-panel" style="width:100%;max-width:600px;margin-bottom:1.25rem;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;display:none">
+          <div style="font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:.75rem">Sélection manuelle de la manche</div>
+          <div id="arena-manual-teams" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem"></div>
+          <button class="btn-primary" onclick="confirmManualSelection()" style="margin-top:1rem;width:100%">✓ Confirmer la sélection</button>
+        </div>
+
+        <div class="chase-actions" style="flex-wrap:wrap">
+          <button id="arena-start-btn" class="btn-primary" onclick="launchChaseTimer()" style="display:none">▶ Démarrer</button>
+          <button class="btn-chase btn-touchee" onclick="chaseTouched()" disabled>🎯 Touchée</button>
+          <button class="btn-chase btn-echappee" onclick="chaseEscaped()" disabled>💨 Échappée</button>
+          <button class="btn-danger-outline" onclick="endChaseCompet()">⏹ Terminer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CHASE TAG HISTORY ── -->
+    <div class="view" id="view-chase-history">
+      <div class="page-header">
+        <div class="page-title">Historique Chase Tag</div>
+        <div class="page-subtitle">Tes compétitions passées</div>
+      </div>
+      <div id="chase-history-list">
+        <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:3rem">Aucune compétition enregistrée</div>
+      </div>
+    </div>
+
+    <!-- ── SPEEDRUN NEW ── -->
+    <div class="view" id="view-speed-new">
+      <div class="page-header">
+        <div class="page-header-back" onclick="navigate('accueil')">← Accueil</div>
+        <div class="page-title">Speedrun</div>
+        <div class="page-subtitle">Nouvelle compétition</div>
+      </div>
+
+      <div class="wizard-steps" id="speed-steps-indicator">
+        <div class="wizard-step current" id="speed-step-0"><div class="wizard-step-num">1</div> Type</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="speed-step-1"><div class="wizard-step-num">2</div> Nom</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="speed-step-2"><div class="wizard-step-num">3</div> Joueurs</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="speed-step-3"><div class="wizard-step-num">4</div> Équipes</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="speed-step-4"><div class="wizard-step-num">5</div> Config</div>
+        <span class="wizard-step-arrow">›</span>
+        <div class="wizard-step" id="speed-step-5"><div class="wizard-step-num">6</div> Course</div>
+      </div>
+
+      <!-- STEP 0: TYPE -->
+      <div id="speed-s0">
+        <div class="panel">
+          <div class="panel-title">Format</div>
+          <div class="radio-group">
+            <div class="radio-option selected" id="speed-type-solo" onclick="selectSpeedType('solo')">
+              <div class="radio-icon">🧍</div> Solo
+            </div>
+            <div class="radio-option" id="speed-type-equipe" onclick="selectSpeedType('equipe')">
+              <div class="radio-icon">👥</div> Équipes
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="speedNextStepBtn(0)">Continuer →</button>
+      </div>
+
+      <!-- STEP 1: NOM -->
+      <div id="speed-s1" style="display:none">
+        <div class="panel">
+          <div class="panel-title">Nom de la compétition</div>
+          <div class="form-field">
+            <label>Nom</label>
+            <input type="text" id="speed-name" placeholder="Ex: Speedrun Marché 2025">
+          </div>
+        </div>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-secondary" onclick="speedPrevStep(1)">← Retour</button>
+          <button class="btn-primary" onclick="speedNextStepBtn(1)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: JOUEURS + ÉQUIPES -->
+      <div id="speed-s2" style="display:none">
+        <div id="speed-team-builder-root"></div>
+        <div style="display:flex;gap:.75rem;margin-top:1rem">
+          <button class="btn-secondary" onclick="speedPrevStep(2)">← Retour</button>
+          <button class="btn-primary" onclick="speedNextStepBtn(2)">Continuer →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: (vide, redirigé) -->
+      <div id="speed-s3" style="display:none"></div>
+
+      <!-- STEP 4: CONFIG + ORDRE -->
+      <div id="speed-s4" style="display:none">
+        <div class="panel">
+          <div class="panel-title">Configuration</div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Pénalité par faute (secondes)</label>
+              <input type="number" id="speed-penalty" value="5" min="0">
+            </div>
+            <div class="form-field">
+              <label>Passages par joueur <span style="color:var(--muted);font-size:.7rem">(vide = illimité)</span></label>
+              <input type="number" id="speed-nb-passages" placeholder="∞" min="1" style="width:100%">
+            </div>
+          </div>
+          <div style="font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin:.75rem 0 .5rem">Ordre de passage</div>
+          <div class="radio-group" style="margin-bottom:1rem">
+            <div class="radio-option selected" id="speed-order-auto" onclick="selectSpeedOrder('auto')">
+              <div class="radio-icon">🎲</div> Automatique
+            </div>
+            <div class="radio-option" id="speed-order-manual" onclick="selectSpeedOrder('manual')">
+              <div class="radio-icon">✋</div> Manuel
+            </div>
+          </div>
+          <div id="speed-order-config"></div>
+        </div>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-secondary" onclick="speedPrevStep(4)">← Retour</button>
+          <button class="btn-primary" id="btn-start-speed" onclick="startSpeedCompetBtn()">🚀 Démarrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SPEEDRUN ARENA ── -->
+    <div class="view" id="view-speed-arena">
+      <div class="page-header" style="display:flex;align-items:flex-start;justify-content:space-between">
+        <div>
+          <div class="page-title" id="speed-arena-name">Speedrun</div>
+          <div class="page-subtitle" id="speed-arena-sub">En cours</div>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn-secondary" onclick="toggleSpeedFullscreen()" style="font-size:.85rem" title="Plein écran">⛶</button>
+          <button class="btn-secondary" onclick="openScoresWindow()" style="font-size:.85rem" title="Scores sur autre écran">📺</button>
+        </div>
+      </div>
+      <div style="max-width:600px;margin:0 auto">
+        <div class="panel" style="text-align:center;margin-bottom:1.5rem">
+          
+          <div id="speed-current-photo" style="display:flex;justify-content:center"></div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:2px" id="speed-current-player">—</div>
+          <div class="chase-timer" id="speed-timer">00:00</div>
+          <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1rem">
+            <button class="btn-secondary" id="speed-start-btn" onclick="speedStartStop()">▶ Démarrer</button>
+            <button class="btn-secondary" onclick="addFault()">⚠️ +1 Faute</button>
+            <button class="btn-primary" onclick="validateSpeedRun()">✅ Valider le run</button>
+            <button class="btn-secondary" onclick="openReorderModal()" title="Changer l'ordre de passage" style="font-size:.85rem">⇅ Ordre</button>
+          </div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--muted);margin-top:.75rem">Fautes: <span id="speed-faults">0</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Résultats</div>
+          <table class="speedrun-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Joueur</th>
+                <th>Temps</th>
+                <th>Fautes</th>
+                <th>Temps total</th>
+              </tr>
+            </thead>
+            <tbody id="speed-results-tbody"></tbody>
+          </table>
+        </div>
+
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-danger-outline" onclick="endSpeedCompet()">⏹ Terminer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SPEEDRUN HISTORY ── -->
+    <div class="view" id="view-speed-history">
+      <div class="page-header">
+        <div class="page-title">Historique Speedrun</div>
+      </div>
+      <div id="speed-history-list">
+        <div style="color:var(--muted);font-size:.9rem;text-align:center;padding:3rem">Aucune compétition enregistrée</div>
+      </div>
+    </div>
+
+    <!-- ── ACROBATIES ── -->
+    <div class="view" id="view-acro-new">
+      <div class="coming-soon">
+        <div class="coming-soon-emoji">🤸</div>
+        <div class="coming-soon-title">Fonctionnalité à venir</div>
+        <div class="coming-soon-msg">Je me renseigne encore sur les règles des acrobaties... Patience, ça va déchirer. 🔥</div>
+      </div>
+    </div>
+    <div class="view" id="view-acro-history">
+      <div class="coming-soon">
+        <div class="coming-soon-emoji">📚</div>
+        <div class="coming-soon-title">Historique Acrobaties</div>
+        <div class="coming-soon-msg">En cours de conception. Revenez plus tard !</div>
+      </div>
+    </div>
+    <div class="view" id="view-acro-bank">
+      <div class="coming-soon">
+        <div class="coming-soon-emoji">🎯</div>
+        <div class="coming-soon-title">Banque de Figures</div>
+        <div class="coming-soon-msg">La base de données de figures arrive bientôt. Va t'entraîner en attendant.</div>
+      </div>
+    </div>
+
+    <!-- ── JOUEURS ── -->
+    <div class="view" id="view-players">
+      <div class="page-header">
+        <div class="page-title">Joueurs</div>
+        <div class="page-subtitle">Gérer les joueurs enregistrés</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem">
+        <div style="font-size:.85rem;color:var(--muted)"><span id="players-count">0</span> joueur(s)</div>
+        <div style="display:flex;gap:.75rem">
+          <button class="btn-secondary" onclick="openImportModal('players')">📥 Importer CSV</button>
+          <button class="btn-primary" onclick="openAddPlayerModal()">+ Ajouter</button>
+        </div>
+      </div>
+      <div class="player-grid" id="players-grid">
+        <div style="color:var(--muted);font-size:.85rem;grid-column:1/-1;text-align:center;padding:2rem">Aucun joueur enregistré</div>
+      </div>
+    </div>
+
+    <!-- ── ÉQUIPES ── -->
+    <div class="view" id="view-teams">
+      <div class="page-header">
+        <div class="page-title">Équipes</div>
+        <div class="page-subtitle">Gérer les équipes</div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1.5rem;gap:.75rem">
+        <button class="btn-primary" onclick="openAddTeamModal()">+ Créer une équipe</button>
+      </div>
+      <div id="teams-list">
+        <div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">Aucune équipe configurée</div>
+      </div>
+    </div>
+
+    <!-- ── COMPTE ── -->
+    <div class="view" id="view-account">
+      <div class="page-header">
+        <div class="page-title">Mon compte</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Profil</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label" id="account-username-display">—</div>
+            <div class="settings-sub">Nom d'utilisateur</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Données</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Exporter mes données</div>
+            <div class="settings-sub">Sauvegarde complète de toutes tes infos</div>
+          </div>
+          <button class="btn-secondary" onclick="exportData()">💾 Exporter</button>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Restaurer mes données</div>
+            <div class="settings-sub">Importer une sauvegarde précédente</div>
+          </div>
+          <button class="btn-secondary" onclick="importData()">📤 Restaurer</button>
+        </div>
+        <input type="file" id="import-file" accept=".json" style="display:none">
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">📂 Dossier de la base de données</div>
+            <div class="settings-sub" style="font-family:'JetBrains Mono',monospace;font-size:.7rem">Fichier SQLite local — cliquer pour ouvrir le dossier</div>
+          </div>
+          <button class="btn-secondary" onclick="window.electronAPI.openFolder()">Ouvrir</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title" style="color:var(--danger)">Zone dangereuse</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Supprimer mon compte</div>
+            <div class="settings-sub">Action irréversible. Toutes tes données seront supprimées.</div>
+          </div>
+          <button class="btn-danger-outline" onclick="confirmDeleteAccount()">🗑 Supprimer</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+<!-- Add Player Modal -->
+<div class="modal-overlay" id="modal-add-player">
+  <div class="modal">
+    <div class="modal-title">Ajouter un joueur</div>
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:1rem">
+      <div id="add-player-avatar-preview" style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:white;cursor:pointer;overflow:hidden;border:2px dashed var(--border)" onclick="pickNewPlayerPhoto()" title="Cliquer pour ajouter une photo">
+        📷
+      </div>
+      <div style="font-size:.7rem;color:var(--muted);margin-top:.4rem">Photo (optionnel)</div>
+    </div>
+    <div class="form-field" style="margin-bottom:1rem">
+      <label>Nom du joueur</label>
+      <input type="text" id="modal-player-name" placeholder="Prénom Nom">
+    </div>
+    <div class="form-field" style="margin-bottom:1rem">
+      <label>Pseudo (optionnel)</label>
+      <input type="text" id="modal-player-pseudo" placeholder="pseudo">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-player')">Annuler</button>
+      <button class="btn-primary" onclick="savePlayer()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Team Modal -->
+<div class="modal-overlay" id="modal-add-team">
+  <div class="modal">
+    <div class="modal-title">Créer une équipe</div>
+    <div class="form-field" style="margin-bottom:1rem">
+      <label>Nom de l'équipe</label>
+      <input type="text" id="modal-team-name" placeholder="Les Loups">
+    </div>
+    <div class="form-field" style="margin-bottom:1rem">
+      <label>Joueurs</label>
+      <div id="modal-team-players-list" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.5rem"></div>
+      <div class="players-container" id="modal-team-selected"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('modal-add-team')">Annuler</button>
+      <button class="btn-primary" onclick="saveTeam()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Compet Detail Modal -->
+<div class="modal-overlay" id="modal-compet-detail">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-title" id="modal-detail-title">Détails</div>
+    <div id="modal-detail-content"></div>
+    <div class="modal-actions">
+      <button class="btn-danger-outline" id="modal-detail-delete" onclick="deleteCompet()">🗑 Supprimer</button>
+      <button class="btn-secondary" onclick="closeModal('modal-compet-detail')">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ══════════ SCRIPT ══════════ -->
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG ELECTRON — remplace Apps Script
+// ═══════════════════════════════════════════════
+const DEMO_MODE = false; // Jamais en démo : on a une vraie DB locale
+const IS_ELECTRON = typeof window.electronAPI !== 'undefined';
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let currentUser = null;
+let appData = {
+  players: [],
+  teams: [],
+  chaseHistory: [],
+  speedHistory: []
+};
+
+// Chase Tag state
+let chaseState = {
+  type: 'solo',
+  name: '',
+  players: [],
+  teams: [],
+  duration: 30,
+  rounds: null,
+  firstChat: '',
+  rules: '',
+  currentManche: 1,
+  chatIndex: 0,
+  sourisIndex: 1,
+  chatScore: {},
+  sourisScore: {},
+  timerInterval: null,
+  timeMs: 30000,
+  running: false,
+  lastTick: 0,
+  results: [],
+  compet: null
+};
+
+// Speed state
+let speedState = {
+  type: 'solo',
+  name: '',
+  players: [],
+  penalty: 5,
+  orderType: 'auto',
+  currentIdx: 0,
+  timerInterval: null,
+  elapsed: 0,
+  running: false,
+  faults: 0,
+  results: [],
+  compet: null
+};
+
+let currentDetailCompet = null;
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+const LOADING_PHRASES = [
+  'Chargement des assets...',
+  'Échauffement des muscles...',
+  'Mesure du saut...',
+  'Calibrage du chrono...',
+  'Vérification du parcours...',
+  'Préparation du praticable...',
+  'Activation des traceurs...',
+];
+
+function hideLoadingAndInit() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) overlay.style.display = 'none';
+  initAuthPage().catch(err => {
+    console.error('initAuthPage error:', err);
+    // Fallback: hide overlay anyway so app is not stuck
+    if (overlay) overlay.style.display = 'none';
+  });
+}
+
+// Utilise DOMContentLoaded plutôt que window.onload —
+// window.onload peut ne pas se déclencher en production Electron (loadFile + show:false)
+document.addEventListener('DOMContentLoaded', () => {
+  const phrases = LOADING_PHRASES;
+  const msgEl = document.getElementById('loading-msg');
+  let i = 0;
+  function next() {
+    if (i < phrases.length) {
+      if (msgEl) msgEl.textContent = phrases[i];
+      i++;
+      setTimeout(next, 320);
+    } else {
+      hideLoadingAndInit();
+    }
+  }
+  next();
+});
+
+// Sécurité absolue : force la fermeture du overlay après 4s max quoi qu'il arrive
+setTimeout(() => {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay && overlay.style.display !== 'none') {
+    console.warn('[init] Overlay forcé après 4s');
+    hideLoadingAndInit();
+  }
+}, 4000);
+
+window.onload = () => {
+  // Sécurité supplémentaire si DOMContentLoaded a raté
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay && overlay.style.display !== 'none') {
+    hideLoadingAndInit();
+  }
+};
+
+async function initAuthPage() {
+  // Vérification défensive : electronAPI doit être disponible (injecté par preload.js)
+  if (!window.electronAPI) {
+    console.error('electronAPI non disponible — preload.js n\'a pas été chargé correctement');
+    showPage('page-welcome');
+    return;
+  }
+
+  let hasUsers = false;
+  try {
+    hasUsers = await window.electronAPI.hasUsers();
+  } catch (err) {
+    console.error('Erreur hasUsers():', err);
+  }
+
+  const lastUser = localStorage.getItem('pp_last_user');
+  const firstLaunch = localStorage.getItem('pp_first_launch');
+
+  if (!hasUsers) {
+    // Première fois : page welcome
+    showPage('page-welcome');
+  } else if (lastUser) {
+    // Utilisateur connu : connexion rapide
+    showPage('page-auth');
+    showQuickLogin(lastUser);
+    // Setup code digits rapide
+    setupCodeDigits('q', 6, handleQuickLogin);
+  } else {
+    showPage('page-auth');
+    setupCodeDigits('c', 6, null);
+  }
+}
+
+function showQuickLogin(username) {
+  document.getElementById('quick-login-zone').style.display = 'block';
+  document.getElementById('auth-tabs').parentElement.style.display = 'none';
+  document.getElementById('auth-form').style.display = 'none';
+  document.getElementById('quick-avatar').textContent = username[0].toUpperCase();
+  document.getElementById('quick-name').textContent = username.charAt(0).toUpperCase() + username.slice(1);
+  setupCodeDigits('q', 6, handleQuickLogin);
+}
+
+function showFullAuthForm() {
+  document.getElementById('quick-login-zone').style.display = 'none';
+  document.getElementById('auth-tabs').parentElement.style.display = 'block';
+  document.getElementById('auth-form').style.display = 'flex';
+  setupCodeDigits('c', 6, null);
+}
+
+function focusQuickCode() {
+  document.getElementById('q0').focus();
+}
+
+async function handleQuickLogin() {
+  const username = localStorage.getItem('pp_last_user');
+  const code = Array.from({length:6}, (_,i) => document.getElementById('q'+i).value).join('');
+  if (code.length !== 6) { toast('Code incomplet', 'error'); return; }
+  const res = await window.electronAPI.login({ username, code });
+  if (!res || !res.ok) {
+    toast('Code incorrect', 'error');
+    for(let i=0;i<6;i++) document.getElementById('q'+i).value='';
+    document.getElementById('q0').focus();
+    return;
+  }
+  currentUser = { username };
+  enterApp();
+}
+
+function setupCodeDigits(prefix, count, onComplete) {
+  for (let i = 0; i < count; i++) {
+    const el = document.getElementById(prefix + i);
+    if (!el) continue;
+    el.addEventListener('input', () => {
+      el.value = el.value.replace(/\D/g,'').slice(0,1);
+      if (el.value && i < count - 1) document.getElementById(prefix+(i+1)).focus();
+      if (el.value && i === count - 1 && onComplete) onComplete();
+    });
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !el.value && i > 0) document.getElementById(prefix+(i-1)).focus();
+    });
+  }
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// GOOGLE SHEETS API
+// ═══════════════════════════════════════════════
+// ── APPELS APPS SCRIPT (tout en GET pour éviter redirections CORS) ──
+function showApiLoader(msg) {
+  let el = document.getElementById('api-loader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'api-loader';
+    el.style.cssText = 'position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:.4rem 1rem;font-family:"JetBrains Mono",monospace;font-size:.7rem;color:var(--muted);letter-spacing:1px;z-index:999;display:flex;align-items:center;gap:.5rem;';
+    el.innerHTML = '<div style="width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1s infinite"></div><span id="api-loader-msg"></span>';
+    document.body.appendChild(el);
+  }
+  document.getElementById('api-loader-msg').textContent = msg || 'Sync...';
+  el.style.display = 'flex';
+}
+function hideApiLoader() {
+  const el = document.getElementById('api-loader');
+  if (el) el.style.display = 'none';
+}
+
+// Stubs de compatibilité — plus utilisés directement
+async function apiCall(params) { return null; }
+async function apiGet(action, params = {}) { return null; }
+async function apiPost(data) { return null; }
+
+// ═══════════════════════════════════════════════
+// DATA PERSISTENCE
+// ═══════════════════════════════════════════════
+async function loadData() {
+  if (!currentUser) return;
+  showApiLoader('Chargement...');
+  const [players, teams, chase, speed] = await Promise.all([
+    window.electronAPI.getPlayers({ owner: currentUser.username }),
+    window.electronAPI.getTeams(  { owner: currentUser.username }),
+    window.electronAPI.getChase(  { owner: currentUser.username }),
+    window.electronAPI.getSpeed(  { owner: currentUser.username })
+  ]);
+  appData.players      = (players || []).map(p => ({ ...p, owner: currentUser.username }));
+  appData.teams        = (teams   || []).map(t => ({ ...t, owner: currentUser.username }));
+  appData.chaseHistory = (chase   || []).map(c => ({ ...c, owner: currentUser.username }));
+  appData.speedHistory = (speed   || []).map(s => ({ ...s, owner: currentUser.username }));
+  hideApiLoader();
+}
+
+function saveData() {
+  // En mode Electron, les écritures se font directement via electronAPI dans chaque fonction
+}
+
+function getUserData() {
+  // Filtre les données par utilisateur connecté
+  return {
+    players: appData.players.filter(p => p.owner === currentUser.username),
+    teams: appData.teams.filter(t => t.owner === currentUser.username),
+    chaseHistory: appData.chaseHistory.filter(c => c.owner === currentUser.username),
+    speedHistory: appData.speedHistory.filter(s => s.owner === currentUser.username),
+  };
+}
+
+// ═══════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════
+let authMode = 'login';
+
+function switchAuthTab(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (mode === 'login' && i === 0) || (mode === 'register' && i === 1));
+  });
+  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Se connecter' : "S'inscrire";
+  document.getElementById('auth-error').classList.remove('show');
+}
+
+// Code digits navigation
+document.querySelectorAll('.code-digit').forEach((input, i) => {
+  input.addEventListener('input', (e) => {
+    const val = e.target.value.replace(/\D/g, '');
+    e.target.value = val;
+    if (val && i < 5) document.getElementById(`c${i+1}`).focus();
+  });
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !e.target.value && i > 0) document.getElementById(`c${i-1}`).focus();
+  });
+});
+
+function getCode() {
+  return ['c0','c1','c2','c3','c4','c5'].map(id => document.getElementById(id).value).join('');
+}
+
+async function handleAuth() {
+  const username = document.getElementById('auth-username').value.trim().toLowerCase();
+  const code = getCode();
+  const errEl = document.getElementById('auth-error');
+
+  if (!username) { showError('Entre un nom d\'utilisateur.'); return; }
+  if (code.length !== 6) { showError('Le code doit faire 6 chiffres.'); return; }
+
+  document.getElementById('auth-submit').disabled = true;
+  let res;
+  if (authMode === 'register') {
+    res = await window.electronAPI.register({ username, code });
+  } else {
+    res = await window.electronAPI.login({ username, code });
+  }
+  document.getElementById('auth-submit').disabled = false;
+  if (!res || !res.ok) { showError(res?.error || 'Erreur'); return; }
+  if (authMode === 'register') toast('Compte créé !', 'success');
+  currentUser = { username };
+  enterApp();
+}
+
+function showError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function enterApp() {
+  await loadData();
+  document.getElementById('home-username').textContent = capitalize(currentUser.username);
+  document.getElementById('sidebar-username').textContent = capitalize(currentUser.username);
+  document.getElementById('sidebar-avatar').textContent = currentUser.username[0].toUpperCase();
+  document.getElementById('account-username-display').textContent = currentUser.username;
+  // Sauvegarder last user pour connexion rapide
+  localStorage.setItem('pp_last_user', currentUser.username);
+  showPage('page-app');
+  navigate('accueil');
+  refreshPlayers();
+  refreshTeams();
+  refreshHistories();
+  // Tuto si premier login de cet utilisateur
+  const tutoKey = 'pp_tuto_done_' + currentUser.username;
+  if (!localStorage.getItem(tutoKey)) {
+    setTimeout(() => startTuto(), 600);
+  }
+}
+
+function logout() {
+  
+  currentUser = null;
+  showPage('page-auth');
+  // Reset code inputs
+  for(let i=0;i<6;i++) document.getElementById(`c${i}`).value='';
+  document.getElementById('auth-username').value='';
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+function navigate(viewId) {
+  // Hide all views
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const view = document.getElementById(`view-${viewId}`);
+  if (view) view.classList.add('active');
+
+  // Update nav
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.toggle('active', item.dataset.view === viewId);
+  });
+
+  closeSidebar();
+
+  // Scroll top
+  document.getElementById('main-content').scrollTop = 0;
+
+  // Refresh si besoin
+  if (viewId === 'players') refreshPlayers();
+  if (viewId === 'teams') { refreshPlayers(); refreshTeams(); }
+  if (viewId === 'chase-history') refreshChaseHistory();
+  if (viewId === 'speed-history') refreshSpeedHistory();
+  if (viewId === 'chase-new') resetChaseWizard();
+  if (viewId === 'speed-new') resetSpeedWizard();
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('sidebar-backdrop').classList.add('active');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('active');
+}
+
+// ═══════════════════════════════════════════════
+// PLAYERS
+// ═══════════════════════════════════════════════
+function refreshPlayers() {
+  const data = getUserData();
+  const grid = document.getElementById('players-grid');
+  document.getElementById('players-count').textContent = data.players.length;
+
+  if (!data.players.length) {
+    grid.innerHTML = '<div style="color:var(--muted);font-size:.85rem;grid-column:1/-1;text-align:center;padding:2rem">Aucun joueur enregistré</div>';
+    return;
+  }
+
+  grid.innerHTML = data.players.map((p, i) => `
+    <div class="player-card">
+      <div class="player-card-avatar" onclick="pickPlayerPhoto('${p.id}')" title="Changer la photo">
+        ${p.photo ? `<img src="${p.photo}" alt="${p.name}">` : (p.pseudo || p.name)[0].toUpperCase()}
+      </div>
+      <div class="player-card-name">${p.name}</div>
+      <div class="player-card-sub">${p.pseudo ? '@' + p.pseudo : '—'}</div>
+      <div class="player-card-actions">
+        <button class="btn-icon danger" onclick="deletePlayer(${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+let _newPlayerPhoto = null;
+function openAddPlayerModal() {
+  document.getElementById('modal-player-name').value = '';
+  document.getElementById('modal-player-pseudo').value = '';
+  _newPlayerPhoto = null;
+  const prev = document.getElementById('add-player-avatar-preview');
+  prev.innerHTML = '📷';
+  prev.style.background = 'linear-gradient(135deg,var(--accent),var(--accent2))';
+  openModal('modal-add-player');
+}
+
+async function pickNewPlayerPhoto() {
+  // On crée un joueur temporaire fictif pour récupérer la photo
+  // On passe playerId='__new__' et on récupère juste la data
+  const res = await window.electronAPI.pickPhoto({ owner: currentUser.username, playerId: '__new__' });
+  if (!res || !res.ok) return;
+  _newPlayerPhoto = res.photo;
+  const prev = document.getElementById('add-player-avatar-preview');
+  prev.innerHTML = `<img src="${res.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+}
+
+async function pickPlayerPhoto(playerId) {
+  const res = await window.electronAPI.pickPhoto({ owner: currentUser.username, playerId });
+  if (!res || !res.ok) return;
+  // Mettre à jour appData
+  const player = appData.players.find(p => p.id === playerId);
+  if (player) player.photo = res.photo;
+  refreshPlayers();
+  toast('Photo mise à jour !', 'success');
+}
+
+async function savePlayer() {
+  const name = document.getElementById('modal-player-name').value.trim();
+  if (!name) { toast('Nom requis', 'error'); return; }
+  const pseudo = document.getElementById('modal-player-pseudo').value.trim();
+  const player = { id: String(Date.now()), name, pseudo, photo: _newPlayerPhoto || null, owner: currentUser.username };
+  await window.electronAPI.savePlayer({ owner: currentUser.username, player });
+  appData.players.push(player);
+  refreshPlayers();
+  closeModal('modal-add-player');
+  toast(`${name} ajouté !`, 'success');
+}
+
+async function deletePlayer(idx) {
+  const data = getUserData();
+  const player = data.players[idx];
+  await window.electronAPI.deletePlayer({ owner: currentUser.username, id: player.id });
+  const globalIdx = appData.players.findIndex(p => p === player);
+  if (globalIdx > -1) appData.players.splice(globalIdx, 1);
+  refreshPlayers();
+  toast('Joueur supprimé', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// TEAMS
+// ═══════════════════════════════════════════════
+function refreshTeams() {
+  const data = getUserData();
+  const list = document.getElementById('teams-list');
+
+  if (!data.teams.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.85rem;text-align:center;padding:2rem">Aucune équipe configurée</div>';
+    return;
+  }
+
+  list.innerHTML = data.teams.map((t, i) => `
+    <div class="panel" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem">
+      <div>
+        <div style="font-weight:500;margin-bottom:.3rem">${t.name}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.3rem">
+          ${t.players.map(p => `<span class="player-tag">${p}</span>`).join('')}
+        </div>
+      </div>
+      <button class="btn-icon danger" onclick="deleteTeam(${i})">🗑</button>
+    </div>
+  `).join('');
+}
+
+function openAddTeamModal() {
+  const data = getUserData();
+  document.getElementById('modal-team-name').value = '';
+  document.getElementById('modal-team-selected').innerHTML = '<span style="color:var(--muted);font-size:.8rem;padding:.25rem">Aucun joueur sélectionné</span>';
+  
+  const playersList = document.getElementById('modal-team-players-list');
+  playersList.innerHTML = data.players.map(p => `
+    <div class="player-tag" style="cursor:pointer" onclick="toggleTeamPlayer('${p.name}', this)">
+      ${p.name}
+    </div>
+  `).join('') || '<span style="color:var(--muted);font-size:.8rem">Aucun joueur enregistré</span>';
+  
+  openModal('modal-add-team');
+}
+
+let selectedTeamPlayers = [];
+
+function toggleTeamPlayer(name, el) {
+  const idx = selectedTeamPlayers.indexOf(name);
+  if (idx > -1) {
+    selectedTeamPlayers.splice(idx, 1);
+    el.style.background = '';
+    el.style.borderColor = '';
+  } else {
+    selectedTeamPlayers.push(name);
+    el.style.background = 'rgba(255,77,28,0.15)';
+    el.style.borderColor = 'var(--accent)';
+  }
+  const container = document.getElementById('modal-team-selected');
+  container.innerHTML = selectedTeamPlayers.length
+    ? selectedTeamPlayers.map(n => `<span class="player-tag">${n}</span>`).join('')
+    : '<span style="color:var(--muted);font-size:.8rem;padding:.25rem">Aucun joueur sélectionné</span>';
+}
+
+async function saveTeam() {
+  const name = document.getElementById('modal-team-name').value.trim();
+  if (!name) { toast('Nom requis', 'error'); return; }
+  const team = { id: String(Date.now()), name, players: [...selectedTeamPlayers], owner: currentUser.username };
+  await window.electronAPI.saveTeam({ owner: currentUser.username, team });
+  appData.teams.push(team);
+  selectedTeamPlayers = [];
+  refreshTeams();
+  closeModal('modal-add-team');
+  toast(`Équipe "${name}" créée !`, 'success');
+}
+
+async function deleteTeam(idx) {
+  const data = getUserData();
+  const team = data.teams[idx];
+  await window.electronAPI.deleteTeam({ owner: currentUser.username, id: team.id });
+  const globalIdx = appData.teams.findIndex(t => t === team);
+  if (globalIdx > -1) appData.teams.splice(globalIdx, 1);
+  refreshTeams();
+  toast('Équipe supprimée', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// CHASE TAG WIZARD
+// ═══════════════════════════════════════════════
+function resetChaseWizard() {
+  clearInterval(chaseState.timerInterval);
+  cancelAnimationFrame(chaseState.rafId);
+  chaseState = {
+    type: 'equipe', name: '', players: [], teams: [],
+    orderMode: 'auto', teamOrders: {},
+    duration: 30, rounds: null, firstChatTeam: '',
+    rules: '', currentManche: 1,
+    chatTeamIdx: 0, sourisTeamIdx: 1,
+    chatPlayerIdx: {}, sourisPlayerIdx: {},
+    sourisConsecutive: {}, teamScores: {},
+    timeMs: 30000, durationMs: 30000, running: false,
+    targetEpoch: null, rafId: null, results: []
+  };
+  for(let i=0;i<5;i++) {
+    const s = document.getElementById('chase-s' + i);
+    if(s) s.style.display = i===0?'block':'none';
+    const step = document.getElementById('chase-step-' + i);
+    if(step) { step.classList.remove('done','current'); if(i===0)step.classList.add('current'); }
+  }
+  const cn = document.getElementById('chase-name');
+  if(cn) cn.value = '';
+  setTimeout(() => initChaseTeamBuilder(), 50);
+}
+
+function selectChaseType(type) {
+  chaseState.type = 'equipe';
+}
+
+const CHASE_STEP_PHRASES = [
+  ['Enregistrement du nom...', 'Nom validé !'],
+  ['Configuration des équipes...', 'Équipes prêtes !'],
+  ['Ordre de passage...', 'Ordre validé !'],
+  ['Configuration en cours...', 'Config validée !'],
+];
+
+function chaseNextStepBtn(current) {
+  if (current === 0 && !document.getElementById('chase-name').value.trim()) {
+    toast('Donne un nom à la compét', 'error'); return;
+  }
+  if (current === 1) {
+    if (!chaseState.teams || chaseState.teams.length < 2) { toast('Minimum 2 équipes', 'error'); return; }
+    const emptyTeam = chaseState.teams.find(t => !t.players || t.players.length === 0);
+    if (emptyTeam) { toast('Equipe vide : ' + emptyTeam.name, 'error'); return; }
+    if (!chaseState.teamOrders) chaseState.teamOrders = {};
+    chaseState.teams.forEach(t => {
+      if (!chaseState.teamOrders[t.name] || chaseState.teamOrders[t.name].length === 0) {
+        chaseState.teamOrders[t.name] = [...t.players];
+      }
+    });
+    populateChaseFirstChat();
+  }
+  if (current === 2) {
+    populateChaseFirstChat();
+  }
+  if (current === 3) {
+    buildChaseSummary();
+  }
+  const phrases = CHASE_STEP_PHRASES[current] || ['Validation...', 'Validé !'];
+  showMiniLoader(phrases, () => chaseGoStep(current, current + 1));
+}
+
+function chaseGoStep(from, to) {
+  document.getElementById('chase-s' + from).style.display = 'none';
+  document.getElementById('chase-s' + to).style.display = 'block';
+  document.getElementById('chase-step-' + from).classList.remove('current');
+  document.getElementById('chase-step-' + from).classList.add('done');
+  document.getElementById('chase-step-' + to).classList.add('current');
+  if (to === 1) setTimeout(() => initChaseTeamBuilder(), 50);
+  if (to === 2) {
+    // Step 2 vide, sauter directement à step 3 (config)
+    chaseGoStep(2, 3);
+  }
+}
+
+function chaseNextStep(current) {
+  chaseNextStepBtn(current);
+}
+
+function chasePrevStep(current) {
+  document.getElementById(`chase-s${current}`).style.display = 'none';
+  document.getElementById(`chase-s${current-1}`).style.display = 'block';
+  document.getElementById(`chase-step-${current}`).classList.remove('current');
+  document.getElementById(`chase-step-${current-1}`).classList.remove('done');
+  document.getElementById(`chase-step-${current-1}`).classList.add('current');
+}
+
+// ── STEP 1: ÉQUIPES ──
+function chaseAddTeam() {
+  chaseState.teams = chaseState.teams || [];
+  chaseState.teams.push({ name: `Équipe ${chaseState.teams.length + 1}`, players: [] });
+  renderChaseTeamsBuilder();
+}
+
+function chaseAutoTeams() {
+  // Récupérer tous les joueurs déjà dans les équipes existantes + joueurs enregistrés
+  const inTeams = (chaseState.teams || []).flatMap(t => t.players);
+  const registered = getUserData().players.map(p => p.name).filter(n => !inTeams.includes(n));
+  const allPlayers = [...new Set([...inTeams, ...registered])];
+  if (allPlayers.length < 2) { toast('Ajoute au moins 2 joueurs d\'abord', 'error'); return; }
+  const shuffled = [...allPlayers].sort(() => Math.random() - 0.5);
+  const half = Math.ceil(shuffled.length / 2);
+  chaseState.teams = [
+    { name: (chaseState.teams && chaseState.teams[0]) ? chaseState.teams[0].name : 'Équipe 1', players: shuffled.slice(0, half) },
+    { name: (chaseState.teams && chaseState.teams[1]) ? chaseState.teams[1].name : 'Équipe 2', players: shuffled.slice(half) }
+  ];
+  renderChaseTeamsBuilder();
+  toast('Équipes réparties auto', 'success');
+}
+
+function chaseImportFromPlayers() {
+  const data = getUserData();
+  if (!data.players.length) { toast('Aucun joueur enregistré', 'error'); return; }
+  // Ajouter tous les joueurs comme pool, répartir en 2 équipes
+  const names = data.players.map(p => p.name);
+  const half = Math.ceil(names.length / 2);
+  chaseState.teams = [
+    { name: 'Équipe 1', players: names.slice(0, half) },
+    { name: 'Équipe 2', players: names.slice(half) }
+  ];
+  renderChaseTeamsBuilder();
+  toast(`${names.length} joueurs importés`, 'success');
+}
+
+function chaseImportFromTeams() {
+  const data = getUserData();
+  if (!data.teams.length) { toast('Aucune équipe enregistrée', 'error'); return; }
+  chaseState.teams = data.teams.map(t => ({ name: t.name, players: [...t.players] }));
+  renderChaseTeamsBuilder();
+  toast(`${data.teams.length} équipes importées`, 'success');
+}
+
+function renderChaseTeamsBuilder() {
+  const el = document.getElementById('chase-teams-builder');
+  if (!el) return;
+  chaseState.teams = chaseState.teams || [];
+  const allInTeams = chaseState.teams.flatMap(t => t.players);
+  const registered = getUserData().players.map(p => p.name).filter(n => !allInTeams.includes(n));
+
+  // Chips joueurs disponibles (pas encore dans une équipe)
+  const availableChips = registered.length ? `
+    <div style="margin-bottom:1rem;padding:.75rem;background:var(--surface);border-radius:8px;border:1px dashed var(--border)">
+      <div style="font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.5rem">Joueurs disponibles — cliquer pour ajouter</div>
+      <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+        ${registered.map(n => `<span class="player-tag" style="cursor:pointer;opacity:.7;transition:opacity .15s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7" onclick="chaseAddPlayerToTeam('${n}')">${n} +</span>`).join('')}
+      </div>
+    </div>` : '';
+
+  el.innerHTML = availableChips + chaseState.teams.map((t, ti) => `
+    <div style="margin-bottom:.75rem;padding:.75rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+        <input type="text" value="${t.name}"
+          onchange="chaseState.teams[${ti}].name=this.value"
+          style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none">
+        <button class="btn-icon danger" onclick="chaseRemoveTeam(${ti})">🗑</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.5rem;min-height:32px">
+        ${t.players.map((p,pi) => `<span class="player-tag">${p}<button class="player-tag-remove" onclick="chaseRemoveFromTeam(${ti},${pi})">×</button></span>`).join('')}
+        ${t.players.length === 0 ? '<span style="color:var(--muted);font-size:.78rem;font-style:italic">Aucun joueur</span>' : ''}
+      </div>
+      <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+        <input type="text" id="chase-manual-player-${ti}" placeholder="Nouveau joueur..."
+          style="flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.35rem .6rem;color:var(--text);font-size:.8rem;outline:none"
+          onkeydown="if(event.key==='Enter'){chaseAddManualToTeam(${ti});event.preventDefault()}">
+        <button class="btn-icon" onclick="chaseAddManualToTeam(${ti})" title="Ajouter">+</button>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:.85rem;padding:.5rem">Aucune équipe.</div>';
+}
+
+function chaseAddPlayerToTeam(name) {
+  // Trouver l'équipe avec le moins de joueurs
+  if (!chaseState.teams || !chaseState.teams.length) return;
+  const target = chaseState.teams.reduce((a, b) => a.players.length <= b.players.length ? a : b);
+  if (!target.players.includes(name)) target.players.push(name);
+  renderChaseTeamsBuilder();
+}
+
+function chaseAddToTeam(ti, sel) {
+  const name = sel.value; if (!name) return;
+  chaseState.teams[ti].players.push(name);
+  sel.value = '';
+  renderChaseTeamsBuilder();
+}
+
+function chaseAddManualToTeam(ti) {
+  const input = document.getElementById(`chase-manual-player-${ti}`);
+  const name = input.value.trim(); if (!name) return;
+  chaseState.teams[ti].players.push(name);
+  input.value = '';
+  renderChaseTeamsBuilder();
+}
+
+function chaseRemoveFromTeam(ti, pi) {
+  chaseState.teams[ti].players.splice(pi, 1);
+  renderChaseTeamsBuilder();
+}
+
+function chaseRemoveTeam(ti) {
+  chaseState.teams.splice(ti, 1);
+  renderChaseTeamsBuilder();
+}
+
+// ── STEP 2: ORDRE ──
+function selectChaseOrder(mode) {
+  chaseState.orderMode = mode;
+  document.getElementById('chase-order-auto').classList.toggle('selected', mode==='auto');
+  document.getElementById('chase-order-manual').classList.toggle('selected', mode==='manual');
+  renderChaseOrderConfig();
+}
+
+function renderChaseOrderConfig() {
+  const el = document.getElementById('chase-order-config');
+  if (!el) return;
+  if (chaseState.orderMode === 'auto') {
+    // Générer ordre aléatoire pour chaque équipe
+    chaseState.teams.forEach(t => {
+      chaseState.teamOrders[t.name] = [...t.players].sort(() => Math.random() - 0.5);
+    });
+    el.innerHTML = `<div style="font-size:.8rem;color:var(--muted)">Ordre aléatoire généré automatiquement au démarrage.</div>
+    ${chaseState.teams.map(t => `
+      <div style="margin-top:.75rem;padding:.6rem .75rem;background:var(--surface2);border-radius:8px">
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:.4rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px">${t.name}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.3rem">
+          ${(chaseState.teamOrders[t.name]||t.players).map((p,i) => `<span class="player-tag"><span style="color:var(--muted);margin-right:.3rem">${i+1}.</span>${p}</span>`).join('')}
+        </div>
+      </div>
+    `).join('')}`;
+  } else {
+    // Ordre manuel : drag simulé par boutons haut/bas
+    chaseState.teams.forEach(t => {
+      if (!chaseState.teamOrders[t.name]) chaseState.teamOrders[t.name] = [...t.players];
+    });
+    el.innerHTML = chaseState.teams.map((t, ti) => `
+      <div style="margin-top:.75rem;padding:.75rem;background:var(--surface2);border-radius:8px">
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:.5rem;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px">${t.name}</div>
+        ${(chaseState.teamOrders[t.name]||t.players).map((p,pi) => `
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.3rem 0;border-bottom:1px solid rgba(42,42,64,0.5)">
+            <span style="color:var(--muted);font-size:.75rem;width:20px">${pi+1}.</span>
+            <span style="flex:1;font-size:.85rem">${p}</span>
+            <button class="btn-icon" onclick="chaseOrderMove('${t.name}',${pi},-1)" ${pi===0?'disabled':''}>↑</button>
+            <button class="btn-icon" onclick="chaseOrderMove('${t.name}',${pi},1)" ${pi===(chaseState.teamOrders[t.name].length-1)?'disabled':''}>↓</button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+}
+
+function chaseOrderMove(teamName, idx, dir) {
+  const arr = chaseState.teamOrders[teamName];
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= arr.length) return;
+  [arr[idx], arr[newIdx]] = [arr[newIdx], arr[idx]];
+  renderChaseOrderConfig();
+}
+
+// Step 2 : Players
+
+
+document.addEventListener('DOMContentLoaded', () => {});
+
+
+
+function populateChaseFirstChat() {
+  const sel = document.getElementById('chase-first-chat');
+  sel.innerHTML = '<option value="">— Sélectionner —</option>';
+  (chaseState.teams || []).forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.name; opt.textContent = t.name;
+    sel.appendChild(opt);
+  });
+}
+
+function buildChaseSummary() {
+  chaseState.name = document.getElementById('chase-name').value.trim();
+  chaseState.duration = parseInt(document.getElementById('chase-duration').value) || 30;
+  chaseState.rounds = parseInt(document.getElementById('chase-rounds').value) || null;
+  chaseState.firstChatTeam = document.getElementById('chase-first-chat').value || chaseState.teams[0]?.name;
+  chaseState.rules = document.getElementById('chase-rules').value;
+
+  const el = document.getElementById('chase-summary-content');
+  el.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.85rem;margin-bottom:1rem">
+      <div><span style="color:var(--muted)">Nom :</span> ${chaseState.name}</div>
+      <div><span style="color:var(--muted)">Durée/manche :</span> ${chaseState.duration}s</div>
+      <div><span style="color:var(--muted)">Manches :</span> ${chaseState.rounds || '∞'}</div>
+      <div><span style="color:var(--muted)">Premier chat :</span> <strong style="color:var(--accent)">${chaseState.firstChatTeam}</strong></div>
+    </div>
+    ${chaseState.teams.map(t => `
+      <div style="padding:.6rem .75rem;background:var(--surface2);border-radius:8px;margin-bottom:.5rem">
+        <div style="font-size:.75rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">${t.name}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:.3rem">
+          ${(chaseState.teamOrders[t.name]||t.players).map((p,i) => `<span class="player-tag"><span style="color:var(--muted);margin-right:.25rem">${i+1}.</span>${p}</span>`).join('')}
+        </div>
+      </div>
+    `).join('')}
+    ${chaseState.rules ? `<div style="margin-top:.75rem;font-size:.8rem;color:var(--muted);padding:.75rem;background:var(--surface2);border-radius:8px">${chaseState.rules}</div>` : ''}
+  `;
+}
+
+
+
+// ═══════════════════════════════════════════════
+// CHASE TAG ARENA
+// ═══════════════════════════════════════════════
+function startChaseCompet() {
+  chaseState.currentManche = 1;
+  chaseState.results = [];
+  chaseState.teamScores = {};
+  chaseState.chatPlayerIdx = {};
+  chaseState.sourisPlayerIdx = {};
+  chaseState.sourisConsecutive = {};
+
+  // Init scores équipes
+  chaseState.teams.forEach(t => {
+    chaseState.teamScores[t.name] = 0;
+    chaseState.chatPlayerIdx[t.name] = 0;
+    chaseState.sourisPlayerIdx[t.name] = 0;
+    chaseState.sourisConsecutive[t.name] = 1;
+  });
+
+  // Équipe chat = firstChatTeam, souris = l'autre
+  const teamNames = chaseState.teams.map(t => t.name);
+  chaseState.chatTeamIdx = teamNames.indexOf(chaseState.firstChatTeam);
+  if (chaseState.chatTeamIdx < 0) chaseState.chatTeamIdx = 0;
+  chaseState.sourisTeamIdx = (chaseState.chatTeamIdx + 1) % teamNames.length;
+
+  navigate('chase-arena');
+  buildArenaTeamCards();
+  // Init sélection manuelle avec les valeurs par défaut
+  chaseState.manualChat = null;
+  chaseState.manualSouris = null;
+  updateArenaDisplay();
+  showManualPanel();
+}
+
+function getChatPlayer() {
+  // Mode manuel : utiliser la sélection courante
+  if (chaseState.manualChat) return chaseState.manualChat;
+  const team = chaseState.teams[chaseState.chatTeamIdx];
+  const order = chaseState.teamOrders[team.name] || team.players;
+  const idx = chaseState.chatPlayerIdx[team.name] || 0;
+  return { player: order[idx % order.length], team: team.name };
+}
+
+function getSourisPlayer() {
+  // Mode manuel : utiliser la sélection courante
+  if (chaseState.manualSouris) return chaseState.manualSouris;
+  const team = chaseState.teams[chaseState.sourisTeamIdx];
+  const order = chaseState.teamOrders[team.name] || team.players;
+  const idx = chaseState.sourisPlayerIdx[team.name] || 0;
+  return { player: order[idx % order.length], team: team.name };
+}
+
+// Afficher le panneau de sélection manuelle entre chaque manche
+function showManualPanel() {
+  const panel = document.getElementById('arena-manual-panel');
+  if (!panel) return;
+  panel.style.display = 'block';
+
+  // Cacher le bouton démarrer (on passera par Confirmer)
+  const startBtn = document.getElementById('arena-start-btn');
+  if (startBtn) startBtn.style.display = 'none';
+  document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+
+  const container = document.getElementById('arena-manual-teams');
+  if (!container) return;
+
+  // Construire les colonnes par équipe
+  const COLS = ['#818cf8','#f472b6','#fbbf24','#2dd4bf'];
+  container.innerHTML = chaseState.teams.map((t, ti) => {
+    const col = COLS[ti % COLS.length];
+    const players = chaseState.teamOrders[t.name] || t.players;
+    // Valeur par défaut : reprendre la sélection précédente si même équipe
+    const prevChat = chaseState.manualChat && chaseState.manualChat.team === t.name ? chaseState.manualChat.player : null;
+    const prevSouris = chaseState.manualSouris && chaseState.manualSouris.team === t.name ? chaseState.manualSouris.player : null;
+    const isChat = chaseState.manualChat ? chaseState.manualChat.team === t.name : ti === chaseState.chatTeamIdx;
+    const isSouris = chaseState.manualSouris ? chaseState.manualSouris.team === t.name : ti === chaseState.sourisTeamIdx;
+
+    return `<div style="background:var(--surface2);border:2px solid ${col}33;border-radius:10px;padding:.75rem">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:${col};letter-spacing:1px;margin-bottom:.5rem">${t.name}</div>
+
+      <!-- Rôle de l'équipe -->
+      <div style="display:flex;gap:.4rem;margin-bottom:.6rem">
+        <button id="role-chat-${ti}" onclick="setTeamRole(${ti},'chat')"
+          style="flex:1;padding:.3rem;border-radius:6px;border:1px solid ${isChat?'rgba(255,77,28,.6)':'var(--border)'};background:${isChat?'rgba(255,77,28,.15)':'transparent'};color:${isChat?'var(--accent)':'var(--muted)'};cursor:pointer;font-size:.75rem;transition:all .15s">
+          😼 Chat
+        </button>
+        <button id="role-souris-${ti}" onclick="setTeamRole(${ti},'souris')"
+          style="flex:1;padding:.3rem;border-radius:6px;border:1px solid ${isSouris?'rgba(34,197,94,.6)':'var(--border)'};background:${isSouris?'rgba(34,197,94,.15)':'transparent'};color:${isSouris?'var(--success)':'var(--muted)'};cursor:pointer;font-size:.75rem;transition:all .15s">
+          🐭 Souris
+        </button>
+      </div>
+
+      <!-- Sélection du joueur -->
+      <div style="font-size:.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem">Joueur qui passe</div>
+      <div style="display:flex;flex-direction:column;gap:.25rem">
+        ${players.map(p => `
+          <button onclick="setTeamPlayer(${ti},'${p.replace(/'/g, "\'")}','${t.name.replace(/'/g, "\'")}')"
+            id="player-btn-${ti}-${p.replace(/[^a-zA-Z0-9]/g,'_')}"
+            style="padding:.35rem .6rem;border-radius:6px;text-align:left;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:.8rem;transition:all .15s">
+            ${p}
+          </button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Pré-sélectionner les joueurs actuels
+  chaseState.teams.forEach((t, ti) => {
+    const cur = chaseState.manualChat && chaseState.manualChat.team === t.name
+      ? chaseState.manualChat.player
+      : chaseState.manualSouris && chaseState.manualSouris.team === t.name
+      ? chaseState.manualSouris.player
+      : null;
+    if (cur) highlightPlayerBtn(ti, cur, t.name);
+  });
+}
+
+function setTeamRole(ti, role) {
+  const t = chaseState.teams[ti];
+  const otherRole = role === 'chat' ? 'souris' : 'chat';
+
+  // Mettre à jour chatTeamIdx et sourisTeamIdx
+  if (role === 'chat') {
+    chaseState.chatTeamIdx = ti;
+    // L'autre équipe devient souris (première qui n'est pas ti)
+    const otherIdx = chaseState.teams.findIndex((_, i) => i !== ti);
+    chaseState.sourisTeamIdx = otherIdx;
+    // Mettre à jour manualChat/manualSouris si joueur déjà sélectionné
+    if (chaseState.manualChat && chaseState.manualChat.team !== t.name) chaseState.manualChat = null;
+    if (chaseState.manualSouris && chaseState.manualSouris.team === t.name) chaseState.manualSouris = null;
+  } else {
+    chaseState.sourisTeamIdx = ti;
+    const otherIdx = chaseState.teams.findIndex((_, i) => i !== ti);
+    chaseState.chatTeamIdx = otherIdx;
+    if (chaseState.manualSouris && chaseState.manualSouris.team !== t.name) chaseState.manualSouris = null;
+    if (chaseState.manualChat && chaseState.manualChat.team === t.name) chaseState.manualChat = null;
+  }
+
+  // Rafraîchir le panel sans recréer toute la structure
+  showManualPanel();
+}
+
+function setTeamPlayer(ti, playerName, teamName) {
+  const isChat = chaseState.chatTeamIdx === ti;
+  const isSouris = chaseState.sourisTeamIdx === ti;
+  if (isChat) chaseState.manualChat = { player: playerName, team: teamName };
+  else if (isSouris) chaseState.manualSouris = { player: playerName, team: teamName };
+  highlightPlayerBtn(ti, playerName, teamName);
+}
+
+function highlightPlayerBtn(ti, playerName, teamName) {
+  // Désélectionner tous les boutons de cette équipe
+  const t = chaseState.teams[ti];
+  const players = chaseState.teamOrders[t.name] || t.players;
+  players.forEach(p => {
+    const btn = document.getElementById('player-btn-' + ti + '-' + p.replace(/[^a-zA-Z0-9]/g,'_'));
+    if (btn) {
+      const COLS = ['#818cf8','#f472b6','#fbbf24','#2dd4bf'];
+      const col = COLS[ti % COLS.length];
+      const isChat = chaseState.chatTeamIdx === ti;
+      const isSouris = chaseState.sourisTeamIdx === ti;
+      const roleColor = isChat ? 'rgba(255,77,28,.2)' : isSouris ? 'rgba(34,197,94,.2)' : col + '22';
+      const textColor = isChat ? 'var(--accent)' : isSouris ? 'var(--success)' : col;
+      if (p === playerName) {
+        btn.style.background = roleColor;
+        btn.style.borderColor = isChat ? 'rgba(255,77,28,.5)' : isSouris ? 'rgba(34,197,94,.5)' : col;
+        btn.style.color = textColor;
+        btn.style.fontWeight = '600';
+      } else {
+        btn.style.background = 'transparent';
+        btn.style.borderColor = 'var(--border)';
+        btn.style.color = 'var(--muted)';
+        btn.style.fontWeight = '400';
+      }
+    }
+  });
+}
+
+function confirmManualSelection() {
+  // Vérifier que chat et souris sont bien sélectionnés
+  if (!chaseState.manualChat) { toast('Sélectionne le joueur CHAT', 'error'); return; }
+  if (!chaseState.manualSouris) { toast('Sélectionne le joueur SOURIS', 'error'); return; }
+  if (chaseState.manualChat.team === chaseState.manualSouris.team) {
+    toast('Chat et souris doivent être dans des équipes différentes', 'error'); return;
+  }
+
+  // Cacher le panel, montrer le bouton ▶ Démarrer
+  const panel = document.getElementById('arena-manual-panel');
+  if (panel) panel.style.display = 'none';
+
+  updateArenaDisplay();
+  // Réinitialiser le chrono et afficher le bouton ▶
+  chaseState.timeMs = chaseState.duration * 1000;
+  chaseState.durationMs = chaseState.timeMs;
+  chaseState.running = false;
+  chaseState.targetEpoch = null;
+  cancelAnimationFrame(chaseState.rafId);
+  updateTimerDisplay();
+  const startBtn = document.getElementById('arena-start-btn');
+  if (startBtn) { startBtn.style.display = 'inline-block'; startBtn.textContent = '▶ Démarrer'; }
+  document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+}
+
+const TEAM_COLORS = [
+  { bg: 'rgba(99,102,241,0.15)', border: 'rgba(99,102,241,0.5)', text: '#818cf8' },
+  { bg: 'rgba(236,72,153,0.15)', border: 'rgba(236,72,153,0.5)', text: '#f472b6' },
+  { bg: 'rgba(234,179,8,0.15)',  border: 'rgba(234,179,8,0.5)',  text: '#fbbf24' },
+  { bg: 'rgba(20,184,166,0.15)', border: 'rgba(20,184,166,0.5)', text: '#2dd4bf' },
+];
+
+// Appelé UNE SEULE FOIS au démarrage pour créer les cartes fixes
+function buildArenaTeamCards() {
+  const el = document.getElementById('arena-teams-cards');
+  if (!el) return;
+  el.innerHTML = chaseState.teams.map((t, ti) => {
+    const col = TEAM_COLORS[ti % TEAM_COLORS.length];
+    return `
+      <div id="arena-team-card-${ti}"
+        style="background:${col.bg};border:2px solid ${col.border};border-radius:16px;padding:1.5rem;text-align:center;transition:box-shadow .3s;position:relative;overflow:hidden">
+        <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${col.text}"></div>
+        <div id="arena-team-role-${ti}" style="min-height:2rem;margin-bottom:.5rem"></div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:2px;color:${col.text};margin-bottom:.5rem">${t.name}</div>
+        <div id="arena-team-player-${ti}"
+          style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:1px;color:var(--text);margin-bottom:.5rem;min-height:3rem">—</div>
+        <div id="arena-team-score-${ti}"
+          style="font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;color:${col.text}">0</div>
+        <div id="arena-team-next-${ti}"
+          style="margin-top:.75rem;padding:.35rem .5rem;border-top:1px solid ${col.border};font-size:.75rem;color:var(--muted);min-height:1.6rem"></div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Appelé à chaque changement pour mettre à jour uniquement les infos dynamiques
+function renderArenaTeams() {
+  const chatP = getChatPlayer();
+  const sourisP = getSourisPlayer();
+
+  chaseState.teams.forEach((t, ti) => {
+    const isChatTeam = ti === chaseState.chatTeamIdx;
+    const isSourisTeam = ti === chaseState.sourisTeamIdx;
+    const order = chaseState.teamOrders[t.name] || t.players;
+    const col = TEAM_COLORS[ti % TEAM_COLORS.length];
+
+    // Label rôle
+    const roleEl = document.getElementById(`arena-team-role-${ti}`);
+    if (roleEl) {
+      if (isChatTeam) roleEl.innerHTML = '<span style="background:rgba(255,77,28,0.25);color:var(--accent);padding:.15rem .6rem;border-radius:10px">&#128572; CHAT</span>';
+      else if (isSourisTeam) roleEl.innerHTML = '<span style="background:rgba(34,197,94,0.25);color:var(--success);padding:.15rem .6rem;border-radius:10px">&#128045; SOURIS</span>';
+      else roleEl.innerHTML = '';
+    }
+
+    // Joueur actif en grand
+    const currentPlayer = isChatTeam ? chatP.player : isSourisTeam ? sourisP.player : '—';
+    const playerEl = document.getElementById(`arena-team-player-${ti}`);
+    if (playerEl) playerEl.textContent = currentPlayer;
+
+    // Prochain joueur
+    const currentIdx = (isChatTeam ? chaseState.chatPlayerIdx : chaseState.sourisPlayerIdx)[t.name] || 0;
+    const nextIdx = (currentIdx + 1) % order.length;
+    const nextPlayer = order[nextIdx];
+    const nextEl = document.getElementById(`arena-team-next-${ti}`);
+    if (nextEl) {
+      if ((isChatTeam || isSourisTeam) && nextPlayer !== currentPlayer) {
+        nextEl.innerHTML = 'Prochain : <span style="color:' + col.text + '">' + nextPlayer + '</span>';
+      } else {
+        nextEl.textContent = '';
+      }
+    }
+
+    // Surbrillance carte active
+    const card = document.getElementById(`arena-team-card-${ti}`);
+    if (card) card.style.boxShadow = (isChatTeam || isSourisTeam) ? `0 0 0 2px ${col.text}` : 'none';
+  });
+}
+
+function updateArenaDisplay() {
+  const chatInfo = getChatPlayer();
+  const sourisInfo = getSourisPlayer();
+
+  document.getElementById('arena-compet-name').textContent = chaseState.name;
+  document.getElementById('arena-manche-info').textContent = 'Manche ' + chaseState.currentManche;
+  document.getElementById('arena-round-label').textContent = 'Manche ' + chaseState.currentManche + ' / ' + (chaseState.rounds || '∞');
+  renderArenaTeams();
+  pushScoresToStorage();
+}
+
+function startChaseTimer() {
+  chaseState.durationMs = chaseState.duration * 1000;
+  chaseState.running = false;
+  chaseState.targetEpoch = null;
+  cancelAnimationFrame(chaseState.rafId);
+  updateTimerDisplay();
+  const btn = document.getElementById('arena-start-btn');
+  if(btn) { btn.style.display = 'inline-block'; btn.textContent = '▶ Démarrer'; }
+  document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+}
+
+function updateTimerDisplay() {
+  const remaining = chaseState.targetEpoch
+    ? Math.max(0, chaseState.targetEpoch - Date.now())
+    : Math.max(0, chaseState.timeMs || chaseState.durationMs || chaseState.duration * 1000 || 0);
+  const m  = Math.floor(remaining / 60000).toString().padStart(2,'0');
+  const s  = Math.floor((remaining % 60000) / 1000).toString().padStart(2,'0');
+  const cs = Math.floor((remaining % 1000) / 10).toString().padStart(2,'0');
+  document.getElementById('arena-timer').textContent = m + ':' + s + '.' + cs;
+}
+
+function launchChaseTimer() {
+  const btn = document.getElementById('arena-start-btn');
+  if (!chaseState.running) {
+    chaseState.running = true;
+    if(btn) btn.textContent = '⏸ Pause';
+    document.querySelectorAll('.btn-chase').forEach(b => b.disabled = false);
+    // targetEpoch = maintenant + temps restant
+    const remaining = chaseState.targetEpoch
+      ? Math.max(0, chaseState.targetEpoch - Date.now())
+      : (chaseState.timeMs || chaseState.durationMs);
+    chaseState.targetEpoch = Date.now() + remaining;
+    chaseState.timeMs = remaining;
+    pushScoresToStorage();
+
+    // RAF fluide au lieu de setInterval
+    let lastPush = Date.now();
+    function tick() {
+      if (!chaseState.running) return;
+      const rem = chaseState.targetEpoch - Date.now();
+      chaseState.timeMs = rem;
+      updateTimerDisplay();
+      // Push toutes les 2s
+      if (Date.now() - lastPush > 2000) {
+        pushScoresToStorage();
+        lastPush = Date.now();
+      }
+      if (rem <= 0) {
+        chaseState.running = false;
+        chaseState.timeMs = 0;
+        chaseState.targetEpoch = null;
+        updateTimerDisplay();
+        if(btn) btn.textContent = '▶ Démarrer';
+        document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+        chaseTimeUp();
+        return;
+      }
+      chaseState.rafId = requestAnimationFrame(tick);
+    }
+    chaseState.rafId = requestAnimationFrame(tick);
+  } else {
+    // Pause : sauvegarder le temps restant
+    chaseState.running = false;
+    chaseState.timeMs = Math.max(0, chaseState.targetEpoch - Date.now());
+    chaseState.targetEpoch = null;
+    cancelAnimationFrame(chaseState.rafId);
+    if(btn) btn.textContent = '▶ Reprendre';
+    document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+    updateTimerDisplay();
+  }
+}
+
+function chaseTimeUp() {
+  chaseEscaped();
+}
+
+function getTeamOrder(team) {
+  return chaseState.teamOrders[team.name] || team.players;
+}
+
+function chaseTouched() {
+  cancelAnimationFrame(chaseState.rafId);
+  chaseState.running = false;
+  chaseState.timeMs = Math.max(0, (chaseState.targetEpoch || Date.now()) - Date.now());
+  chaseState.targetEpoch = null;
+  const chatInfo = getChatPlayer();
+  const sourisInfo = getSourisPlayer();
+
+  chaseState.results.push({
+    manche: chaseState.currentManche,
+    chat: chatInfo.player, chatTeam: chatInfo.team,
+    souris: sourisInfo.player, sourisTeam: sourisInfo.team,
+    outcome: 'touché', timeMs: chaseState.timeMs
+  });
+
+  // Règle : souris touchée → elle ne joue plus ce tour
+  // Le PROCHAIN joueur de l'équipe souris devient chat
+  // L'ancien chat devient souris (lui-même)
+
+  // 1. Avancer le joueur dans l'équipe souris (la souris touchée sort)
+  const oldSourisTeam = chaseState.teams[chaseState.sourisTeamIdx];
+  const sourisOrder = getTeamOrder(oldSourisTeam);
+  chaseState.sourisPlayerIdx[oldSourisTeam.name] = ((chaseState.sourisPlayerIdx[oldSourisTeam.name]||0) + 1) % sourisOrder.length;
+
+  // 2. Inverser les rôles d'équipe : l'équipe souris devient chat, l'équipe chat devient souris
+  const tmp = chaseState.chatTeamIdx;
+  chaseState.chatTeamIdx = chaseState.sourisTeamIdx;
+  chaseState.sourisTeamIdx = tmp;
+
+  // 3. Réinitialiser compteur consécutif souris (ancien chat, maintenant souris)
+  const newSourisTeam = chaseState.teams[chaseState.sourisTeamIdx];
+  chaseState.sourisConsecutive[newSourisTeam.name] = 1;
+
+  nextManche();
+  pushScoresToStorage(); // Push APRÈS mise à jour de l'état → scores.html reçoit les nouveaux rôles
+}
+
+function chaseEscaped() {
+  cancelAnimationFrame(chaseState.rafId);
+  chaseState.running = false;
+  chaseState.timeMs = Math.max(0, (chaseState.targetEpoch || Date.now()) - Date.now());
+  chaseState.targetEpoch = null;
+  const chatInfo = getChatPlayer();
+  const sourisInfo = getSourisPlayer();
+
+  // +1 point équipe souris
+  chaseState.teamScores[sourisInfo.team] = (chaseState.teamScores[sourisInfo.team]||0) + 1;
+
+  chaseState.results.push({
+    manche: chaseState.currentManche,
+    chat: chatInfo.player, chatTeam: chatInfo.team,
+    souris: sourisInfo.player, sourisTeam: sourisInfo.team,
+    outcome: 'échappée', timeMs: chaseState.timeMs
+  });
+
+  // Règle : chat remplacé par le joueur suivant de son équipe
+  const chatTeam = chaseState.teams[chaseState.chatTeamIdx];
+  const chatOrder = getTeamOrder(chatTeam);
+  chaseState.chatPlayerIdx[chatTeam.name] = ((chaseState.chatPlayerIdx[chatTeam.name]||0) + 1) % chatOrder.length;
+
+  // Règle : souris peut rester max 2 fois d'affilée
+  const sourisTeam = chaseState.teams[chaseState.sourisTeamIdx];
+  chaseState.sourisConsecutive[sourisTeam.name] = (chaseState.sourisConsecutive[sourisTeam.name] || 1) + 1;
+
+  if (chaseState.sourisConsecutive[sourisTeam.name] > 2) {
+    // Rotation : coéquipier suivant devient souris
+    const sourisOrder = getTeamOrder(sourisTeam);
+    chaseState.sourisPlayerIdx[sourisTeam.name] = ((chaseState.sourisPlayerIdx[sourisTeam.name]||0) + 1) % sourisOrder.length;
+    chaseState.sourisConsecutive[sourisTeam.name] = 1;
+  }
+
+  nextManche();
+  pushScoresToStorage(); // Push APRÈS mise à jour du score → scores.html reçoit le nouveau score
+}
+
+function updateArenaScores() {
+  // Mise à jour scores uniquement (appelé après touché/échappée)
+  chaseState.teams.forEach((t, ti) => {
+    const scoreEl = document.getElementById('arena-team-score-' + ti);
+    if (scoreEl) scoreEl.textContent = chaseState.teamScores[t.name] || 0;
+  });
+}
+
+function nextManche() {
+  chaseState.currentManche++;
+
+  if (chaseState.rounds && chaseState.currentManche > chaseState.rounds) {
+    endChaseCompet();
+    return;
+  }
+
+  updateArenaScores();
+  chaseState.timeMs = chaseState.duration * 1000;
+  chaseState.durationMs = chaseState.timeMs;
+  chaseState.running = false;
+  chaseState.targetEpoch = null;
+  cancelAnimationFrame(chaseState.rafId);
+  updateTimerDisplay();
+  document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+  document.getElementById('arena-manche-info').textContent = 'Manche ' + chaseState.currentManche;
+  document.getElementById('arena-round-label').textContent = 'Manche ' + chaseState.currentManche + ' / ' + (chaseState.rounds || '∞');
+
+  // Afficher le panel de sélection manuelle
+  showManualPanel();
+}
+
+async function endChaseCompet() {
+  cancelAnimationFrame(chaseState.rafId);
+  chaseState.running = false;
+  chaseState.targetEpoch = null;
+
+  // Calculer résultats finaux
+  const scores = chaseState.teamScores || {};
+  const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0];
+
+  const compet = {
+    id: Date.now(),
+    type: 'chase',
+    name: chaseState.name,
+    date: new Date().toLocaleDateString('fr-FR'),
+    players: chaseState.teams.flatMap(t => t.players),
+    teams: chaseState.teams,
+    results: chaseState.results,
+    scores,
+    winner: winner ? winner[0] : '—',
+    manches: chaseState.currentManche - 1,
+    owner: currentUser.username
+  };
+
+  await window.electronAPI.saveChase({ owner: currentUser.username, compet });
+  appData.chaseHistory.push(compet);
+  // Signaler la fin sur le live
+  const endData = { type: 'chase', competName: chaseState.name, ended: true, winner: compet.winner, scores: compet.scores, teams: compet.teams, ts: Date.now() };
+  localStorage.setItem('pp_live_scores', JSON.stringify(endData));
+  toast(`Compét terminée ! Vainqueur : ${compet.winner} 🏆`, 'success');
+  navigate('chase-history');
+}
+
+// ═══════════════════════════════════════════════
+// CHASE TAG HISTORY
+// ═══════════════════════════════════════════════
+function refreshChaseHistory() {
+  const data = getUserData();
+  const list = document.getElementById('chase-history-list');
+
+  if (!data.chaseHistory.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.9rem;text-align:center;padding:3rem">Aucune compétition enregistrée</div>';
+    return;
+  }
+
+  list.innerHTML = data.chaseHistory.slice().reverse().map(c => `
+    <div class="history-card" onclick="showCompetDetail('chase', ${c.id})">
+      <div>
+        <div class="history-card-name">${c.name}</div>
+        <div class="history-card-meta">${c.date} • ${c.manches} manche(s) • ${c.players.length} joueur(s)</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div style="text-align:right">
+          <div style="font-size:.75rem;color:var(--muted)">Vainqueur</div>
+          <div style="font-size:.85rem;font-weight:500">${c.winner}</div>
+        </div>
+        <div class="history-card-badge">Chase Tag</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// SPEEDRUN WIZARD
+// ═══════════════════════════════════════════════
+function resetSpeedWizard() {
+  clearInterval(speedState.timerInterval);
+  speedState = {
+    type: 'solo', name: '', players: [], teams: [],
+    teamOrders: {}, orderMode: 'auto',
+    penalty: 5, orderType: 'auto',
+    currentIdx: 0, rafId: null,
+    elapsedMs: 0, running: false, startEpoch: null,
+    faults: 0, results: [], compet: null
+  };
+  for(let i=0;i<6;i++) {
+    const s = document.getElementById(`speed-s${i}`);
+    if(s) s.style.display = i===0?'block':'none';
+    const step = document.getElementById(`speed-step-${i}`);
+    if(step) { step.classList.remove('done','current'); if(i===0)step.classList.add('current'); }
+  }
+  const sp = document.getElementById('speed-selected-players');
+  if(sp) sp.innerHTML = '<span style="color:var(--muted);font-size:.8rem;padding:.25rem">Aucun joueur</span>';
+  const sn = document.getElementById('speed-name');
+  if(sn) sn.value = '';
+  document.getElementById('speed-type-solo').classList.add('selected');
+  document.getElementById('speed-type-equipe').classList.remove('selected');
+  // Vider le tableau résultats
+  const tbody = document.getElementById('speed-results-tbody');
+  if(tbody) tbody.innerHTML = '';
+  renderSpeedRegisteredPlayers();
+}
+
+function selectSpeedType(type) {
+  speedState.type = type;
+  document.getElementById('speed-type-solo').classList.toggle('selected', type==='solo');
+  document.getElementById('speed-type-equipe').classList.toggle('selected', type==='equipe');
+}
+
+const STEP_PHRASES = [
+  ['Choix du format...', 'Format enregistré !'],
+  ['Enregistrement du nom...', 'Nom validé !'],
+  ['Vérification des joueurs...', 'Équipe constituée !'],
+  ['Configuration des équipes...', 'Équipes prêtes !'],
+  ['Calibrage des pénalités...', 'Config validée !'],
+];
+
+function speedNextStepBtn(current) {
+  if (current === 1 && !document.getElementById('speed-name').value.trim()) {
+    toast('Donne un nom à la compét', 'error'); return;
+  }
+  if (current === 2) {
+    const allPlayers = (speedState.teams || []).flatMap(t => t.players);
+    if (allPlayers.length < 1) { toast('Ajoute au moins 1 joueur', 'error'); return; }
+    if (speedState.type === 'equipe') {
+      if (!speedState.teams || speedState.teams.length < 2) { toast('Minimum 2 équipes', 'error'); return; }
+      const empty = speedState.teams.find(t => !t.players || t.players.length === 0);
+      if (empty) { toast('Equipe vide : ' + empty.name, 'error'); return; }
+    }
+    // Mettre à jour speedState.players depuis les équipes
+    speedState.players = allPlayers;
+  }
+  // Étape joueurs/équipes
+  if (current === 2) {
+    if (speedState.type === 'solo') {
+      showMiniLoader(STEP_PHRASES[current], () => speedGoToStep(current, 4));
+      return;
+    }
+    // equipe : init builder si pas encore fait
+  }
+  if (current === 3) { /* déjà validé */ }
+  const phrases = STEP_PHRASES[current] || ['Validation...', 'Étape validée !'];
+  showMiniLoader(phrases, () => speedGoToStep(current, current + 1));
+}
+
+function speedGoToStep(from, to) {
+  for(let i=0;i<6;i++) {
+    const s = document.getElementById('speed-s' + i);
+    if(s) s.style.display = 'none';
+  }
+  // Step 3 vide → sauter à 4
+  const realTo = to === 3 ? 4 : to;
+  const next = document.getElementById('speed-s' + realTo);
+  if(next) next.style.display = 'block';
+  for(let i=0;i<=from;i++) {
+    const step = document.getElementById('speed-step-' + i);
+    if(step) { step.classList.remove('current'); step.classList.add('done'); }
+  }
+  const stepEl = document.getElementById('speed-step-' + realTo);
+  if(stepEl) { stepEl.classList.remove('done'); stepEl.classList.add('current'); }
+  // Initialiser le builder au step 2
+  if (realTo === 2) setTimeout(() => initSpeedTeamBuilder(), 50);
+}
+
+function speedNextStep(current) {
+  speedNextStepBtn(current);
+}
+
+function showMiniLoader(phrases, callback) {
+  try {
+    const p0 = (phrases && phrases[0]) ? phrases[0] : 'Chargement...';
+    const p1 = (phrases && phrases[1]) ? phrases[1] : p0;
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(10,10,15,0.85);z-index:500;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;';
+    overlay.innerHTML = '<div style="width:160px;height:2px;background:var(--border);border-radius:2px;overflow:hidden"><div id="mini-bar" style="height:100%;background:linear-gradient(90deg,#ff4d1c,#ff8c00);width:0%;transition:width 0.3s ease"></div></div><div id="mini-msg" style="font-size:.72rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">' + p0 + '</div>';
+    document.body.appendChild(overlay);
+    setTimeout(() => {
+      const bar = document.getElementById('mini-bar');
+      const msg = document.getElementById('mini-msg');
+      if(bar) bar.style.width = '100%';
+      if(msg) msg.textContent = p1;
+      setTimeout(() => { overlay.remove(); callback(); }, 400);
+    }, 350);
+  } catch(e) {
+    callback();
+  }
+}
+
+function speedPrevStep(current) {
+  document.getElementById(`speed-s${current}`).style.display = 'none';
+  // Si solo et on revient depuis step 4, aller à step 2 (sauter équipes)
+  const prev = (speedState.type === 'solo' && current === 4) ? 2 : current - 1;
+  document.getElementById(`speed-s${prev}`).style.display = 'block';
+  document.getElementById(`speed-step-${current}`).classList.remove('current');
+  document.getElementById(`speed-step-${prev}`).classList.remove('done');
+  document.getElementById(`speed-step-${prev}`).classList.add('current');
+}
+
+function speedImportFromPlayers() {
+  const data = getUserData();
+  if (!data.players.length) { toast('Aucun joueur enregistré', 'error'); return; }
+  const names = data.players.map(p => p.name);
+  const half = Math.ceil(names.length / 2);
+  speedState.teams = [
+    { name: 'Équipe 1', players: names.slice(0, half) },
+    { name: 'Équipe 2', players: names.slice(half) }
+  ];
+  renderSpeedTeamsBuilder();
+  toast(`${names.length} joueurs importés`, 'success');
+}
+
+function speedImportFromTeams() {
+  const data = getUserData();
+  if (!data.teams.length) { toast('Aucune équipe enregistrée', 'error'); return; }
+  speedState.teams = data.teams.map(t => ({ name: t.name, players: [...t.players] }));
+  renderSpeedTeamsBuilder();
+  toast(`${data.teams.length} équipes importées`, 'success');
+}
+
+function speedAutoTeamsBuilder() {
+  const inTeams = (speedState.teams || []).flatMap(t => t.players);
+  const registered = getUserData().players.map(p => p.name).filter(n => !inTeams.includes(n));
+  const allPlayers = [...new Set([...inTeams, ...speedState.players, ...registered])];
+  if (allPlayers.length < 2) { toast('Ajoute au moins 2 joueurs', 'error'); return; }
+  const shuffled = [...allPlayers].sort(() => Math.random() - 0.5);
+  const half = Math.ceil(shuffled.length / 2);
+  speedState.teams = [
+    { name: (speedState.teams && speedState.teams[0]) ? speedState.teams[0].name : 'Équipe 1', players: shuffled.slice(0, half) },
+    { name: (speedState.teams && speedState.teams[1]) ? speedState.teams[1].name : 'Équipe 2', players: shuffled.slice(half) }
+  ];
+  renderSpeedTeamsBuilder();
+  toast('Équipes réparties auto', 'success');
+}
+
+function speedAddTeamBuilder() {
+  speedState.teams = speedState.teams || [];
+  speedState.teams.push({ name: `Équipe ${speedState.teams.length + 1}`, players: [] });
+  renderSpeedTeamsBuilder();
+}
+
+function renderSpeedTeamsBuilder() {
+  const el = document.getElementById('speed-teams-builder');
+  if (!el) return;
+  speedState.teams = speedState.teams || [];
+  const allInTeams = speedState.teams.flatMap(t => t.players);
+  const registered = getUserData().players.map(p => p.name).filter(n => !allInTeams.includes(n));
+  const fromWizard = speedState.players.filter(n => !allInTeams.includes(n) && !registered.includes(n));
+
+  el.innerHTML = speedState.teams.map((t, ti) => `
+    <div style="margin-bottom:1rem;padding:.75rem;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.5rem">
+        <input type="text" value="${t.name}"
+          onchange="speedState.teams[${ti}].name=this.value"
+          style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.4rem .75rem;color:var(--text);font-family:'DM Sans',sans-serif;font-size:.85rem;outline:none">
+        <button class="btn-icon danger" onclick="speedRemoveTeamBuilder(${ti})">🗑</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.4rem">
+        ${t.players.map((p,pi) => `<span class="player-tag">${p}<button class="player-tag-remove" onclick="speedRemoveFromTeamBuilder(${ti},${pi})">×</button></span>`).join('')}
+      </div>
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+        <select onchange="speedAddToTeamBuilder(${ti}, this)" style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .6rem;color:var(--muted);font-size:.8rem;outline:none">
+          <option value="">+ Joueur enregistré</option>
+          ${[...registered, ...fromWizard].map(n => `<option value="${n}">${n}</option>`).join('')}
+        </select>
+        <input type="text" id="speed-manual-player-${ti}" placeholder="Nouveau joueur"
+          style="flex:1;min-width:100px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.3rem .6rem;color:var(--text);font-size:.8rem;outline:none"
+          onkeydown="if(event.key==='Enter'){speedAddManualToTeamBuilder(${ti});event.preventDefault()}">
+        <button class="btn-icon" onclick="speedAddManualToTeamBuilder(${ti})">+</button>
+      </div>
+    </div>
+  `).join('') || '<div style="color:var(--muted);font-size:.85rem;padding:.5rem">Aucune équipe.</div>';
+}
+
+function speedAddToTeamBuilder(ti, sel) {
+  const name = sel.value; if (!name) return;
+  speedState.teams[ti].players.push(name);
+  sel.value = '';
+  renderSpeedTeamsBuilder();
+}
+
+function speedAddManualToTeamBuilder(ti) {
+  const input = document.getElementById(`speed-manual-player-${ti}`);
+  const name = input.value.trim(); if (!name) return;
+  speedState.teams[ti].players.push(name);
+  input.value = '';
+  renderSpeedTeamsBuilder();
+}
+
+function speedRemoveFromTeamBuilder(ti, pi) {
+  speedState.teams[ti].players.splice(pi, 1);
+  renderSpeedTeamsBuilder();
+}
+
+function speedRemoveTeamBuilder(ti) {
+  speedState.teams.splice(ti, 1);
+  renderSpeedTeamsBuilder();
+}
+
+// Anciennes fonctions gardées pour compat
+function speedAutoTeams() { speedAutoTeamsBuilder(); }
+function speedAddTeam() { speedAddTeamBuilder(); }
+
+function renderSpeedRegisteredPlayers() {
+  const data = getUserData();
+  const container = document.getElementById('speed-registered-players');
+  if (!container) return;
+  container.innerHTML = data.players.map(p => `
+    <div class="player-tag" style="cursor:pointer" onclick="toggleSpeedPlayer('${p.name}', this)">
+      ${p.name}
+    </div>
+  `).join('') || '<span style="color:var(--muted);font-size:.8rem">Aucun joueur enregistré</span>';
+}
+
+function toggleSpeedPlayer(name, el) {
+  const idx = speedState.players.indexOf(name);
+  if (idx > -1) {
+    speedState.players.splice(idx, 1);
+    el.style.background = '';
+    el.style.borderColor = '';
+  } else {
+    speedState.players.push(name);
+    el.style.background = 'rgba(255,77,28,0.15)';
+    el.style.borderColor = 'var(--accent)';
+  }
+  renderSpeedSelectedPlayers();
+}
+
+function addSpeedPlayer() {
+  const input = document.getElementById('speed-new-player');
+  const name = input.value.trim();
+  if (!name) return;
+  if (!speedState.players.includes(name)) speedState.players.push(name);
+  input.value = '';
+  renderSpeedSelectedPlayers();
+}
+
+function renderSpeedSelectedPlayers() {
+  const container = document.getElementById('speed-selected-players');
+  container.innerHTML = speedState.players.length
+    ? speedState.players.map((p, i) => `
+        <span class="player-tag">${p}
+          <button class="player-tag-remove" onclick="removeSpeedPlayer(${i})">×</button>
+        </span>`).join('')
+    : '<span style="color:var(--muted);font-size:.8rem;padding:.25rem">Aucun joueur</span>';
+}
+
+function removeSpeedPlayer(i) {
+  speedState.players.splice(i, 1);
+  renderSpeedSelectedPlayers();
+}
+
+// ═══════════════════════════════════════════════
+// SPEEDRUN ARENA
+// ═══════════════════════════════════════════════
+function selectSpeedOrder(mode) {
+  speedState.orderMode = mode;
+  document.getElementById('speed-order-auto').classList.toggle('selected', mode==='auto');
+  document.getElementById('speed-order-manual').classList.toggle('selected', mode==='manual');
+  renderSpeedOrderConfig();
+}
+
+function renderSpeedOrderConfig() {
+  const el = document.getElementById('speed-order-config');
+  if (!el) return;
+  // Construire la liste de passage : solo = players, equipe = par équipe
+  const isEquipe = speedState.type === 'equipe';
+
+  if (speedState.orderMode === 'auto') {
+    if (isEquipe) {
+      speedState.teams.forEach(t => {
+        if (!speedState.teamOrders) speedState.teamOrders = {};
+        speedState.teamOrders[t.name] = [...t.players].sort(() => Math.random() - 0.5);
+      });
+      el.innerHTML = speedState.teams.map(t => `
+        <div style="padding:.6rem .75rem;background:var(--surface2);border-radius:8px;margin-bottom:.5rem">
+          <div style="font-size:.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:.3rem">${t.name}</div>
+          <div style="display:flex;flex-wrap:wrap;gap:.3rem">
+            ${(speedState.teamOrders[t.name]||t.players).map((p,i)=>`<span class="player-tag"><span style="color:var(--muted);margin-right:.25rem">${i+1}.</span>${p}</span>`).join('')}
+          </div>
+        </div>`).join('');
+    } else {
+      speedState.playerOrder = [...speedState.players].sort(() => Math.random() - 0.5);
+      el.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:.3rem">
+        ${speedState.playerOrder.map((p,i)=>`<span class="player-tag"><span style="color:var(--muted);margin-right:.25rem">${i+1}.</span>${p}</span>`).join('')}
+      </div>`;
+    }
+    return;
+  }
+
+  // Manuel
+  if (isEquipe) {
+    if (!speedState.teamOrders) speedState.teamOrders = {};
+    speedState.teams.forEach(t => { if(!speedState.teamOrders[t.name]) speedState.teamOrders[t.name] = [...t.players]; });
+    el.innerHTML = speedState.teams.map((t,ti) => `
+      <div style="padding:.75rem;background:var(--surface2);border-radius:8px;margin-bottom:.75rem">
+        <div style="font-size:.7rem;color:var(--muted);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem">${t.name}</div>
+        ${(speedState.teamOrders[t.name]||t.players).map((p,pi) => `
+          <div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid rgba(42,42,64,0.5)">
+            <span style="color:var(--muted);font-size:.75rem;width:20px">${pi+1}.</span>
+            <span style="flex:1;font-size:.85rem">${p}</span>
+            <button class="btn-icon" onclick="speedOrderMoveTeam('${t.name}',${pi},-1)" ${pi===0?'disabled':''}>↑</button>
+            <button class="btn-icon" onclick="speedOrderMoveTeam('${t.name}',${pi},1)" ${pi===(speedState.teamOrders[t.name].length-1)?'disabled':''}>↓</button>
+          </div>`).join('')}
+      </div>`).join('');
+  } else {
+    if (!speedState.playerOrder || speedState.playerOrder.length !== speedState.players.length) {
+      speedState.playerOrder = [...speedState.players];
+    }
+    el.innerHTML = `<div style="padding:.75rem;background:var(--surface2);border-radius:8px">
+      ${speedState.playerOrder.map((p,pi) => `
+        <div style="display:flex;align-items:center;gap:.5rem;padding:.25rem 0;border-bottom:1px solid rgba(42,42,64,0.5)">
+          <span style="color:var(--muted);font-size:.75rem;width:20px">${pi+1}.</span>
+          <span style="flex:1;font-size:.85rem">${p}</span>
+          <button class="btn-icon" onclick="speedOrderMoveSolo(${pi},-1)" ${pi===0?'disabled':''}>↑</button>
+          <button class="btn-icon" onclick="speedOrderMoveSolo(${pi},1)" ${pi===(speedState.playerOrder.length-1)?'disabled':''}>↓</button>
+        </div>`).join('')}
+    </div>`;
+  }
+}
+
+function speedOrderMoveTeam(teamName, idx, dir) {
+  const arr = speedState.teamOrders[teamName];
+  const ni = idx + dir;
+  if (ni < 0 || ni >= arr.length) return;
+  [arr[idx], arr[ni]] = [arr[ni], arr[idx]];
+  renderSpeedOrderConfig();
+}
+
+function speedOrderMoveSolo(idx, dir) {
+  const arr = speedState.playerOrder;
+  const ni = idx + dir;
+  if (ni < 0 || ni >= arr.length) return;
+  [arr[idx], arr[ni]] = [arr[ni], arr[idx]];
+  renderSpeedOrderConfig();
+}
+
+function startSpeedCompet() {
+  speedState.name = document.getElementById('speed-name').value.trim();
+  speedState.penalty = parseInt(document.getElementById('speed-penalty').value) || 5;
+
+  // Construire l'ordre de passage final
+  if (speedState.type === 'equipe') {
+    // Intercaler les joueurs par équipe : eq1[0], eq2[0], eq1[1], eq2[1]...
+    const orders = speedState.teams.map(t => speedState.teamOrders[t.name] || t.players);
+    const maxLen = Math.max(...orders.map(o => o.length));
+    const interleaved = [];
+    for (let i = 0; i < maxLen; i++) {
+      orders.forEach((order, ti) => {
+        if (i < order.length) interleaved.push({ player: order[i], team: speedState.teams[ti].name });
+      });
+    }
+    speedState.runOrder = interleaved;
+  } else {
+    const order = (speedState.orderMode === 'manual' && speedState.playerOrder)
+      ? speedState.playerOrder
+      : [...speedState.players].sort(() => Math.random() - 0.5);
+    speedState.runOrder = order.map(p => ({ player: p, team: null }));
+  }
+
+  // Nombre de passages par joueur (vide = illimité = on boucle jusqu'à fin de course)
+  const nbPassVal = document.getElementById('speed-nb-passages') ? parseInt(document.getElementById('speed-nb-passages').value) : NaN;
+  speedState.nbPassages = isNaN(nbPassVal) || nbPassVal < 1 ? null : nbPassVal;
+  // Si nbPassages défini, on répète le runOrder autant de fois
+  if (speedState.nbPassages) {
+    const base = [...speedState.runOrder];
+    speedState.runOrder = [];
+    for (let p = 0; p < speedState.nbPassages; p++) {
+      base.forEach(e => speedState.runOrder.push({ ...e, passage: p + 1 }));
+    }
+  }
+  speedState.currentIdx = 0;
+  speedState.results = [];
+  speedState.elapsedMs = 0;
+  speedState.faults = 0;
+  speedState.running = false;
+  clearInterval(speedState.timerInterval);
+
+  navigate('speed-arena');
+  const tbody = document.getElementById('speed-results-tbody');
+  if(tbody) tbody.innerHTML = '';
+  updateSpeedArena();
+}
+
+function updateSpeedArena() {
+  if (speedState.currentIdx >= speedState.runOrder.length) {
+    endSpeedCompet();
+    return;
+  }
+
+  const entry = speedState.runOrder[speedState.currentIdx];
+  document.getElementById('speed-arena-name').textContent = speedState.name;
+  const passageLabel = speedState.nbPassages
+    ? ` — Passage ${entry.passage || (speedState.currentIdx + 1)}/${speedState.nbPassages}`
+    : ` — ${speedState.currentIdx + 1}/${speedState.runOrder.length}`;
+  document.getElementById('speed-arena-sub').textContent = (entry.team ? entry.team + passageLabel : 'En cours' + passageLabel);
+  document.getElementById('speed-current-player').textContent = entry.player;
+  // Photo du joueur courant
+  const playerObj = appData.players.find(p => p.name === entry.player);
+  const photoEl = document.getElementById('speed-current-photo');
+  if (photoEl) {
+    if (playerObj && playerObj.photo) {
+      photoEl.innerHTML = `<img src="${playerObj.photo}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent);margin-bottom:.5rem">`;
+    } else {
+      photoEl.innerHTML = `<div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:2rem;color:white;border:3px solid var(--accent);margin:0 auto .5rem">${entry.player[0].toUpperCase()}</div>`;
+    }
+  }
+  document.getElementById('speed-faults').textContent = 0;
+  document.getElementById('speed-start-btn').textContent = '▶ Démarrer';
+
+  speedState.elapsedMs = 0;
+  speedState.faults = 0;
+  speedState.running = false;
+  cancelAnimationFrame(speedState.rafId);
+  speedState.running = false;
+  document.getElementById('speed-timer').textContent = '00:00.00';
+  pushSpeedScoresToStorage();
+}
+
+function speedStartStop() {
+  const btn = document.getElementById('speed-start-btn');
+  if (!speedState.running) {
+    speedState.running = true;
+    // startEpoch = heure de début réelle (en tenant compte du temps déjà écoulé)
+    if(btn) btn.textContent = '⏸ Pause';
+    const elNow = document.getElementById('speed-timer');
+    if(elNow) elNow.textContent = formatTimeMs(speedState.elapsedMs || 0);
+    let lastPush = Date.now();
+    let firstFrame = true;
+    function tickSpeed() {
+      if (!speedState.running) return;
+      if (firstFrame) {
+        // Démarrer le chrono exactement à la première frame
+        speedState.startEpoch = Date.now() - (speedState.elapsedMs || 0);
+        firstFrame = false;
+      }
+      speedState.elapsedMs = Date.now() - speedState.startEpoch;
+      const el = document.getElementById('speed-timer');
+      if(el) el.textContent = formatTimeMs(speedState.elapsedMs);
+      if (Date.now() - lastPush > 2000) {
+        pushSpeedScoresToStorage();
+        lastPush = Date.now();
+      }
+      speedState.rafId = requestAnimationFrame(tickSpeed);
+    }
+    speedState.rafId = requestAnimationFrame(tickSpeed);
+  } else {
+    speedState.running = false;
+    cancelAnimationFrame(speedState.rafId);
+    // Sauvegarder le temps écoulé pour la reprise
+    speedState.elapsedMs = Date.now() - speedState.startEpoch;
+    if(btn) btn.textContent = '▶ Reprendre';
+  }
+}
+
+function addFault() {
+  speedState.faults++;
+  document.getElementById('speed-faults').textContent = speedState.faults;
+}
+
+function validateSpeedRun() {
+  cancelAnimationFrame(speedState.rafId);
+  speedState.running = false;
+
+  const entry = speedState.runOrder[speedState.currentIdx];
+  const penaltyMs = speedState.faults * speedState.penalty * 1000;
+  const totalMs = speedState.elapsedMs + penaltyMs;
+
+  speedState.results.push({
+    player: entry.player,
+    team: entry.team,
+    rawMs: speedState.elapsedMs,
+    faults: speedState.faults,
+    penaltyMs,
+    totalMs
+  });
+
+  renderSpeedResults();
+
+  speedState.currentIdx++;
+  if (speedState.currentIdx < speedState.runOrder.length) {
+    updateSpeedArena();
+  } else {
+    toast('Tous les joueurs ont passé !', 'success');
+    setTimeout(() => endSpeedCompet(), 1500);
+  }
+}
+
+function renderSpeedResults() {
+  const sorted = [...speedState.results].sort((a,b) => a.totalMs - b.totalMs);
+  const tbody = document.getElementById('speed-results-tbody');
+  tbody.innerHTML = sorted.map((r, i) => `
+    <tr>
+      <td style="color:var(--muted)">${i+1}</td>
+      <td>${r.player}${r.team ? '<br><span style="font-size:.7rem;color:var(--muted)">'+r.team+'</span>' : ''}</td>
+      <td><span class="time-badge" style="cursor:pointer" onclick="editSpeedTime(${speedState.results.indexOf(r)})" title="Cliquer pour modifier">${formatTimeMs(r.rawMs)}</span></td>
+      <td style="color:${r.faults>0?'var(--danger)':'var(--success)'}">${r.faults} (+${(r.penaltyMs/1000).toFixed(1)}s)</td>
+      <td><span class="time-badge">${formatTimeMs(r.totalMs)}</span></td>
+    </tr>
+  `).join('');
+  pushSpeedScoresToStorage();
+}
+
+function editSpeedTime(resultIdx) {
+  const r = speedState.results[resultIdx];
+  const current = formatTimeMs(r.rawMs);
+  const input = prompt(`Modifier le temps de ${r.player} (format mm:ss.ms)
+Actuel: ${current}`);
+  if (!input) return;
+  // Parser mm:ss.ms ou ss.ms
+  const match = input.match(/^(?:(\d+):)?(\d+)[.,](\d+)$/);
+  if (!match) { toast('Format invalide. Ex: 01:23.45', 'error'); return; }
+  const mins = parseInt(match[1] || '0');
+  const secs = parseInt(match[2]);
+  const ms = parseInt(match[3].padEnd(3,'0').slice(0,3));
+  const newMs = (mins * 60 + secs) * 1000 + ms;
+  speedState.results[resultIdx].rawMs = newMs;
+  speedState.results[resultIdx].totalMs = newMs + speedState.results[resultIdx].penaltyMs;
+  renderSpeedResults();
+  toast('Temps modifié', 'success');
+}
+
+function formatTimeMs(ms) {
+  const total = Math.max(0, Math.floor(ms));
+  const m = Math.floor(total / 60000).toString().padStart(2,'0');
+  const s = Math.floor((total % 60000) / 1000).toString().padStart(2,'0');
+  const cs = Math.floor((total % 1000) / 10).toString().padStart(2,'0');
+  return `${m}:${s}.${cs}`;
+}
+
+
+// ═══════════════════════════════════════════════
+// REORDER JOUEURS (speedrun)
+// ═══════════════════════════════════════════════
+let _reorderList = [];
+
+function openReorderModal() {
+  if (!speedState.runOrder || speedState.currentIdx >= speedState.runOrder.length) return;
+  // Construire la liste à partir du joueur courant
+  _reorderList = speedState.runOrder.slice(speedState.currentIdx).map(e => ({ ...e }));
+  renderReorderList();
+  openModal('modal-reorder');
+}
+
+function renderReorderList() {
+  const el = document.getElementById('reorder-list');
+  el.innerHTML = _reorderList.map((e, i) => {
+    const player = appData.players.find(p => p.name === e.player);
+    const avatarHTML = (player && player.photo)
+      ? `<img src="${player.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      : e.player[0].toUpperCase();
+    return `
+    <div class="reorder-player-row ${i === 0 ? 'reorder-current' : ''}" draggable="true"
+         ondragstart="reorderDragStart(event,${i})" ondragover="reorderDragOver(event,${i})" ondrop="reorderDrop(event,${i})">
+      <div class="reorder-avatar">${avatarHTML}</div>
+      <div style="flex:1">
+        <div style="font-weight:500;font-size:.9rem">${e.player}</div>
+        ${e.team ? `<div style="font-size:.7rem;color:var(--muted)">${e.team}</div>` : ''}
+      </div>
+      ${i === 0 ? '<span class="reorder-current-badge">Prochain</span>' : ''}
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <button class="btn-icon" onclick="reorderMove(${i},-1)" ${i===0?'disabled':''} style="font-size:.7rem;padding:2px 6px">↑</button>
+        <button class="btn-icon" onclick="reorderMove(${i},1)" ${i===_reorderList.length-1?'disabled':''} style="font-size:.7rem;padding:2px 6px">↓</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+let _dragSrc = null;
+function reorderDragStart(e, i) { _dragSrc = i; e.dataTransfer.effectAllowed = 'move'; }
+function reorderDragOver(e, i) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function reorderDrop(e, i) {
+  e.preventDefault();
+  if (_dragSrc === null || _dragSrc === i) return;
+  const moved = _reorderList.splice(_dragSrc, 1)[0];
+  _reorderList.splice(i, 0, moved);
+  _dragSrc = null;
+  renderReorderList();
+}
+function reorderMove(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= _reorderList.length) return;
+  [_reorderList[i], _reorderList[j]] = [_reorderList[j], _reorderList[i]];
+  renderReorderList();
+}
+
+function applyReorder() {
+  // Remplacer les entrées restantes par le nouvel ordre
+  const before = speedState.runOrder.slice(0, speedState.currentIdx);
+  speedState.runOrder = [...before, ..._reorderList];
+  closeModal('modal-reorder');
+  updateSpeedArena();
+  toast('Ordre mis à jour !', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// TUTORIEL
+// ═══════════════════════════════════════════════
+const TUTO_STEPS = [
+  {
+    title: 'Bienvenue dans PARKOUR-PRO !',
+    text: 'Ce rapide tutoriel te guide à travers les fonctionnalités principales. Tu peux le passer à tout moment.',
+    target: null,
+    pos: 'center'
+  },
+  {
+    title: 'La barre de navigation',
+    text: 'Ici tu trouves toutes les sections : Accueil, Joueurs, Équipes, et les deux modes de compétition.',
+    target: '.sidebar',
+    pos: 'right'
+  },
+  {
+    title: 'Tes joueurs',
+    text: 'Commence par ajouter tes joueurs. Tu peux leur ajouter une photo en cliquant sur leur avatar.',
+    target: '[data-view="joueurs"]',
+    pos: 'right'
+  },
+  {
+    title: 'Chase Tag',
+    text: 'Lance une compétition Chase Tag avec le mode chat/souris, gestion des équipes et chrono intégré.',
+    target: '[data-view="chase-new"]',
+    pos: 'right'
+  },
+  {
+    title: 'Speedrun',
+    text: 'En mode Speedrun, chaque joueur passe le parcours à son tour. Tu peux choisir le nombre de passages et changer l'ordre en cours de compét.',
+    target: '[data-view="speed-new"]',
+    pos: 'right'
+  },
+  {
+    title: "C'est parti !",
+    text: 'Tu es prêt. Retrouve ce tutoriel dans les paramètres si besoin. Bonne compétition !',
+    target: null,
+    pos: 'center'
+  }
+];
+
+let _tutoStep = 0;
+let _tutoActive = false;
+
+function startTuto() {
+  _tutoStep = 0;
+  _tutoActive = true;
+  document.getElementById('tuto-overlay').classList.add('active');
+  showTutoStep();
+}
+
+function skipTuto() {
+  _tutoActive = false;
+  document.getElementById('tuto-overlay').classList.remove('active');
+  document.getElementById('tuto-highlight').style.display = 'none';
+  if (currentUser) {
+    localStorage.setItem('pp_tuto_done_' + currentUser.username, '1');
+  } else {
+    localStorage.setItem('pp_first_launch', '1');
+  }
+}
+
+function tutoNext() {
+  _tutoStep++;
+  if (_tutoStep >= TUTO_STEPS.length) { skipTuto(); return; }
+  showTutoStep();
+}
+
+function showTutoStep() {
+  const step = TUTO_STEPS[_tutoStep];
+  document.getElementById('tuto-title').textContent = step.title;
+  document.getElementById('tuto-text').textContent = step.text;
+
+  // Dots
+  const dots = document.getElementById('tuto-dots');
+  dots.innerHTML = TUTO_STEPS.map((_, i) =>
+    `<div class="tuto-dot ${i === _tutoStep ? 'active' : ''}"></div>`
+  ).join('');
+
+  // Bouton dernier step
+  const btn = document.getElementById('tuto-next-btn');
+  btn.textContent = _tutoStep === TUTO_STEPS.length - 1 ? 'Terminer ✓' : 'Suivant →';
+
+  // Highlight de l'élément cible
+  const hl = document.getElementById('tuto-highlight');
+  const bubble = document.getElementById('tuto-bubble');
+
+  if (step.target) {
+    const el = document.querySelector(step.target);
+    if (el) {
+      const r = el.getBoundingClientRect();
+      hl.style.display = 'block';
+      hl.style.top = (r.top - 4) + 'px';
+      hl.style.left = (r.left - 4) + 'px';
+      hl.style.width = (r.width + 8) + 'px';
+      hl.style.height = (r.height + 8) + 'px';
+
+      // Positionner la bulle
+      if (step.pos === 'right') {
+        bubble.style.left = (r.right + 16) + 'px';
+        bubble.style.top = (r.top) + 'px';
+        bubble.style.right = 'auto';
+        bubble.style.bottom = 'auto';
+        bubble.className = 'tuto-bubble arrow-right';
+      } else {
+        bubble.style.left = (r.left) + 'px';
+        bubble.style.top = (r.bottom + 16) + 'px';
+        bubble.style.right = 'auto';
+        bubble.style.bottom = 'auto';
+        bubble.className = 'tuto-bubble';
+      }
+      return;
+    }
+  }
+  // Pas de cible = centré
+  hl.style.display = 'none';
+  bubble.style.left = '50%';
+  bubble.style.top = '50%';
+  bubble.style.transform = 'translate(-50%, -50%)';
+  bubble.style.right = 'auto';
+  bubble.style.bottom = 'auto';
+  bubble.className = 'tuto-bubble';
+}
+
+async function endSpeedCompet() {
+  cancelAnimationFrame(speedState.rafId);
+  speedState.running = false;
+
+  if (!speedState.results.length) { navigate('speed-history'); return; }
+
+  const sorted = [...speedState.results].sort((a,b) => a.totalMs - b.totalMs);
+  const winner = sorted[0].player;
+
+  const compet = {
+    id: Date.now(),
+    type: 'speed',
+    name: speedState.name,
+    date: new Date().toLocaleDateString('fr-FR'),
+    players: speedState.runOrder ? speedState.runOrder.map(r=>r.player) : speedState.players,
+    teams: speedState.teams || [],
+    results: speedState.results,
+    winner,
+    owner: currentUser.username
+  };
+
+  await window.electronAPI.saveSpeed({ owner: currentUser.username, compet });
+  appData.speedHistory.push(compet);
+  const endDataS = { type: 'speed', competName: speedState.name, ended: true, winner, results: speedState.results, ts: Date.now() };
+  localStorage.setItem('pp_live_scores', JSON.stringify(endDataS));
+  toast(`Compét terminée ! 🏆 ${winner} gagne !`, 'success');
+  navigate('speed-history');
+}
+
+function refreshSpeedHistory() {
+  const data = getUserData();
+  const list = document.getElementById('speed-history-list');
+
+  if (!data.speedHistory.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:.9rem;text-align:center;padding:3rem">Aucune compétition enregistrée</div>';
+    return;
+  }
+
+  list.innerHTML = data.speedHistory.slice().reverse().map(c => `
+    <div class="history-card" onclick="showCompetDetail('speed', ${c.id})">
+      <div>
+        <div class="history-card-name">${c.name}</div>
+        <div class="history-card-meta">${c.date} • ${c.players.length} joueur(s)</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:.75rem">
+        <div style="text-align:right">
+          <div style="font-size:.75rem;color:var(--muted)">Vainqueur</div>
+          <div style="font-size:.85rem;font-weight:500">${c.winner}</div>
+        </div>
+        <div class="history-card-badge" style="background:rgba(255,140,0,0.1);border-color:rgba(255,140,0,0.3);color:var(--accent2)">Speedrun</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// COMPET DETAIL
+// ═══════════════════════════════════════════════
+function showCompetDetail(type, id) {
+  const data = getUserData();
+  const list = type === 'chase' ? data.chaseHistory : data.speedHistory;
+  const compet = list.find(c => c.id === id);
+  if (!compet) return;
+
+  currentDetailCompet = { type, id };
+  document.getElementById('modal-detail-title').textContent = compet.name;
+
+  let html = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;font-size:.85rem;margin-bottom:1rem">
+      <div><span style="color:var(--muted)">Date :</span> ${compet.date}</div>
+      <div><span style="color:var(--muted)">Vainqueur :</span> <strong>${compet.winner}</strong></div>
+    </div>
+  `;
+
+  if (type === 'chase') {
+    html += `
+      <div style="font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;margin-bottom:.5rem">Manches</div>
+      ${compet.results.map(r => `
+        <div style="display:flex;justify-content:space-between;padding:.4rem .75rem;background:var(--surface2);border-radius:6px;margin-bottom:.3rem;font-size:.82rem">
+          <span>M${r.manche} — Chat: ${r.chat} vs Souris: ${r.souris}</span>
+          <span style="color:${r.outcome==='touché'?'var(--danger)':'var(--success)'}">${r.outcome}</span>
+        </div>
+      `).join('')}
+    `;
+  } else {
+    const sorted = [...compet.results].sort((a,b)=>a.totalTime-b.totalTime);
+    html += `
+      <table class="speedrun-table">
+        <thead><tr><th>#</th><th>Joueur</th><th>Temps</th><th>Fautes</th><th>Total</th></tr></thead>
+        <tbody>${sorted.map((r,i)=>`
+          <tr>
+            <td>${i+1}</td><td>${r.player}</td>
+            <td><span class="time-badge">${formatTime(r.rawTime)}</span></td>
+            <td>${r.faults}</td>
+            <td><span class="time-badge">${formatTime(r.totalTime)}</span></td>
+          </tr>
+        `).join('')}</tbody>
+      </table>
+    `;
+  }
+
+  document.getElementById('modal-detail-content').innerHTML = html;
+  openModal('modal-compet-detail');
+}
+
+async function deleteCompet() {
+  if (!currentDetailCompet) return;
+  const { type, id } = currentDetailCompet;
+  if (type === 'chase') {
+    await window.electronAPI.deleteChase({ owner: currentUser.username, id });
+  } else {
+    await window.electronAPI.deleteSpeed({ owner: currentUser.username, id });
+  }
+  if (type === 'chase') {
+    const idx = appData.chaseHistory.findIndex(c => c.id === id && c.owner === currentUser.username);
+    if (idx > -1) appData.chaseHistory.splice(idx, 1);
+  } else {
+    const idx = appData.speedHistory.findIndex(c => c.id === id && c.owner === currentUser.username);
+    if (idx > -1) appData.speedHistory.splice(idx, 1);
+  }
+  saveData();
+  closeModal('modal-compet-detail');
+  if (type === 'chase') refreshChaseHistory();
+  else refreshSpeedHistory();
+  toast('Compétition supprimée', 'success');
+}
+
+// ═══════════════════════════════════════════════
+// ACCOUNT
+// ═══════════════════════════════════════════════
+async function exportData() {
+  const res = await window.electronAPI.exportJSON({ owner: currentUser.username });
+  if (res?.ok) toast(`Données exportées : ${res.filePath}`, 'success');
+  else if (res) toast('Export annulé', 'error');
+}
+
+async function importData(event) {
+  const res = await window.electronAPI.importJSON({ owner: currentUser.username });
+  if (!res?.ok) { if (res) toast(res.error || 'Import annulé', 'error'); return; }
+  // Recharger les données depuis la DB
+  await loadData();
+  refreshPlayers();
+  refreshTeams();
+  refreshHistories();
+  toast('Données importées !', 'success');
+}
+
+function refreshHistories() {
+  refreshChaseHistory();
+  refreshSpeedHistory();
+}
+
+async function confirmDeleteAccount() {
+  if (confirm(`Supprimer le compte "${currentUser.username}" ? Cette action est irréversible.`)) {
+    // Supprimer données utilisateur
+    appData.players = appData.players.filter(p => p.owner !== currentUser.username);
+    appData.teams = appData.teams.filter(t => t.owner !== currentUser.username);
+    appData.chaseHistory = appData.chaseHistory.filter(c => c.owner !== currentUser.username);
+    appData.speedHistory = appData.speedHistory.filter(s => s.owner !== currentUser.username);
+    saveData();
+
+    // Supprimer l'user
+      await window.electronAPI.deleteAccount({ username: currentUser.username });
+    logout();
+    toast('Compte supprimé', 'success');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function formatTime(secs) {
+  const m = Math.floor(secs/60).toString().padStart(2,'0');
+  const s = (secs%60).toString().padStart(2,'0');
+  return `${m}:${s}`;
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function toast(msg, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span class="toast-icon">${type === 'success' ? '✓' : '✕'}</span><span>${msg}</span>`;
+  container.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// Close modals on backdrop click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+// Init player lists when navigating to step 2
+const origNavigate = navigate;
+
+
+
+// ═══════════════════════════════════════════════
+// LOADING PHRASES COMPET
+// ═══════════════════════════════════════════════
+const COMPET_LOADING_CHASE = [
+  'Préparation du praticable...',
+  'Positionnement des zones...',
+  'Briefing des équipes...',
+  'Tirage au sort du premier chat...',
+  'Vérification des obstacles...',
+  'Activation du chrono...',
+  'C\'est parti !',
+];
+
+const COMPET_LOADING_SPEED = [
+  'En position !',
+  'À vos marques...',
+  'Partez !',
+];
+
+function showCompetLoader(phrases, callback) {
+  // Créer overlay temporaire
+  const overlay = document.createElement('div');
+  overlay.style.cssText = `
+    position:fixed;inset:0;background:rgba(10,10,15,0.95);
+    z-index:500;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1.5rem;
+  `;
+  overlay.innerHTML = `
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:4px;background:linear-gradient(135deg,#ff4d1c,#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent">
+      PARKOUR-PRO
+    </div>
+    <div style="width:200px;height:2px;background:var(--border);border-radius:2px;overflow:hidden">
+      <div id="compet-progress-bar" style="height:100%;background:linear-gradient(90deg,#ff4d1c,#ff8c00);width:0%;transition:width 0.25s ease;border-radius:2px"></div>
+    </div>
+    <div id="compet-load-msg" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase">
+      ${phrases[0]}
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  let i = 0;
+  const total = phrases.length;
+  const interval = setInterval(() => {
+    i++;
+    const bar = document.getElementById('compet-progress-bar');
+    const msg = document.getElementById('compet-load-msg');
+    if (bar) bar.style.width = `${Math.round((i / total) * 100)}%`;
+    if (i < total) {
+      if (msg) msg.textContent = phrases[i];
+    } else {
+      clearInterval(interval);
+      setTimeout(() => {
+        overlay.remove();
+        callback();
+      }, 150);
+    }
+  }, 200);
+}
+
+function startChaseCompetBtn() {
+  localStorage.setItem('pp_countdown', JSON.stringify({ type: 'chase', competName: chaseState.name || 'Chase Tag', ts: Date.now() }));
+  setTimeout(function() { localStorage.removeItem('pp_countdown'); }, 5000);
+  showCompetLoader(COMPET_LOADING_CHASE, () => startChaseCompet());
+}
+
+function startSpeedCompetBtn() {
+  const sName = document.getElementById('speed-name') ? document.getElementById('speed-name').value.trim() : 'Speedrun';
+  localStorage.setItem('pp_countdown', JSON.stringify({ type: 'speed', competName: sName || 'Speedrun', ts: Date.now() }));
+  setTimeout(function() { localStorage.removeItem('pp_countdown'); }, 5000);
+  showCompetLoader(COMPET_LOADING_SPEED, () => startSpeedCompet());
+}
+
+function pushSpeedScoresToStorage() {
+  if (!speedState || !speedState.runOrder) return;
+  const entry = speedState.runOrder[speedState.currentIdx] || {};
+  const data = {
+    type: 'speed',
+    competName: speedState.name || 'Speedrun',
+    currentIdx: speedState.currentIdx,
+    total: speedState.runOrder ? speedState.runOrder.length : 0,
+    currentPlayer: entry.player || '—',
+    currentTeam: entry.team || null,
+    teams: speedState.teams || [],
+    results: speedState.results || [],
+    penalty: speedState.penalty || 5,
+    timer: document.getElementById('speed-timer') ? document.getElementById('speed-timer').textContent : '00:00.00',
+    timerMs: speedState.elapsedMs || 0,
+    startEpoch: speedState.startEpoch || null,
+    running: speedState.running || false,
+    ts: Date.now()
+  };
+  localStorage.setItem('pp_live_scores', JSON.stringify(data));
+}
+
+// ══════════════════════════════════════════════
+// IMPORT DEPUIS HISTORIQUE
+// ══════════════════════════════════════════════
+function populateChaseImportHistory() {
+  const sel = document.getElementById('chase-import-history');
+  if (!sel) return;
+  const data = getUserData();
+  sel.innerHTML = '<option value="">— Reprendre une compétition passée —</option>';
+  data.chaseHistory.slice().reverse().forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.name + ' (' + c.date + ')';
+    sel.appendChild(opt);
+  });
+}
+
+function importChaseFromHistory(id) {
+  if (!id) return;
+  const data = getUserData();
+  const compet = data.chaseHistory.find(c => String(c.id) === String(id));
+  if (!compet) return;
+  document.getElementById('chase-name').value = compet.name + ' (copie)';
+  if (compet.teams) chaseState.teams = compet.teams.map(t => ({ ...t, players: [...t.players] }));
+  if (compet.scores) chaseState.teamOrders = {};
+  toast('Compétition importée !', 'success');
+  renderChaseTeamsBuilder();
+}
+
+// Appeler au navigate chase-new
+const _origNavigate = navigate;
+navigate = function(viewId) {
+  _origNavigate(viewId);
+  if (viewId === 'chase-new') {
+    setTimeout(() => { populateChaseImportHistory(); }, 100);
+  }
+};
+
+// ══════════════════════════════════════════════
+// PLEIN ÉCRAN + SCORES WINDOW
+// ══════════════════════════════════════════════
+function toggleTargetTimeBlock() {
+  const el = document.getElementById('arena-target-time-block');
+  if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function setChaseTargetTime() {
+  const input = document.getElementById('arena-target-time').value;
+  if (!input) { toast('Entre une heure cible', 'error'); return; }
+  const [h, m, s] = input.split(':').map(Number);
+  const now = new Date();
+  const target = new Date(now);
+  target.setHours(h, m, s || 0, 0);
+  // Si l'heure est déjà passée aujourd'hui, viser demain
+  if (target <= now) { toast('Cette heure est déjà passée', 'error'); return; }
+  const diffMs = target - now;
+  chaseState.timeMs = diffMs;
+  chaseState.duration = Math.round(diffMs / 1000);
+  updateTimerDisplay();
+  toast('Chrono réglé sur ' + input + ' (' + Math.round(diffMs/1000) + 's)', 'success');
+  document.getElementById('arena-target-time-block').style.display = 'none';
+  // Afficher bouton démarrer
+  const btn = document.getElementById('arena-start-btn');
+  if (btn) { btn.style.display = 'inline-block'; btn.textContent = '▶ Démarrer'; }
+  document.querySelectorAll('.btn-chase').forEach(b => b.disabled = true);
+}
+
+function requestFS(el) {
+  const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if (fn) fn.call(el).catch(function(){toast('Plein écran non autorisé par le navigateur', 'error');});
+}
+function exitFS() {
+  const fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+  if (fn) fn.call(document);
+}
+
+function toggleFullscreen() {
+  const el = document.getElementById('view-chase-arena');
+  if (!document.fullscreenElement) requestFS(el); else exitFS();
+}
+
+function toggleSpeedFullscreen() {
+  const el = document.getElementById('view-speed-arena');
+  if (!document.fullscreenElement) requestFS(el); else exitFS();
+}
+
+// Mettre à jour le texte des boutons selon l'état fullscreen
+document.addEventListener('fullscreenchange', function() {
+  const isFS = !!document.fullscreenElement;
+  const chaseBtn = document.querySelector('#view-chase-arena .btn-secondary[onclick="toggleFullscreen()"]');
+  const speedBtn = document.querySelector('#view-speed-arena .btn-secondary[onclick="toggleSpeedFullscreen()"]');
+  if (chaseBtn) chaseBtn.textContent = isFS ? '✕' : '⛶';
+  if (speedBtn) speedBtn.textContent = isFS ? '✕' : '⛶';
+});
+
+function openScoresWindow() {
+  pushScoresToStorage();
+  pushSpeedScoresToStorage();
+  window.electronAPI.openScores();
+  toast('Fenêtre live ouverte', 'success');
+}
+
+function pushScoresToStorage() {
+  if (!chaseState || !chaseState.teams) return;
+  const chatInfo = getChatPlayer ? getChatPlayer() : {};
+  const sourisInfo = getSourisPlayer ? getSourisPlayer() : {};
+  // Prochain joueur pour chaque équipe
+  const teams = chaseState.teams.map((t, ti) => {
+    const order = chaseState.teamOrders[t.name] || t.players;
+    const isChatTeam = ti === chaseState.chatTeamIdx;
+    const isSourisTeam = ti === chaseState.sourisTeamIdx;
+    const currentKey = isChatTeam ? 'chatPlayerIdx' : 'sourisPlayerIdx';
+    const currentIdx = (chaseState[currentKey] || {})[t.name] || 0;
+    const nextIdx = (currentIdx + 1) % order.length;
+    return {
+      name: t.name,
+      score: (chaseState.teamScores || {})[t.name] || 0,
+      isChat: isChatTeam,
+      isSouris: isSourisTeam,
+      currentPlayer: isChatTeam ? chatInfo.player : isSourisTeam ? sourisInfo.player : null,
+      nextPlayer: order[nextIdx],
+      players: order,
+      colorIdx: ti
+    };
+  });
+  const data = {
+    type: 'chase',
+    competName: chaseState.name || 'Chase Tag',
+    manche: chaseState.currentManche || 1,
+    rounds: chaseState.rounds || null,
+    teams,
+    timer: document.getElementById('arena-timer') ? document.getElementById('arena-timer').textContent : '00:00.00',
+    timerMs: chaseState.timeMs || 0,
+    targetEpoch: chaseState.targetEpoch || null,
+    running: chaseState.running || false,
+    ts: Date.now()
+  };
+  localStorage.setItem('pp_live_scores', JSON.stringify(data));
+}
+
+// ════════════════════════════════════════════════════
+// TEAM BUILDER UNIFIÉ
+// ════════════════════════════════════════════════════
+
+// state = { teams: [{name, players}], orderMode: 'auto'|'manual', teamOrders: {} }
+// rootId = id du div conteneur
+// opts = { mode: 'chase'|'speed', showOrder: bool }
+
+function renderTeamBuilder(rootId, state, opts) {
+  const root = document.getElementById(rootId);
+  if (!root) return;
+  const COLS = ['#818cf8','#f472b6','#fbbf24','#2dd4bf','#34d399','#fb923c'];
+  const registered = getUserData().players.map(function(p){return p.name;});
+  const inTeams = (state.teams||[]).reduce(function(a,t){return a.concat(t.players);},[]);
+  const pool = registered.filter(function(n){return !inTeams.includes(n);});
+
+  root.innerHTML = '';
+  const wrap = document.createElement('div');
+  wrap.className = 'tb-wrap';
+
+  // ── Pool ──
+  const poolDiv = document.createElement('div');
+  poolDiv.className = 'tb-pool';
+  poolDiv.innerHTML = '<div class="tb-pool-title">Disponibles</div>';
+
+  const poolPlayers = document.createElement('div');
+  poolPlayers.className = 'tb-pool-players';
+  poolPlayers.id = rootId + '-pool';
+  poolPlayers.addEventListener('dragover', function(e){e.preventDefault();});
+  poolPlayers.addEventListener('drop', function(e){tbDropToPool(rootId,e);});
+
+  pool.forEach(function(n) {
+    const el = document.createElement('div');
+    el.className = 'tb-player';
+    el.draggable = true;
+    el.innerHTML = '<span>' + n + '</span><span style="color:var(--muted);font-size:.75rem">→</span>';
+    el.addEventListener('dragstart', function(e){tbDragStart(n,'pool',rootId,e);});
+    el.addEventListener('click', function(){tbClickPool(rootId,n);});
+    poolPlayers.appendChild(el);
+  });
+  if (!pool.length) {
+    poolPlayers.innerHTML = '<div style="color:var(--muted);font-size:.75rem;padding:.25rem">Tous assignés</div>';
+  }
+  poolDiv.appendChild(poolPlayers);
+
+  // Input manuel pool
+  const addRow = document.createElement('div');
+  addRow.className = 'tb-add-row';
+  addRow.style.marginTop = '.75rem';
+  const addInput = document.createElement('input');
+  addInput.className = 'tb-add-input';
+  addInput.id = rootId + '-manual';
+  addInput.placeholder = 'Nouveau...';
+  addInput.addEventListener('keydown', function(e){if(e.key==='Enter'){tbAddManual(rootId);e.preventDefault();}});
+  const addBtn = document.createElement('button');
+  addBtn.className = 'btn-icon';
+  addBtn.textContent = '+';
+  addBtn.addEventListener('click', function(){tbAddManual(rootId);});
+  addRow.appendChild(addInput);
+  addRow.appendChild(addBtn);
+  poolDiv.appendChild(addRow);
+  wrap.appendChild(poolDiv);
+
+  // ── Teams ──
+  const teamsDiv = document.createElement('div');
+  teamsDiv.className = 'tb-teams';
+
+  // Boutons actions
+  const actionsDiv = document.createElement('div');
+  actionsDiv.style.cssText = 'display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem';
+  [
+    ['+ Équipe', function(){tbAddTeam(rootId);}],
+    ['⚡ Auto', function(){tbAutoSplit(rootId);}],
+    ['📥 Joueurs', function(){tbImportPlayers(rootId);}],
+    ['📥 Équipes', function(){tbImportTeams(rootId);}]
+  ].forEach(function(pair) {
+    const btn = document.createElement('button');
+    btn.className = 'btn-secondary';
+    btn.style.fontSize = '.75rem';
+    btn.textContent = pair[0];
+    btn.addEventListener('click', pair[1]);
+    actionsDiv.appendChild(btn);
+  });
+  teamsDiv.appendChild(actionsDiv);
+
+  (state.teams||[]).forEach(function(t, ti) {
+    const col = COLS[ti % COLS.length];
+    const order = state.teamOrders[t.name] || t.players.slice();
+
+    const teamDiv = document.createElement('div');
+    teamDiv.className = 'tb-team';
+    teamDiv.id = rootId + '-team-' + ti;
+    teamDiv.addEventListener('dragover', function(e){e.preventDefault();teamDiv.classList.add('drag-over');});
+    teamDiv.addEventListener('dragleave', function(){teamDiv.classList.remove('drag-over');});
+    teamDiv.addEventListener('drop', function(e){tbDropToTeam(rootId,ti,e);teamDiv.classList.remove('drag-over');});
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'tb-team-header';
+    const dot = document.createElement('div');
+    dot.style.cssText = 'width:10px;height:10px;border-radius:50%;background:' + col + ';flex-shrink:0';
+    const nameInput = document.createElement('input');
+    nameInput.className = 'tb-team-name';
+    nameInput.value = t.name;
+    nameInput.style.borderColor = col + '33';
+    nameInput.addEventListener('change', function(){tbRenameTeam(rootId,ti,this.value);});
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn-icon danger';
+    delBtn.textContent = '🗑';
+    delBtn.addEventListener('click', function(){tbRemoveTeam(rootId,ti);});
+    header.appendChild(dot); header.appendChild(nameInput); header.appendChild(delBtn);
+    teamDiv.appendChild(header);
+
+    // Joueurs
+    const playersDiv = document.createElement('div');
+    playersDiv.className = 'tb-team-players';
+    if (!t.players.length) {
+      playersDiv.innerHTML = '<span style="color:var(--muted);font-size:.75rem;font-style:italic">Glisse ou clique un joueur</span>';
+    } else {
+      t.players.forEach(function(p, pi) {
+        const chip = document.createElement('span');
+        chip.className = 'tb-team-player';
+        chip.draggable = true;
+        chip.style.cssText = 'background:' + col + '22;border:1px solid ' + col + '55;color:' + col;
+        chip.innerHTML = p + ' <span style="opacity:.5;font-size:.7rem">×</span>';
+        chip.addEventListener('dragstart', function(e){tbDragStart(p,ti,rootId,e);});
+        chip.addEventListener('click', function(){tbClickTeamPlayer(rootId,ti,pi);});
+        playersDiv.appendChild(chip);
+      });
+    }
+    teamDiv.appendChild(playersDiv);
+
+    // Add input
+    const addRowT = document.createElement('div');
+    addRowT.className = 'tb-add-row';
+    const addInputT = document.createElement('input');
+    addInputT.className = 'tb-add-input';
+    addInputT.id = rootId + '-ti-' + ti;
+    addInputT.placeholder = 'Ajouter...';
+    addInputT.addEventListener('keydown', function(e){if(e.key==='Enter'){tbAddToTeam(rootId,ti);e.preventDefault();}});
+    const addBtnT = document.createElement('button');
+    addBtnT.className = 'btn-icon';
+    addBtnT.textContent = '+';
+    addBtnT.addEventListener('click', function(){tbAddToTeam(rootId,ti);});
+    addRowT.appendChild(addInputT); addRowT.appendChild(addBtnT);
+    teamDiv.appendChild(addRowT);
+
+    // Ordre de passage
+    if (t.players.length > 1) {
+      const orderDiv = document.createElement('div');
+      orderDiv.className = 'tb-order-list';
+      orderDiv.innerHTML = '<div style="font-size:.6rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:.3rem">Ordre de passage</div>';
+      order.forEach(function(p, oi) {
+        const row = document.createElement('div');
+        row.className = 'tb-order-item';
+        const num = document.createElement('span');
+        num.style.cssText = 'color:' + col + ';margin-right:.3rem;font-size:.7rem';
+        num.textContent = (oi+1) + '.';
+        const name = document.createElement('span');
+        name.textContent = p;
+        const btns = document.createElement('div');
+        btns.className = 'tb-order-btns';
+        const upBtn = document.createElement('button');
+        upBtn.className = 'tb-order-btn';
+        upBtn.textContent = '↑';
+        upBtn.disabled = oi === 0;
+        upBtn.addEventListener('click', function(){tbOrderMove(rootId,ti,oi,-1);});
+        const dnBtn = document.createElement('button');
+        dnBtn.className = 'tb-order-btn';
+        dnBtn.textContent = '↓';
+        dnBtn.disabled = oi === order.length - 1;
+        dnBtn.addEventListener('click', function(){tbOrderMove(rootId,ti,oi,1);});
+        btns.appendChild(upBtn); btns.appendChild(dnBtn);
+        row.appendChild(num); row.appendChild(name); row.appendChild(btns);
+        orderDiv.appendChild(row);
+      });
+      teamDiv.appendChild(orderDiv);
+    }
+
+    teamsDiv.appendChild(teamDiv);
+  });
+
+  if (!state.teams || !state.teams.length) {
+    const empty = document.createElement('div');
+    empty.style.cssText = 'color:var(--muted);font-size:.85rem;padding:1rem;text-align:center';
+    empty.textContent = 'Clique sur + Équipe pour commencer';
+    teamsDiv.appendChild(empty);
+  }
+
+  wrap.appendChild(teamsDiv);
+  root.appendChild(wrap);
+}
+
+// ── State accessors ──
+function tbGetState(rootId) {
+  return rootId.startsWith('chase') ? chaseState : speedState;
+}
+
+function tbRefresh(rootId) {
+  const state = tbGetState(rootId);
+  const opts = { mode: rootId.startsWith('chase') ? 'chase' : 'speed' };
+  renderTeamBuilder(rootId, state, opts);
+}
+
+// ── Drag & Drop ──
+var _tbDragPlayer = null;
+var _tbDragFrom = null; // 'pool' ou team index
+
+function tbDragStart(name, from, rootId, e) {
+  _tbDragPlayer = name;
+  _tbDragFrom = from;
+  _tbDragRootId = rootId;
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function tbDropToTeam(rootId, ti, e) {
+  e.preventDefault();
+  if (!_tbDragPlayer) return;
+  const state = tbGetState(rootId);
+  // Retirer de la source
+  if (_tbDragFrom === 'pool') {
+    // rien à faire, pas dans une équipe
+  } else {
+    const fromTeam = state.teams[_tbDragFrom];
+    if (fromTeam) fromTeam.players = fromTeam.players.filter(p => p !== _tbDragPlayer);
+  }
+  // Ajouter à la cible si pas déjà dedans
+  if (!state.teams[ti].players.includes(_tbDragPlayer)) {
+    state.teams[ti].players.push(_tbDragPlayer);
+    state.teamOrders[state.teams[ti].name] = [...state.teams[ti].players];
+  }
+  _tbDragPlayer = null;
+  tbRefresh(rootId);
+}
+
+function tbDropToPool(rootId, e) {
+  e.preventDefault();
+  if (!_tbDragPlayer || _tbDragFrom === 'pool') return;
+  const state = tbGetState(rootId);
+  const fromTeam = state.teams[_tbDragFrom];
+  if (fromTeam) {
+    fromTeam.players = fromTeam.players.filter(p => p !== _tbDragPlayer);
+    state.teamOrders[fromTeam.name] = [...fromTeam.players];
+  }
+  _tbDragPlayer = null;
+  tbRefresh(rootId);
+}
+
+// ── Click handlers ──
+function tbClickPool(rootId, name) {
+  const state = tbGetState(rootId);
+  if (!state.teams || state.teams.length === 0) { toast('Cree une equipe dabord', 'error'); return; }
+  // Ajouter à l'équipe avec le moins de joueurs
+  const target = state.teams.reduce((a,b) => a.players.length <= b.players.length ? a : b);
+  if (!target.players.includes(name)) {
+    target.players.push(name);
+    state.teamOrders[target.name] = [...target.players];
+  }
+  tbRefresh(rootId);
+}
+
+function tbClickTeamPlayer(rootId, ti, pi) {
+  const state = tbGetState(rootId);
+  const p = state.teams[ti].players[pi];
+  state.teams[ti].players.splice(pi, 1);
+  state.teamOrders[state.teams[ti].name] = [...state.teams[ti].players];
+  tbRefresh(rootId);
+}
+
+// ── Mutations ──
+function tbAddTeam(rootId) {
+  const state = tbGetState(rootId);
+  state.teams = state.teams || [];
+  // En solo speedrun : max 1 équipe
+  if (rootId.startsWith('speed') && speedState.type === 'solo' && state.teams.length >= 1) {
+    toast('Mode solo : une seule liste', 'error'); return;
+  }
+  const n = (rootId.startsWith('speed') && speedState.type === 'solo') ? 'Participants' : 'Équipe ' + (state.teams.length + 1);
+  state.teams.push({ name: n, players: [] });
+  state.teamOrders[n] = [];
+  tbRefresh(rootId);
+}
+
+function tbRemoveTeam(rootId, ti) {
+  const state = tbGetState(rootId);
+  state.teams.splice(ti, 1);
+  tbRefresh(rootId);
+}
+
+function tbRenameTeam(rootId, ti, newName) {
+  const state = tbGetState(rootId);
+  const old = state.teams[ti].name;
+  state.teams[ti].name = newName;
+  if (state.teamOrders[old]) {
+    state.teamOrders[newName] = state.teamOrders[old];
+    delete state.teamOrders[old];
+  }
+}
+
+function tbAddManual(rootId) {
+  const input = document.getElementById(rootId + '-manual');
+  const name = input.value.trim();
+  if (!name) return;
+  input.value = '';
+  const state = tbGetState(rootId);
+  if (!state.teams || state.teams.length === 0) { toast('Cree une equipe dabord', 'error'); return; }
+  const target = state.teams.reduce((a,b) => a.players.length <= b.players.length ? a : b);
+  if (!target.players.includes(name)) {
+    target.players.push(name);
+    state.teamOrders[target.name] = [...target.players];
+  }
+  tbRefresh(rootId);
+}
+
+function tbAddToTeam(rootId, ti) {
+  const input = document.getElementById(rootId + '-ti-' + ti);
+  if (!input) return;
+  const name = input.value.trim();
+  if (!name) return;
+  input.value = '';
+  const state = tbGetState(rootId);
+  if (!state.teams[ti].players.includes(name)) {
+    state.teams[ti].players.push(name);
+    state.teamOrders[state.teams[ti].name] = [...state.teams[ti].players];
+  }
+  tbRefresh(rootId);
+}
+
+function tbOrderMove(rootId, ti, oi, dir) {
+  const state = tbGetState(rootId);
+  const t = state.teams[ti];
+  const order = state.teamOrders[t.name] || [...t.players];
+  const ni = oi + dir;
+  if (ni < 0 || ni >= order.length) return;
+  [order[oi], order[ni]] = [order[ni], order[oi]];
+  state.teamOrders[t.name] = order;
+  tbRefresh(rootId);
+}
+
+function tbAutoSplit(rootId) {
+  const state = tbGetState(rootId);
+  const inTeams = (state.teams || []).flatMap(t => t.players);
+  const registered = getUserData().players.map(p => p.name);
+  const all = [...new Set([...inTeams, ...registered])];
+  if (all.length < 1) { toast('Aucun joueur disponible', 'error'); return; }
+  const shuffled = all.sort(() => Math.random() - 0.5);
+  // Solo speedrun : 1 seule liste
+  const isSolo = rootId.startsWith('speed') && speedState.type === 'solo';
+  const n = isSolo ? 1 : (state.teams && state.teams.length >= 2 ? state.teams.length : 2);
+  state.teams = Array.from({length: n}, function(_, i) {
+    return { name: isSolo ? 'Participants' : ((state.teams && state.teams[i]) ? state.teams[i].name : 'Équipe ' + (i+1)), players: [] };
+  });
+  shuffled.forEach(function(p, i) { state.teams[i % n].players.push(p); });
+  state.teams.forEach(function(t) { state.teamOrders[t.name] = t.players.slice(); });
+  tbRefresh(rootId);
+  toast(isSolo ? 'Joueurs ajoutés !' : 'Équipes réparties !', 'success');
+}
+
+function tbImportPlayers(rootId) {
+  const data = getUserData();
+  if (!data.players.length) { toast('Aucun joueur enregistré', 'error'); return; }
+  const state = tbGetState(rootId);
+  if (!state.teams || state.teams.length === 0) tbAddTeam(rootId);
+  data.players.forEach(p => {
+    const inAny = state.teams.some(t => t.players.includes(p.name));
+    if (!inAny) {
+      const target = state.teams.reduce((a,b) => a.players.length <= b.players.length ? a : b);
+      target.players.push(p.name);
+      state.teamOrders[target.name] = [...target.players];
+    }
+  });
+  tbRefresh(rootId);
+  toast(data.players.length + ' joueurs importés', 'success');
+}
+
+function tbImportTeams(rootId) {
+  const data = getUserData();
+  if (!data.teams.length) { toast('Aucune équipe enregistrée', 'error'); return; }
+  const state = tbGetState(rootId);
+  state.teams = data.teams.map(t => ({ name: t.name, players: [...t.players] }));
+  state.teams.forEach(t => { state.teamOrders[t.name] = [...t.players]; });
+  tbRefresh(rootId);
+  toast(data.teams.length + ' équipes importées', 'success');
+}
+
+// ── Initialisation dans les wizards ──
+function initChaseTeamBuilder() {
+  if (!chaseState.teams) chaseState.teams = [];
+  if (!chaseState.teamOrders) chaseState.teamOrders = {};
+  if (chaseState.teams.length === 0) {
+    chaseState.teams = [{ name: 'Équipe 1', players: [] }, { name: 'Équipe 2', players: [] }];
+    chaseState.teamOrders = { 'Équipe 1': [], 'Équipe 2': [] };
+  }
+  renderTeamBuilder('chase-team-builder-root', chaseState, { mode: 'chase' });
+}
+
+function initSpeedTeamBuilder() {
+  if (!speedState.teams) speedState.teams = [];
+  if (!speedState.teamOrders) speedState.teamOrders = {};
+  if (speedState.type === 'solo') {
+    // Solo : une seule "équipe" = liste de joueurs dans l'ordre
+    if (speedState.teams.length === 0) speedState.teams = [{ name: 'Participants', players: [] }];
+    renderTeamBuilder('speed-team-builder-root', speedState, { mode: 'speed' });
+  } else {
+    if (speedState.teams.length === 0) {
+      speedState.teams = [{ name: 'Équipe 1', players: [] }, { name: 'Équipe 2', players: [] }];
+    }
+    renderTeamBuilder('speed-team-builder-root', speedState, { mode: 'speed' });
+  }
+}
+</script>
+</body>
+</html>
