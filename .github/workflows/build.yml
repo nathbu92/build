@@ -23,6 +23,9 @@ jobs:
       - name: Installation des dependances
         run: npm ci
 
+      - name: Rebuild better-sqlite3 pour Electron
+        run: npx electron-rebuild -f -w better-sqlite3
+
       - name: Build Windows
         run: npm run build:win
         env:
