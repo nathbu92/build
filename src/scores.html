@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PARKOUR-PRO Live</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root{--bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a26;--border:#2a2a40;--accent:#ff4d1c;--accent2:#ff8c00;--success:#22c55e;--danger:#ef4444;--text:#f0f0f8;--muted:#6b6b8a}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;min-height:100vh;display:flex;flex-direction:column}
+body::after{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,77,28,.04) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(99,102,241,.04) 0%,transparent 60%);pointer-events:none;z-index:0}
+.header{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.75rem;background:rgba(18,18,26,.8);backdrop-filter:blur(12px);position:sticky;top:0;z-index:10}
+.logo{font-family:"Bebas Neue",sans-serif;font-size:1.6rem;letter-spacing:4px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.compet-name{font-family:"Bebas Neue",sans-serif;font-size:1.8rem;letter-spacing:2px}
+.header-right{display:flex;align-items:center;gap:1rem}
+.live-dot{display:inline-flex;align-items:center;gap:.4rem;font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--success)}
+.live-dot::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 1s infinite}
+.mode-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.mode-tab{padding:.4rem 1rem;font-size:.75rem;letter-spacing:1px;text-transform:uppercase;font-family:"JetBrains Mono",monospace;color:var(--muted);cursor:pointer;border:none;background:none;transition:all .2s}
+.mode-tab.active{background:var(--accent);color:white}
+.main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem}
+.waiting{display:flex;flex-direction:column;align-items:center;gap:1rem;text-align:center}
+.waiting-logo{font-family:"Bebas Neue",sans-serif;font-size:5rem;letter-spacing:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulse 2s infinite;filter:drop-shadow(0 0 20px rgba(255,77,28,.4))}
+.waiting-msg{font-family:"JetBrains Mono",monospace;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.chase-view{width:100%;max-width:900px}
+.chase-scores{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem;margin-bottom:1.5rem}
+.team-card{background:var(--surface);border:2px solid var(--border);border-radius:20px;padding:2rem;text-align:center;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+.team-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--border);transition:background .3s}
+.team-card.is-chat{border-color:rgba(255,77,28,.5);background:rgba(255,77,28,.05)}
+.team-card.is-chat::before{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.team-card.is-souris{border-color:rgba(34,197,94,.5);background:rgba(34,197,94,.05)}
+.team-card.is-souris::before{background:var(--success)}
+.team-role{font-size:2.5rem;margin-bottom:.5rem;min-height:3rem}
+.team-name{font-family:"Bebas Neue",sans-serif;font-size:2.2rem;letter-spacing:2px;margin-bottom:.3rem}
+.team-card.is-chat .team-name{color:var(--accent)}
+.team-card.is-souris .team-name{color:var(--success)}
+.team-player{font-size:.85rem;color:var(--muted);margin-bottom:1rem;font-style:italic}
+.team-score{font-family:"Bebas Neue",sans-serif;font-size:7rem;letter-spacing:2px;line-height:1;filter:drop-shadow(0 0 12px currentColor)}
+.team-card.is-chat .team-score{color:var(--accent)}
+.team-card.is-souris .team-score{color:var(--success)}
+.team-card:not(.is-chat):not(.is-souris) .team-score{color:var(--muted)}
+.manche-badge{font-family:"JetBrains Mono",monospace;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center}
+.speed-view{width:100%;max-width:800px}
+.speed-current{background:var(--surface);border:2px solid rgba(255,77,28,.4);border-radius:16px;padding:2rem;text-align:center;margin-bottom:1.5rem}
+.speed-current-label{font-family:"JetBrains Mono",monospace;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:.5rem}
+.speed-current-player{font-family:"Bebas Neue",sans-serif;font-size:3rem;letter-spacing:2px;color:var(--accent)}
+.speed-current-team{font-size:.85rem;color:var(--muted);margin-top:.25rem}
+.speed-progress{font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--muted);margin-top:.5rem}
+.speed-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.speed-table th{text-align:left;padding:.6rem 1rem;font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:"JetBrains Mono",monospace;border-bottom:1px solid var(--border)}
+.speed-table td{padding:.75rem 1rem;border-bottom:1px solid rgba(42,42,64,.5)}
+.time-badge{font-family:"JetBrains Mono",monospace;font-size:.9rem;font-weight:600;color:var(--accent)}
+.footer{padding:.6rem 2rem;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.footer-msg{font-family:"JetBrains Mono",monospace;font-size:.6rem;color:var(--muted);letter-spacing:1px}
+.big-timer{font-family:"Bebas Neue",sans-serif;font-size:6rem;letter-spacing:6px;text-align:center;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:1.25rem;filter:drop-shadow(0 0 20px rgba(255,77,28,.35))}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes podiumUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confetti{0%{transform:translateY(-10px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.podium-wrap{display:flex;flex-direction:column;align-items:center;gap:1.5rem;padding:2rem;animation:podiumUp .6s ease}
+.podium-title{font-family:"Bebas Neue",sans-serif;font-size:1rem;letter-spacing:4px;color:var(--muted)}
+.podium-winner{font-family:"Bebas Neue",sans-serif;font-size:4rem;letter-spacing:3px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;line-height:1}
+.podium-trophy{font-size:4rem;animation:pulse 2s infinite}
+.podium-list{display:flex;flex-direction:column;gap:.4rem;width:100%;max-width:380px}
+.podium-row{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1rem;border-radius:8px;font-size:.9rem}
+.podium-row.p1{background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4)}
+.podium-row.p2{background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.3)}
+.podium-row.p3{background:rgba(180,83,9,.1);border:1px solid rgba(180,83,9,.3)}
+.podium-row.pn{background:var(--surface);border:1px solid var(--border)}
+.podium-medal{font-size:1.2rem;margin-right:.5rem}
+.podium-time{font-family:"JetBrains Mono",monospace;font-weight:600;color:var(--accent)}
+.btn-back{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:8px;padding:.75rem 2rem;color:white;font-family:"DM Sans",sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:opacity .2s}
+.btn-back:hover{opacity:.85}
+.confetti-piece{position:fixed;width:8px;height:8px;border-radius:2px;animation:confetti 3s ease-in forwards;pointer-events:none}
+@keyframes scoreUp{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes cdPulse{0%{transform:scale(1);opacity:1}50%{transform:scale(1.08);opacity:.8}100%{transform:scale(1);opacity:1}}
+.score-updated{animation:scoreUp .4s ease}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">PARKOUR-PRO</div>
+  <div id="compet-name" class="compet-name">--</div>
+  <div class="header-right">
+    <div class="mode-tabs" id="mode-tabs-bar">
+      <button class="mode-tab active" id="tab-chase" id="btn-tab-chase">Chase Tag</button>
+      <button class="mode-tab" id="tab-speed" id="btn-tab-speed">Speedrun</button>
+    </div>
+    <div class="live-dot">LIVE</div>
+  </div>
+</div>
+<div class="main" id="main-content">
+  <div class="waiting" id="waiting">
+    <div class="waiting-logo">PARKOUR-PRO</div>
+    <div class="waiting-msg">En attente de la competition...</div>
+    <div style="font-size:.75rem;color:var(--muted);margin-top:.5rem">Lance une competition sur l'application principale</div>
+  </div>
+  <div class="chase-view" id="chase-view" style="display:none">
+    <div id="chase-waiting-msg" style="font-family:'JetBrains Mono',monospace;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:1rem;display:none">En attente du démarrage...</div>
+    <div class="big-timer" id="chase-live-timer" style="opacity:.3">--:--:--</div>
+    <div class="chase-scores" id="chase-scores-grid"></div>
+    <div class="manche-badge" id="chase-manche-badge">--</div>
+  </div>
+  <div class="speed-view" id="speed-view" style="display:none">
+    <div class="big-timer" id="speed-live-timer" style="opacity:.3">--:--:--</div>
+    <div class="speed-current">
+      <div class="speed-current-label">En cours</div>
+      <div class="speed-current-player" id="speed-live-player">--</div>
+      <div class="speed-current-team" id="speed-live-team"></div>
+      <div class="speed-progress" id="speed-live-progress">--</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+      <table class="speed-table">
+        <thead><tr><th>#</th><th>Joueur</th><th>Equipe</th><th>Temps</th><th>Fautes</th><th>Total</th></tr></thead>
+        <tbody id="speed-live-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+  <div id="ended-view" style="display:none;text-align:center;padding:3rem 1rem">
+    <div id="ended-content"></div>
+  </div>
+</div>
+<div class="footer">
+  <div class="footer-msg" id="last-update"></div>
+</div>
+<script>
+var currentMode = "chase";
+var prevScores = {};
+var lastTs = 0;
+var podiumShown = false;
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById("tab-chase").classList.toggle("active", mode === "chase");
+  document.getElementById("tab-speed").classList.toggle("active", mode === "speed");
+  document.getElementById("chase-view").style.display = (mode === "chase") ? "block" : "none";
+  document.getElementById("speed-view").style.display = (mode === "speed") ? "block" : "none";
+  document.getElementById("waiting").style.display = "none";
+  document.getElementById("ended-view").style.display = "none";
+}
+
+window.onload = function() {
+  document.getElementById("chase-view").style.display = "none";
+  document.getElementById("speed-view").style.display = "none";
+  document.getElementById("ended-view").style.display = "none";
+  document.getElementById("waiting").style.display = "flex";
+  // Attacher les boutons ici pour éviter ReferenceError
+  var btnChase = document.getElementById("btn-tab-chase");
+  var btnSpeed = document.getElementById("btn-tab-speed");
+  if (btnChase) btnChase.addEventListener("click", function(){ setMode("chase"); });
+  if (btnSpeed) btnSpeed.addEventListener("click", function(){ setMode("speed"); });
+  setInterval(updateFromLocal, 100);
+  setInterval(checkCountdown, 300);
+  updateFromLocal();
+};
+
+// ── COUNTDOWN ──
+var _countdownActive = false;
+
+function checkCountdown() {
+  var raw = localStorage.getItem("pp_countdown");
+  if (!raw || _countdownActive) return;
+  try {
+    var data = JSON.parse(raw);
+    // Ne lancer que si c'est récent (moins de 1s)
+    if (Date.now() - data.ts > 3000) return;
+    _countdownActive = true;
+    launchCountdown(data, function() { _countdownActive = false; });
+  } catch(e) {}
+}
+
+function launchCountdown(data, cb) {
+  // Cacher tout
+  document.getElementById("waiting").style.display = "none";
+  document.getElementById("chase-view").style.display = "none";
+  document.getElementById("speed-view").style.display = "none";
+
+  var overlay = document.createElement("div");
+  overlay.id = "countdown-overlay";
+  overlay.style.cssText = "position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem";
+
+  var typeLabel = data.type === "chase" ? "😼 CHASE TAG" : "⚡ SPEEDRUN";
+  var typeColor = data.type === "chase" ? "var(--accent)" : "#818cf8";
+
+  overlay.innerHTML =
+    "<div style=\"font-size:1rem;letter-spacing:4px;color:var(--muted)\">" + typeLabel + "</div>" +
+    "<div style=\"font-size:2rem;letter-spacing:2px;color:" + typeColor + ";text-align:center\">" + (data.competName || "") + "</div>" +
+    "<div id=\"cd-number\" style=\"font-size:12rem;letter-spacing:-4px;line-height:1;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(255,77,28,.6));transition:transform .1s\">3</div>" +
+    "<div id=\"cd-label\" style=\"font-size:.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted)\"></div>";
+
+  document.body.appendChild(overlay);
+
+  var steps = [
+    { n: "3", scale: 1.1, delay: 0 },
+    { n: "2", scale: 1.1, delay: 900 },
+    { n: "1", scale: 1.1, delay: 1800 },
+    { n: "C'EST PARTI !", scale: 1, delay: 2700, small: true }
+  ];
+
+  steps.forEach(function(step) {
+    setTimeout(function() {
+      var el = document.getElementById("cd-number");
+      if (!el) return;
+      if (step.small) {
+        el.style.fontSize = "4rem";
+        el.style.letterSpacing = "4px";
+      } else {
+        el.style.fontSize = "12rem";
+        el.style.transform = "scale(" + step.scale + ")";
+        setTimeout(function() { if(el) el.style.transform = "scale(1)"; }, 150);
+      }
+      el.textContent = step.n;
+    }, step.delay);
+  });
+
+  setTimeout(function() {
+    if (overlay.parentNode) overlay.remove();
+    if (cb) cb();
+  }, 3800);
+}
+
+function updateFromLocal() {
+  try {
+    if (podiumShown) return; // Podium affiché → on ne fait plus rien
+    var raw = localStorage.getItem("pp_live_scores");
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    if (data.ts === lastTs) return;
+    lastTs = data.ts;
+    renderData(data);
+  } catch(e) { console.error('scores parse error', e); }
+}
+
+function renderData(data) {
+  if (podiumShown) return;
+  document.getElementById("waiting").style.display = "none";
+  document.getElementById("last-update").textContent = new Date(data.ts).toLocaleTimeString("fr-FR");
+  document.getElementById("compet-name").textContent = data.competName || "--";
+  // Masquer les onglets pendant la compét
+  var tabs = document.getElementById("mode-tabs-bar");
+  if (tabs) tabs.style.display = "none";
+
+  if (data.ended) {
+    renderEnded(data);
+    return;
+  }
+  if (data.type === "speed") {
+    setMode("speed");
+    renderSpeedData(data);
+  } else {
+    setMode("chase");
+    renderChaseData(data);
+  }
+}
+
+var SCORES_TEAM_COLORS = [
+  {bg:"rgba(99,102,241,0.15)",border:"rgba(99,102,241,0.5)",text:"#818cf8"},
+  {bg:"rgba(236,72,153,0.15)",border:"rgba(236,72,153,0.5)",text:"#f472b6"},
+  {bg:"rgba(234,179,8,0.15)", border:"rgba(234,179,8,0.5)", text:"#fbbf24"},
+  {bg:"rgba(20,184,166,0.15)",border:"rgba(20,184,166,0.5)",text:"#2dd4bf"}
+];
+
+function renderChaseData(data) {
+  document.getElementById("chase-manche-badge").textContent = "Manche " + (data.manche || 1) + " / " + (data.rounds || "inf");
+  // Timer
+  var timerEl = document.getElementById("chase-live-timer");
+  var chaseWait = document.getElementById("chase-waiting-msg");
+  if (chaseWait) chaseWait.style.display = (!data.running) ? "block" : "none";
+  if (timerEl) timerEl.style.opacity = data.running ? "1" : "0.3";
+  if (data.targetEpoch && data.running) {
+    // Relancer seulement si targetEpoch a changé (nouvelle manche)
+    if (window._chaseTargetEpoch !== data.targetEpoch) {
+      window._chaseTargetEpoch = data.targetEpoch;
+      if (window._chaseTimerInterval) clearInterval(window._chaseTimerInterval);
+      window._chaseTimerInterval = setInterval(function() {
+        var remaining = window._chaseTargetEpoch - Date.now();
+        if (!timerEl) return;
+        if (remaining <= 0) {
+          timerEl.textContent = "00:00.00";
+          clearInterval(window._chaseTimerInterval);
+          return;
+        }
+        timerEl.textContent = fmtMs(remaining);
+      }, 50);
+    }
+  } else {
+    if (window._chaseTimerInterval) { clearInterval(window._chaseTimerInterval); window._chaseTimerInterval = null; }
+    window._chaseTargetEpoch = null;
+    if (timerEl) timerEl.textContent = data.timer || "00:00.00";
+  }
+
+  var grid = document.getElementById("chase-scores-grid");
+  var html = "";
+  var teams = data.teams || [];
+  for (var i = 0; i < teams.length; i++) {
+    var t = teams[i];
+    var changed = (prevScores[t.name] || 0) !== t.score;
+    prevScores[t.name] = t.score;
+    var col = SCORES_TEAM_COLORS[i % SCORES_TEAM_COLORS.length];
+    var roleHtml = t.isChat
+      ? '<span style="background:rgba(255,77,28,0.2);color:var(--accent);padding:.2rem .6rem;border-radius:10px;font-size:.7rem;letter-spacing:1px">&#128572; CHAT</span>'
+      : t.isSouris
+      ? '<span style="background:rgba(34,197,94,0.2);color:var(--success);padding:.2rem .6rem;border-radius:10px;font-size:.7rem;letter-spacing:1px">&#128045; SOURIS</span>'
+      : '';
+    html += '<div class="team-card" style="background:' + col.bg + ';border:2px solid ' + col.border + '">';
+    html += '<div style="margin-bottom:.5rem">' + roleHtml + '</div>';
+    html += '<div class="team-name" style="color:' + col.text + '">' + t.name + '</div>';
+    html += '<div class="team-player">' + (t.currentPlayer || "") + '</div>';
+    html += '<div class="team-score' + (changed ? " score-updated" : "") + '" style="color:' + col.text + '">' + t.score + '</div>';
+    if (t.nextPlayer && t.nextPlayer !== t.currentPlayer) {
+      html += '<div style="margin-top:.5rem;font-size:.7rem;color:var(--muted);border-top:1px solid ' + col.border + ';padding-top:.4rem">Prochain : <span style="color:' + col.text + '">' + t.nextPlayer + '</span></div>';
+    }
+    html += '</div>';
+  }
+  grid.innerHTML = html;
+}
+
+function renderSpeedData(data) {
+  var speedTimerEl = document.getElementById("speed-live-timer");
+  var speedWait = document.getElementById("speed-waiting-msg");
+  if (speedWait) speedWait.style.display = (!data.running) ? "block" : "none";
+  if (speedTimerEl) speedTimerEl.style.opacity = data.running ? "1" : "0.3";
+  if (data.startEpoch && data.running) {
+    if (window._speedStartEpoch !== data.startEpoch) {
+      window._speedStartEpoch = data.startEpoch;
+      if (window._speedTimerInterval) clearInterval(window._speedTimerInterval);
+      window._speedTimerInterval = setInterval(function() {
+        if (!speedTimerEl) return;
+        var elapsed = Date.now() - window._speedStartEpoch;
+        speedTimerEl.textContent = fmtMs(Math.max(0, elapsed));
+      }, 50);
+    }
+  } else {
+    if (window._speedTimerInterval) { clearInterval(window._speedTimerInterval); window._speedTimerInterval = null; }
+    window._speedStartEpoch = null;
+    if (speedTimerEl) speedTimerEl.textContent = data.timer || "00:00.00";
+  }
+  document.getElementById("speed-live-player").textContent = data.currentPlayer || "--";
+  document.getElementById("speed-live-team").textContent = data.currentTeam || "";
+  document.getElementById("speed-live-progress").textContent = "Passage " + ((data.currentIdx || 0) + 1) + " / " + (data.total || "?");
+  var results = (data.results || []).slice().sort(function(a, b) { return (a.totalMs || 0) - (b.totalMs || 0); });
+  var html = "";
+  for (var i = 0; i < results.length; i++) {
+    var r = results[i];
+    var fcolor = r.faults > 0 ? "var(--danger)" : "var(--success)";
+    html += "<tr>";
+    html += "<td style='color:var(--muted)'>" + (i + 1) + "</td>";
+    html += "<td>" + (r.player || "--") + "</td>";
+    html += "<td style='color:var(--muted);font-size:.8rem'>" + (r.team || "--") + "</td>";
+    html += "<td><span class='time-badge'>" + fmtMs(r.rawMs || 0) + "</span></td>";
+    html += "<td style='color:" + fcolor + "'>" + (r.faults || 0) + "</td>";
+    html += "<td><span class='time-badge'>" + fmtMs(r.totalMs || 0) + "</span></td>";
+    html += "</tr>";
+  }
+  if (!html) html = "<tr><td colspan='6' style='color:var(--muted);text-align:center;padding:1rem'>Aucun resultat</td></tr>";
+  document.getElementById("speed-live-tbody").innerHTML = html;
+}
+
+function launchConfetti() {
+  var colors = ['#ff4d1c','#ff8c00','#818cf8','#f472b6','#fbbf24','#2dd4bf'];
+  for (var i = 0; i < 40; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = '-10px';
+        el.style.background = colors[Math.floor(Math.random() * colors.length)];
+        el.style.animationDelay = (Math.random() * 1) + 's';
+        el.style.animationDuration = (2 + Math.random() * 2) + 's';
+        document.body.appendChild(el);
+        setTimeout(function() { el.remove(); }, 4000);
+      }, i * 60);
+    })(i);
+  }
+}
+
+function resetToWaiting() {
+  document.getElementById("ended-view").style.display = "none";
+  document.getElementById("chase-view").style.display = "none";
+  document.getElementById("speed-view").style.display = "none";
+  document.getElementById("waiting").style.display = "flex";
+  document.getElementById("compet-name").textContent = "--";
+  lastTs = 0;
+  if (window._chaseTimerInterval) { clearInterval(window._chaseTimerInterval); window._chaseTimerInterval = null; }
+  if (window._speedTimerInterval) { clearInterval(window._speedTimerInterval); window._speedTimerInterval = null; }
+  window._chaseTargetEpoch = null;
+  window._speedStartEpoch = null;
+  localStorage.removeItem("pp_live_scores");
+  var ct = document.getElementById("chase-live-timer");
+  if (ct) { ct.textContent = "--:--:--"; ct.style.opacity = "0.3"; }
+  var st = document.getElementById("speed-live-timer");
+  if (st) { st.textContent = "--:--:--"; st.style.opacity = "0.3"; }
+  document.getElementById("chase-scores-grid").innerHTML = "";
+  document.getElementById("chase-manche-badge").textContent = "--";
+  var tabs = document.getElementById("mode-tabs-bar");
+  if (tabs) tabs.style.display = "flex";
+  podiumShown = false;
+  lastTs = 0;
+}
+
+function renderEnded(data) {
+  podiumShown = true;
+  document.getElementById("chase-view").style.display = "none";
+  document.getElementById("speed-view").style.display = "none";
+  document.getElementById("ended-view").style.display = "block";
+  if (window._chaseTimerInterval) { clearInterval(window._chaseTimerInterval); window._chaseTimerInterval = null; }
+  if (window._speedTimerInterval) { clearInterval(window._speedTimerInterval); window._speedTimerInterval = null; }
+
+  launchConfetti();
+
+  var rows = "";
+  var sorted = [];
+  if (data.type === "chase" && data.scores) {
+    sorted = Object.entries(data.scores).sort(function(a, b) { return b[1] - a[1]; });
+    for (var i = 0; i < sorted.length; i++) {
+      var cls = i === 0 ? "p1" : i === 1 ? "p2" : i === 2 ? "p3" : "pn";
+      var medal = ["&#127942;","&#129352;","&#129353;"][i] || (i+1) + ".";
+      rows += "<div class='podium-row " + cls + "'>";
+      rows += "<span><span class='podium-medal'>" + medal + "</span>" + sorted[i][0] + "</span>";
+      rows += "<span class='podium-time'>" + sorted[i][1] + " pts</span></div>";
+    }
+  } else if (data.type === "speed" && data.results) {
+    var sr = data.results.slice().sort(function(a, b) { return (a.totalMs||0)-(b.totalMs||0); });
+    for (var j = 0; j < sr.length; j++) {
+      var cls2 = j === 0 ? "p1" : j === 1 ? "p2" : j === 2 ? "p3" : "pn";
+      var medal2 = ["&#127942;","&#129352;","&#129353;"][j] || (j+1) + ".";
+      rows += "<div class='podium-row " + cls2 + "'>";
+      rows += "<span><span class='podium-medal'>" + medal2 + "</span>" + (sr[j].player||"") + (sr[j].team ? " <span style='font-size:.75rem;opacity:.6'>"+sr[j].team+"</span>" : "") + "</span>";
+      rows += "<span class='podium-time'>" + fmtMs(sr[j].totalMs||0) + "</span></div>";
+    }
+  }
+
+  document.getElementById("ended-content").innerHTML =
+    "<div class='podium-wrap'>" +
+    "<div class='podium-trophy'>&#127942;</div>" +
+    "<div class='podium-title'>VAINQUEUR</div>" +
+    "<div class='podium-winner'>" + (data.winner || "--") + "</div>" +
+    "<div class='podium-list'>" + rows + "</div>" +
+    "<button class='btn-back' onclick='resetToWaiting()'>Nouvelle compétition</button>" +
+    "</div>";
+}
+
+function fmtMs(ms) {
+  var total = Math.max(0, Math.floor(ms));
+  var m = Math.floor(total / 60000).toString().padStart(2, "0");
+  var s = Math.floor((total % 60000) / 1000).toString().padStart(2, "0");
+  var cs = Math.floor((total % 1000) / 10).toString().padStart(2, "0");
+  return m + ":" + s + "." + cs;
+}
+</script>
+</body>
+</html>
