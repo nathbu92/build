@@ -1,0 +1,100 @@
+name: Build Windows (Electron)
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    name: Build Windows EXE
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Create secrets.json (dummy for web build)
+        run: |
+          echo '{"APP_KEY":"","SALT":"","SERVER_URL":""}' > secrets.json
+        shell: bash
+
+      - name: Export Expo web build
+        run: npx expo export --platform web
+        env:
+          NODE_ENV: production
+
+      - name: Build Windows EXE with electron-builder
+        run: npx electron-builder --win --x64
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload EXE installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Papillon-Windows-Installer
+          path: dist-electron/*.exe
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload portable EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Papillon-Windows-Portable
+          path: dist-electron/*portable*.exe
+          if-no-files-found: warn
+          retention-days: 30
+
+  release:
+    name: Create GitHub Release
+    needs: build-windows
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Get version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Papillon ${{ steps.get_version.outputs.VERSION }} (Windows)
+          tag_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/**/*.exe
+          body: |
+            ## 🪟 Papillon pour Windows ${{ steps.get_version.outputs.VERSION }}
+
+            ### Installation
+            - **Installateur** (`Setup.exe`) : installe Papillon sur votre PC avec raccourci bureau
+            - **Portable** (`portable.exe`) : aucune installation requise, lancez directement
+
+            ### Notes
+            - Windows 10/11 64-bit requis
+            - Si Windows Defender bloque le fichier, cliquez "Informations complémentaires" → "Exécuter quand même"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
