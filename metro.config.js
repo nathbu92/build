@@ -12,10 +12,11 @@ config.resolver.assetExts.push("tflite", "json", "txt");
 
 // On web, redirect native-only modules to safe stubs
 const webStubs = {
-  "@sbaiahmed1/react-native-blur": path.resolve(
-    __dirname,
-    "stubs/web/react-native-blur.js"
-  ),
+  "@sbaiahmed1/react-native-blur": path.resolve(__dirname, "stubs/web/react-native-blur.js"),
+  "lottie-react-native": path.resolve(__dirname, "stubs/web/lottie-react-native.js"),
+  "react-native-fast-tflite": path.resolve(__dirname, "stubs/web/react-native-fast-tflite.js"),
+  "react-native-graph": path.resolve(__dirname, "stubs/web/react-native-graph.js"),
+  "react-native-screen-transitions": path.resolve(__dirname, "stubs/web/react-native-screen-transitions.js"),
 };
 
 const originalResolver = config.resolver.resolveRequest;
