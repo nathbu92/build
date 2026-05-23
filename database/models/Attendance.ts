@@ -20,10 +20,10 @@ export class Attendance extends Model {
 	@field('kidName') kidName?: string;
   @field('period') period: string;
 
-  @children('delays') delays!: Query<Delay>;
-  @children('absences') absences!: Query<Absence>;
-  @children('observations') observations!: Query<Observation>;
-  @children('punishments') punishments!: Query<Punishment>;
+  @children('delays') delays: Query<Delay>;
+  @children('absences') absences: Query<Absence>;
+  @children('observations') observations: Query<Observation>;
+  @children('punishments') punishments: Query<Punishment>;
 }
 
 export class Delay extends Model {

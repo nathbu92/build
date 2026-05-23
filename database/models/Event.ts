@@ -10,9 +10,9 @@ export default class Event extends Model {
     subjects: { type: 'belongs_to', key: 'subject_id' },
   };
 
-  @field('title') title!: string;
-  @field('start') start!: number;
-  @field('end') end!: number;
+  @field('title') title: string;
+  @field('start') start: number;
+  @field('end') end: number;
   @field('color') color?: string;
   @field('room') room?: string;
   @field('teacher') teacher?: string;
