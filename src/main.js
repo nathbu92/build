@@ -1,8 +1,6 @@
 const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
 const path = require("path");
 
-if (require("electron-squirrel-startup")) app.quit();
-
 let win;
 
 function createWindow() {
@@ -12,7 +10,7 @@ function createWindow() {
     minWidth: 1024,
     minHeight: 640,
     title: "Papillon",
-    icon: path.join(__dirname, "../assets/icon.png"),
+    icon: path.join(__dirname, "../assets/icon.ico"),
     backgroundColor: "#0f1a14",
     autoHideMenuBar: true,
     webPreferences: {
