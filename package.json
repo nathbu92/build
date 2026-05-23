@@ -1,7 +1,7 @@
 {
   "name": "papillon-desktop",
   "version": "8.4.2",
-  "description": "Papillon — Application scolaire pour Windows",
+  "description": "Papillon \u2014 Application scolaire pour Windows",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
@@ -15,7 +15,7 @@
   "build": {
     "appId": "xyz.getpapillon.desktop",
     "productName": "Papillon",
-    "copyright": "Copyright © 2024 Papillon",
+    "copyright": "Copyright \u00a9 2024 Papillon",
     "directories": {
       "output": "dist",
       "buildResources": "assets"
@@ -27,10 +27,20 @@
     ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
-      "icon": "assets/icon.png",
+      "icon": "assets/icon.ico",
       "publisherName": "Papillon"
     },
     "nsis": {
@@ -39,8 +49,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Papillon",
-      "installerIcon": "assets/icon.png",
-      "uninstallerIcon": "assets/icon.png"
+      "installerIcon": "assets/icon.ico",
+      "uninstallerIcon": "assets/icon.ico"
     },
     "portable": {
       "artifactName": "Papillon-${version}-portable.exe"
