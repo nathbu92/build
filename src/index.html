@@ -2,727 +2,223 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Papillon</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  * { margin:0; padding:0; box-sizing:border-box; }
   :root {
-    --green: #1a9c4e;
-    --green-light: #22c55e;
-    --green-dim: rgba(26,156,78,0.15);
-    --bg: #0f1a14;
-    --bg2: #162011;
-    --bg3: #1c2a1e;
-    --card: #1e2d20;
-    --card2: #243328;
-    --border: rgba(255,255,255,0.07);
-    --text: #e8f0e9;
-    --text2: #9ab89e;
-    --text3: #5d7d62;
-    --red: #e05252;
-    --orange: #e07c32;
-    --blue: #4a8fe8;
-    --purple: #9b6ee8;
-    --radius: 14px;
-    --sidebar: 220px;
+    --green:#1a9c4e; --green-light:#22c55e; --green-dim:rgba(26,156,78,0.15);
+    --bg:#0f1a14; --bg2:#162011; --bg3:#1c2a1e;
+    --card:#1e2d20; --card2:#243328; --border:rgba(255,255,255,0.07);
+    --text:#e8f0e9; --text2:#9ab89e; --text3:#5d7d62;
+    --red:#e05252; --orange:#e07c32; --blue:#4a8fe8;
+    --radius:14px; --sidebar:220px;
   }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-  }
+  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; display:flex; }
 
   /* ── SIDEBAR ── */
-  #sidebar {
-    width: var(--sidebar);
-    min-width: var(--sidebar);
-    height: 100vh;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 20px 12px;
-    gap: 4px;
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 10px 20px;
-  }
-
-  .logo img {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-  }
-
-  .logo span {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text);
-    letter-spacing: -0.3px;
-  }
-
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text2);
-    transition: all 0.15s;
-    user-select: none;
-  }
-
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-
-  .nav-item.active {
-    background: var(--green-dim);
-    color: var(--green-light);
-  }
-
-  .nav-icon {
-    width: 20px;
-    height: 20px;
-    opacity: 0.7;
-    filter: saturate(0) brightness(2);
-    flex-shrink: 0;
-  }
-
-  .nav-item.active .nav-icon { filter: none; opacity: 1; }
-
-  .sidebar-spacer { flex: 1; }
-
-  .sidebar-footer {
-    padding: 10px 12px;
-    font-size: 11px;
-    color: var(--text3);
-    line-height: 1.6;
-  }
+  #sidebar { width:var(--sidebar); min-width:var(--sidebar); height:100vh; background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:20px 12px; gap:4px; }
+  .logo { display:flex; align-items:center; gap:10px; padding:8px 10px 20px; }
+  .logo img { width:32px; height:32px; border-radius:8px; }
+  .logo span { font-size:18px; font-weight:700; letter-spacing:-0.3px; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; color:var(--text2); transition:all 0.15s; user-select:none; }
+  .nav-item:hover { background:var(--bg3); color:var(--text); }
+  .nav-item.active { background:var(--green-dim); color:var(--green-light); }
+  .nav-icon { font-size:17px; width:20px; text-align:center; flex-shrink:0; }
+  .sidebar-spacer { flex:1; }
+  .sidebar-footer { padding:10px 12px; font-size:11px; color:var(--text3); line-height:1.7; }
+  #user-name-sidebar { color:var(--green-light); font-weight:600; }
 
   /* ── MAIN ── */
-  #main {
-    flex: 1;
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+  #main { flex:1; height:100vh; overflow:hidden; display:flex; flex-direction:column; }
+  #topbar { height:56px; min-height:56px; display:flex; align-items:center; padding:0 28px; border-bottom:1px solid var(--border); gap:12px; }
+  #topbar h1 { font-size:17px; font-weight:600; flex:1; }
+  .topbar-btn { background:var(--card); border:1px solid var(--border); color:var(--text2); padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; transition:all 0.15s; }
+  .topbar-btn:hover { background:var(--card2); color:var(--text); }
+  #content { flex:1; overflow-y:auto; padding:24px 28px; scrollbar-width:thin; scrollbar-color:var(--bg3) transparent; }
+  .page { display:none; }
+  .page.active { display:block; }
 
-  /* ── TOPBAR ── */
-  #topbar {
-    height: 56px;
-    min-height: 56px;
-    display: flex;
-    align-items: center;
-    padding: 0 28px;
-    border-bottom: 1px solid var(--border);
-    gap: 16px;
-  }
+  /* ── CARDS ── */
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+  .card-title { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); margin-bottom:14px; }
 
-  #topbar h1 {
-    font-size: 17px;
-    font-weight: 600;
-    color: var(--text);
-    flex: 1;
-  }
+  /* ── STATS ── */
+  .stat-row { display:flex; gap:12px; margin-bottom:20px; }
+  .stat-badge { flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; text-align:center; }
+  .stat-value { font-size:26px; font-weight:800; color:var(--green-light); }
+  .stat-label { font-size:12px; color:var(--text2); margin-top:4px; }
 
-  .topbar-btn {
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text2);
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .topbar-btn:hover { background: var(--card2); color: var(--text); }
+  /* ── COURSES ── */
+  .course-item { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
+  .course-item:last-child { border-bottom:none; }
+  .course-time { font-size:12px; color:var(--text3); min-width:90px; }
+  .course-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+  .course-name { font-size:14px; font-weight:600; flex:1; }
+  .course-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+  .badge { font-size:11px; padding:3px 8px; border-radius:6px; font-weight:600; }
+  .badge-red { background:rgba(224,82,82,0.15); color:var(--red); }
+  .badge-blue { background:rgba(74,143,232,0.15); color:var(--blue); }
 
-  /* ── CONTENT ── */
-  #content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 24px 28px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--bg3) transparent;
-  }
+  /* ── GRADES ── */
+  .grade-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
+  .grade-row:last-child { border-bottom:none; }
+  .grade-subject { font-size:14px; font-weight:600; flex:1; }
+  .grade-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+  .grade-value { font-size:20px; font-weight:700; color:var(--green-light); min-width:50px; text-align:right; }
+  .grade-value.bad { color:var(--red); }
+  .grade-value.avg { color:var(--orange); }
+  .grade-denom { font-size:11px; color:var(--text3); }
 
-  .page { display: none; }
-  .page.active { display: block; }
+  /* ── HOMEWORK ── */
+  .task-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .task-item:last-child { border-bottom:none; }
+  .task-check { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; margin-top:1px; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; }
+  .task-check:hover { border-color:var(--green); }
+  .task-check.done { background:var(--green); border-color:var(--green); }
+  .task-check.done::after { content:'✓'; color:white; font-size:11px; font-weight:700; }
+  .task-subject { font-size:12px; font-weight:700; color:var(--green-light); margin-bottom:3px; }
+  .task-title { font-size:14px; line-height:1.4; }
+  .task-title.done-text { text-decoration:line-through; color:var(--text3); }
+  .task-date { font-size:11px; color:var(--text3); margin-top:4px; }
 
-  /* ── CARDS GRID ── */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  /* ── NEWS ── */
+  .news-item { padding:14px 0; border-bottom:1px solid var(--border); }
+  .news-item:last-child { border-bottom:none; }
+  .news-meta { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .news-source { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:var(--green-light); background:var(--green-dim); padding:2px 7px; border-radius:5px; }
+  .news-date { font-size:11px; color:var(--text3); }
+  .news-title { font-size:14px; font-weight:600; line-height:1.4; }
+  .news-excerpt { font-size:13px; color:var(--text2); margin-top:4px; line-height:1.5; }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px;
-  }
+  /* ── LOADING ── */
+  .loading { display:flex; align-items:center; gap:10px; padding:20px 0; color:var(--text2); font-size:14px; }
+  .spinner { width:18px; height:18px; border:2px solid var(--border); border-top-color:var(--green-light); border-radius:50%; animation:spin 0.7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
 
-  .card-title {
-    font-size: 12px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text3);
-    margin-bottom: 14px;
-  }
+  .empty { padding:30px; text-align:center; color:var(--text3); font-size:14px; }
 
-  /* ── HOME PAGE ── */
-  .welcome-banner {
-    background: linear-gradient(135deg, #1a3d22 0%, #0f2a18 100%);
-    border: 1px solid rgba(26,156,78,0.2);
-    border-radius: var(--radius);
-    padding: 22px 24px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
+  /* ── LOGIN ── */
+  #login-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:1000; }
+  .login-box { width:440px; background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:36px; }
+  .login-box img { width:52px; height:52px; border-radius:14px; display:block; margin:0 auto 16px; }
+  .login-box h1 { font-size:22px; font-weight:800; text-align:center; margin-bottom:6px; }
+  .login-box p { font-size:13px; color:var(--text2); text-align:center; margin-bottom:28px; line-height:1.5; }
+  .form-group { margin-bottom:14px; }
+  .form-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; display:block; }
+  .form-input { width:100%; background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:10px; font-size:14px; outline:none; transition:border 0.15s; }
+  .form-input:focus { border-color:var(--green); }
+  .btn-primary { width:100%; background:var(--green); color:white; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; transition:all 0.15s; }
+  .btn-primary:hover { background:#15803d; }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
+  .login-error { background:rgba(224,82,82,0.12); border:1px solid rgba(224,82,82,0.3); color:var(--red); padding:10px 14px; border-radius:10px; font-size:13px; margin-top:12px; display:none; }
+  .login-hint { font-size:11px; color:var(--text3); text-align:center; margin-top:14px; line-height:1.6; }
 
-  .welcome-banner .avatar {
-    width: 48px; height: 48px;
-    border-radius: 50%;
-    background: var(--green-dim);
-    border: 2px solid var(--green);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-  }
-
-  .welcome-banner h2 { font-size: 18px; font-weight: 700; }
-  .welcome-banner p { font-size: 13px; color: var(--text2); margin-top: 2px; }
-
-  /* ── COURS ── */
-  .course-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .course-item:last-child { border-bottom: none; }
-
-  .course-time {
-    font-size: 12px;
-    color: var(--text3);
-    min-width: 80px;
-    text-align: right;
-  }
-
-  .course-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .course-name { font-size: 14px; font-weight: 600; flex: 1; }
-  .course-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  .course-badge {
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-    background: var(--bg3);
-    color: var(--text2);
-  }
-
-  .course-badge.cancelled { background: rgba(224,82,82,0.15); color: var(--red); }
-  .course-badge.online { background: rgba(74,143,232,0.15); color: var(--blue); }
-
-  /* ── NOTES ── */
-  .grade-row {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .grade-row:last-child { border-bottom: none; }
-
-  .grade-subject-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
-
-  .grade-subject { font-size: 14px; font-weight: 600; flex: 1; }
-  .grade-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  .grade-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--green-light);
-    min-width: 52px;
-    text-align: right;
-  }
-  .grade-value.bad { color: var(--red); }
-  .grade-value.avg { color: var(--orange); }
-
-  .grade-denom { font-size: 12px; color: var(--text3); }
-
-  /* ── DEVOIRS ── */
-  .task-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .task-item:last-child { border-bottom: none; }
-
-  .task-check {
-    width: 20px; height: 20px; border-radius: 50%;
-    border: 2px solid var(--border);
-    flex-shrink: 0; margin-top: 1px;
-    cursor: pointer;
-    transition: all 0.15s;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .task-check:hover { border-color: var(--green); }
-  .task-check.done { background: var(--green); border-color: var(--green); }
-  .task-check.done::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
-
-  .task-content { flex: 1; }
-  .task-subject { font-size: 12px; font-weight: 700; color: var(--green-light); margin-bottom: 3px; }
-  .task-title { font-size: 14px; color: var(--text); line-height: 1.4; }
-  .task-title.done-text { text-decoration: line-through; color: var(--text3); }
-  .task-date { font-size: 11px; color: var(--text3); margin-top: 4px; }
-
-  /* ── ACTUALITÉS ── */
-  .news-item {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
-  .news-item:last-child { border-bottom: none; }
-  .news-item:hover .news-title { color: var(--green-light); }
-
-  .news-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-  .news-source {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px;
-    color: var(--green-light);
-    background: var(--green-dim);
-    padding: 2px 7px; border-radius: 5px;
-  }
-  .news-date { font-size: 11px; color: var(--text3); }
-  .news-title { font-size: 14px; font-weight: 600; line-height: 1.4; transition: color 0.15s; }
-  .news-excerpt { font-size: 13px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
-
-  /* ── PROFIL ── */
-  .profile-header {
-    display: flex; align-items: center; gap: 20px;
-    padding: 22px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 20px;
-  }
-
-  .profile-avatar {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--green-dim);
-    border: 2px solid var(--green);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-  }
-
-  .profile-name { font-size: 20px; font-weight: 700; }
-  .profile-class { font-size: 14px; color: var(--text2); margin-top: 3px; }
-
-  .setting-item {
-    display: flex; align-items: center; gap: 14px;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-  }
-  .setting-item:last-child { border-bottom: none; }
-  .setting-item:hover .setting-label { color: var(--text); }
-
-  .setting-icon {
-    width: 34px; height: 34px; border-radius: 9px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-
-  .setting-label { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; }
-  .setting-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .setting-arrow { color: var(--text3); font-size: 14px; }
-
-  /* ── STAT BADGES ── */
-  .stat-row { display: flex; gap: 12px; margin-bottom: 20px; }
-
-  .stat-badge {
-    flex: 1;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    text-align: center;
-  }
-
-  .stat-value { font-size: 28px; font-weight: 800; color: var(--green-light); }
-  .stat-label { font-size: 12px; color: var(--text2); margin-top: 4px; }
-
-  /* ── ONBOARDING ── */
-  #onboarding {
-    position: fixed; inset: 0;
-    background: var(--bg);
-    display: flex; align-items: center; justify-content: center;
-    z-index: 1000;
-  }
-
-  .onboarding-box {
-    width: 480px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 40px;
-    text-align: center;
-  }
-
-  .onboarding-box img { width: 72px; height: 72px; border-radius: 18px; margin-bottom: 20px; }
-  .onboarding-box h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-  .onboarding-box p { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 28px; }
-
-  .service-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-
-  .service-btn {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 18px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: left;
-  }
-
-  .service-btn:hover {
-    border-color: var(--green);
-    background: var(--green-dim);
-  }
-
-  .service-btn img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; }
-  .service-btn-name { font-size: 15px; font-weight: 600; }
-  .service-btn-sub { font-size: 12px; color: var(--text2); margin-top: 2px; }
-
-  .btn-primary {
-    width: 100%;
-    background: var(--green);
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-primary:hover { background: #15803d; }
-
-  .section-title {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 14px;
-    color: var(--text);
-  }
-
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-thumb { background:var(--bg3); border-radius:3px; }
 </style>
 </head>
 <body>
 
-<!-- ONBOARDING -->
-<div id="onboarding">
-  <div class="onboarding-box">
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
     <img src="../assets/icon.png" alt="Papillon">
-    <h1>Bienvenue sur Papillon</h1>
-    <p>L'application pour gérer ta vie scolaire. Connecte ton service pour accéder à tes notes, cours, devoirs et bien plus.</p>
-    <div class="service-list">
-      <div class="service-btn" onclick="connect('pronote')">
-        <img src="../assets/service_pronote.png" alt="Pronote">
-        <div>
-          <div class="service-btn-name">PRONOTE</div>
-          <div class="service-btn-sub">Via QR code ou identifiants</div>
-        </div>
-      </div>
-      <div class="service-btn" onclick="connect('ed')">
-        <img src="../assets/service_ed.png" alt="EcoleDirecte">
-        <div>
-          <div class="service-btn-name">ÉcoleDirecte</div>
-          <div class="service-btn-sub">Identifiant et mot de passe</div>
-        </div>
-      </div>
-      <div class="service-btn" onclick="connect('skolengo')">
-        <img src="../assets/service_skolengo.png" alt="Skolengo">
-        <div>
-          <div class="service-btn-name">Skolengo</div>
-          <div class="service-btn-sub">Via votre établissement</div>
-        </div>
-      </div>
+    <h1>Connexion à Pronote</h1>
+    <p>Entre tes identifiants Pronote pour accéder à tes données scolaires.</p>
+    <div class="form-group">
+      <label class="form-label">URL Pronote de ton établissement</label>
+      <input class="form-input" id="input-url" type="url" placeholder="https://demo.index-education.net/pronote/">
     </div>
-    <button class="btn-primary" onclick="demoMode()">Essayer en mode démo</button>
+    <div class="form-group">
+      <label class="form-label">Identifiant</label>
+      <input class="form-input" id="input-user" type="text" placeholder="prenom.nom">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mot de passe</label>
+      <input class="form-input" id="input-pass" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" id="btn-login" onclick="doLogin()">Se connecter</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint">
+      💡 Tu peux trouver l'URL Pronote sur le site de ton lycée<br>
+      ou dans l'application mobile Pronote.
+    </div>
   </div>
 </div>
 
-<!-- APP SHELL -->
+<!-- APP -->
 <div id="sidebar">
   <div class="logo">
     <img src="../assets/icon.png" alt="Papillon">
     <span>Papillon</span>
   </div>
-  <div class="nav-item active" onclick="showPage('home', this)">
-    <img class="nav-icon" src="../assets/tab-home.png" alt="">
-    Accueil
-  </div>
-  <div class="nav-item" onclick="showPage('timetable', this)">
-    <img class="nav-icon" src="../assets/tab-calendar.png" alt="">
-    Cours
-  </div>
-  <div class="nav-item" onclick="showPage('homework', this)">
-    <img class="nav-icon" src="../assets/tab-tasks.png" alt="">
-    Tâches
-  </div>
-  <div class="nav-item" onclick="showPage('grades', this)">
-    <img class="nav-icon" src="../assets/tab-grades.png" alt="">
-    Notes
-  </div>
-  <div class="nav-item" onclick="showPage('news', this)">
-    <span style="font-size:18px;width:20px;text-align:center">📣</span>
-    Actualités
-  </div>
-  <div class="nav-item" onclick="showPage('profile', this)">
-    <img class="nav-icon" src="../assets/tab-profile.png" alt="">
-    Profil
-  </div>
+  <div class="nav-item active" onclick="showPage('home',this)"><span class="nav-icon">🏠</span>Accueil</div>
+  <div class="nav-item" onclick="showPage('timetable',this)"><span class="nav-icon">📅</span>Cours</div>
+  <div class="nav-item" onclick="showPage('homework',this)"><span class="nav-icon">📝</span>Tâches</div>
+  <div class="nav-item" onclick="showPage('grades',this)"><span class="nav-icon">📊</span>Notes</div>
+  <div class="nav-item" onclick="showPage('news',this)"><span class="nav-icon">📣</span>Actualités</div>
   <div class="sidebar-spacer"></div>
   <div class="sidebar-footer">
-    Papillon v8.4.2<br>
-    <span id="service-label" style="color:var(--green-light)">Mode démo</span>
+    <span id="user-name-sidebar">Non connecté</span><br>
+    Papillon v8.4.2 · Windows<br>
+    <span style="cursor:pointer;color:var(--red)" onclick="doLogout()">Se déconnecter</span>
   </div>
 </div>
 
 <div id="main">
   <div id="topbar">
     <h1 id="page-title">Accueil</h1>
-    <button class="topbar-btn" onclick="refreshData()">↻ Actualiser</button>
-    <button class="topbar-btn" id="date-btn">📅 Aujourd'hui</button>
+    <button class="topbar-btn" onclick="refreshCurrentPage()">↻ Actualiser</button>
   </div>
-
   <div id="content">
 
     <!-- HOME -->
     <div class="page active" id="page-home">
-      <div class="welcome-banner">
-        <div class="avatar">🎓</div>
-        <div>
-          <h2 id="welcome-text">Bonjour !</h2>
-          <p id="welcome-sub">Voici un résumé de ta journée</p>
-        </div>
-      </div>
-
       <div class="stat-row">
-        <div class="stat-badge">
-          <div class="stat-value" id="stat-cours">4</div>
-          <div class="stat-label">Cours aujourd'hui</div>
-        </div>
-        <div class="stat-badge">
-          <div class="stat-value" id="stat-devoirs">3</div>
-          <div class="stat-label">Devoirs à faire</div>
-        </div>
-        <div class="stat-badge">
-          <div class="stat-value" id="stat-moyenne">14,2</div>
-          <div class="stat-label">Moyenne générale</div>
-        </div>
-        <div class="stat-badge">
-          <div class="stat-value" id="stat-notes">2</div>
-          <div class="stat-label">Nouvelles notes</div>
-        </div>
+        <div class="stat-badge"><div class="stat-value" id="s-cours">—</div><div class="stat-label">Cours aujourd'hui</div></div>
+        <div class="stat-badge"><div class="stat-value" id="s-devoirs">—</div><div class="stat-label">Devoirs à faire</div></div>
+        <div class="stat-badge"><div class="stat-value" id="s-moy">—</div><div class="stat-label">Moyenne générale</div></div>
       </div>
-
       <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Prochains cours</div>
-          <div id="home-courses"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Tâches à faire</div>
-          <div id="home-tasks"></div>
-        </div>
+        <div class="card"><div class="card-title">Cours du jour</div><div id="home-courses"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+        <div class="card"><div class="card-title">Devoirs à faire</div><div id="home-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
       </div>
-
-      <div class="card">
-        <div class="card-title">Nouvelles notes</div>
-        <div id="home-grades"></div>
-      </div>
+      <div class="card"><div class="card-title">Dernières notes</div><div id="home-grades"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- TIMETABLE -->
     <div class="page" id="page-timetable">
-      <div class="card">
-        <div class="card-title" id="timetable-date">Emploi du temps — Aujourd'hui</div>
-        <div id="timetable-list"></div>
-      </div>
+      <div class="card"><div class="card-title" id="timetable-title">Emploi du temps</div><div id="timetable-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- HOMEWORK -->
     <div class="page" id="page-homework">
-      <div class="card">
-        <div class="card-title">À rendre prochainement</div>
-        <div id="homework-list"></div>
-      </div>
+      <div class="card"><div class="card-title">À rendre prochainement</div><div id="homework-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- GRADES -->
     <div class="page" id="page-grades">
       <div class="stat-row">
-        <div class="stat-badge">
-          <div class="stat-value">14,2</div>
-          <div class="stat-label">Moyenne générale</div>
-        </div>
-        <div class="stat-badge">
-          <div class="stat-value">16,5</div>
-          <div class="stat-label">Meilleure note</div>
-        </div>
-        <div class="stat-badge">
-          <div class="stat-value">9,0</div>
-          <div class="stat-label">Note la plus basse</div>
-        </div>
+        <div class="stat-badge"><div class="stat-value" id="g-moy">—</div><div class="stat-label">Moyenne générale</div></div>
+        <div class="stat-badge"><div class="stat-value" id="g-best">—</div><div class="stat-label">Meilleure note</div></div>
+        <div class="stat-badge"><div class="stat-value" id="g-low">—</div><div class="stat-label">Note la plus basse</div></div>
       </div>
-      <div class="card">
-        <div class="card-title">Dernières notes</div>
-        <div id="grades-list"></div>
-      </div>
+      <div class="card"><div class="card-title">Toutes les notes</div><div id="grades-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- NEWS -->
     <div class="page" id="page-news">
-      <div class="card">
-        <div class="card-title">Dernières actualités</div>
-        <div id="news-list"></div>
-      </div>
+      <div class="card"><div class="card-title">Actualités</div><div id="news-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
-    <!-- PROFILE -->
-    <div class="page" id="page-profile">
-      <div class="profile-header">
-        <div class="profile-avatar">🎓</div>
-        <div>
-          <div class="profile-name" id="profile-name">Élève Papillon</div>
-          <div class="profile-class" id="profile-class">Terminale • Lycée Demo</div>
-        </div>
-      </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="card-title">Mon compte</div>
-          <div class="setting-item">
-            <div class="setting-icon" style="background:var(--green-dim)">🏫</div>
-            <div>
-              <div class="setting-label">Établissement</div>
-              <div class="setting-sub" id="profile-school">Lycée Demo</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-          <div class="setting-item">
-            <div class="setting-icon" style="background:rgba(74,143,232,0.15)">📧</div>
-            <div>
-              <div class="setting-label">Service scolaire</div>
-              <div class="setting-sub" id="profile-service">Mode démo</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-          <div class="setting-item" onclick="logout()">
-            <div class="setting-icon" style="background:rgba(224,82,82,0.15)">🚪</div>
-            <div>
-              <div class="setting-label" style="color:var(--red)">Se déconnecter</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-title">Préférences</div>
-          <div class="setting-item">
-            <div class="setting-icon" style="background:rgba(155,110,232,0.15)">🎨</div>
-            <div>
-              <div class="setting-label">Thème</div>
-              <div class="setting-sub">Sombre (défaut)</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-          <div class="setting-item">
-            <div class="setting-icon" style="background:rgba(224,124,50,0.15)">🔔</div>
-            <div>
-              <div class="setting-label">Notifications</div>
-              <div class="setting-sub">Activées</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-          <div class="setting-item">
-            <div class="setting-icon" style="background:var(--green-dim)">ℹ️</div>
-            <div>
-              <div class="setting-label">À propos</div>
-              <div class="setting-sub">Papillon v8.4.2 Windows</div>
-            </div>
-            <div class="setting-arrow">›</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /content -->
-</div><!-- /main -->
+  </div>
+</div>
 
 <script>
-// ── DATA DEMO ──
-const DEMO = {
-  name: "Élève Papillon",
-  class: "Terminale S • Lycée Victor Hugo",
-  school: "Lycée Victor Hugo",
-  courses: [
-    { time: "08h00 – 09h00", name: "Mathématiques", teacher: "M. Dupont", room: "Salle 12", color: "#4a8fe8", status: "" },
-    { time: "09h00 – 10h00", name: "Physique-Chimie", teacher: "Mme Martin", room: "Labo 3", color: "#9b6ee8", status: "" },
-    { time: "10h15 – 11h15", name: "Français", teacher: "Mme Bernard", room: "Salle 8", color: "#e07c32", status: "cancelled" },
-    { time: "13h00 – 14h00", name: "Histoire-Géo", teacher: "M. Leroy", room: "Salle 21", color: "#22c55e", status: "" },
-    { time: "14h00 – 15h00", name: "Anglais", teacher: "Mrs Johnson", room: "Salle 5", color: "#e05252", status: "online" },
-    { time: "15h15 – 16h15", name: "SVT", teacher: "Mme Petit", room: "Salle 14", color: "#06b6d4", status: "" },
-  ],
-  homework: [
-    { subject: "Mathématiques", title: "Exercices p.142 n°3, 5, 7 — Suites arithmétiques", due: "Demain", done: false },
-    { subject: "Physique-Chimie", title: "Lire chapitre 4 sur les lois de Newton", due: "Demain", done: false },
-    { subject: "Français", title: "Rédiger une analyse de texte sur Molière (2 pages)", due: "Après-demain", done: true },
-    { subject: "Histoire-Géo", title: "Apprendre les dates de la Révolution française", due: "Vendredi", done: false },
-    { subject: "Anglais", title: "Vocabulary list Unit 7 — to learn by heart", due: "Lundi prochain", done: false },
-  ],
-  grades: [
-    { subject: "Mathématiques", title: "DS — Suites et limites", value: 16.5, max: 20, avg: 12.3, date: "Hier", color: "#4a8fe8" },
-    { subject: "Physique-Chimie", title: "Contrôle — Mécanique", value: 9.0, max: 20, avg: 11.5, date: "Il y a 3 jours", color: "#9b6ee8" },
-    { subject: "Français", title: "Dissertation — Le Misanthrope", value: 14.0, max: 20, avg: 13.1, date: "La semaine dernière", color: "#e07c32" },
-    { subject: "Histoire-Géo", title: "Composition — WW2", value: 15.5, max: 20, avg: 12.8, date: "Il y a 10 jours", color: "#22c55e" },
-    { subject: "Anglais", title: "Oral — Current events", value: 13.0, max: 20, avg: 13.4, date: "Il y a 2 semaines", color: "#e05252" },
-  ],
-  news: [
-    { source: "Direction", title: "Fermeture exceptionnelle le vendredi 30 mai", excerpt: "En raison d'une réunion pédagogique, l'établissement sera fermé le vendredi 30 mai. Les cours sont donc annulés pour tous les élèves.", date: "Aujourd'hui" },
-    { source: "Vie scolaire", title: "Semaine de l'orientation — inscriptions ouvertes", excerpt: "La semaine de l'orientation aura lieu du 2 au 6 juin. Rendez-vous en salle polyvalente pour les ateliers de découverte des filières.", date: "Hier" },
-    { source: "CDI", title: "Nouveaux livres disponibles au CDI", excerpt: "Le CDI a reçu de nouveaux ouvrages en sciences, littérature et histoire. Venez les découvrir !", date: "Il y a 3 jours" },
-    { source: "Direction", title: "Résultats du conseil de classe du 2ème trimestre", excerpt: "Les bulletins du 2ème trimestre sont désormais disponibles sur votre espace numérique.", date: "Il y a 5 jours" },
-  ]
-};
+let currentPage = 'home';
+let gradesCache = null;
+let hwCache = null;
 
 // ── NAV ──
 function showPage(id, el) {
@@ -730,161 +226,246 @@ function showPage(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
   el.classList.add('active');
-  const titles = { home: 'Accueil', timetable: 'Emploi du temps', homework: 'Mes tâches', grades: 'Notes', news: 'Actualités', profile: 'Profil' };
-  document.getElementById('page-title').textContent = titles[id] || id;
+  const titles = { home:'Accueil', timetable:'Emploi du temps', homework:'Mes tâches', grades:'Notes', news:'Actualités' };
+  document.getElementById('page-title').textContent = titles[id];
+  currentPage = id;
+  loadPage(id);
 }
 
-// ── ONBOARDING ──
-function connect(service) {
-  const names = { pronote: 'PRONOTE', ed: 'ÉcoleDirecte', skolengo: 'Skolengo' };
-  document.getElementById('service-label').textContent = names[service];
-  document.getElementById('profile-service').textContent = names[service];
-  startApp();
+function refreshCurrentPage() { loadPage(currentPage, true); }
+
+function loadPage(id, force) {
+  if (id === 'timetable') loadTimetable();
+  if (id === 'homework') loadHomework();
+  if (id === 'grades') loadGrades();
+  if (id === 'news') loadNews();
 }
 
-function demoMode() { startApp(); }
+// ── LOGIN ──
+async function doLogin() {
+  const url = document.getElementById('input-url').value.trim();
+  const username = document.getElementById('input-user').value.trim();
+  const password = document.getElementById('input-pass').value;
+  const btn = document.getElementById('btn-login');
+  const err = document.getElementById('login-error');
 
-function startApp() {
-  document.getElementById('onboarding').style.display = 'none';
-  renderAll();
-}
+  if (!url || !username || !password) {
+    showError('Remplis tous les champs.'); return;
+  }
 
-function logout() {
-  if (confirm('Se déconnecter de Papillon ?')) {
-    document.getElementById('onboarding').style.display = 'flex';
+  btn.disabled = true;
+  btn.textContent = 'Connexion en cours…';
+  err.style.display = 'none';
+
+  const res = await window.papillon.login({ url, username, password });
+
+  if (res.ok) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('user-name-sidebar').textContent = res.user.name;
+    loadAllData();
+  } else {
+    showError(res.error || 'Erreur de connexion. Vérifie tes identifiants.');
+    btn.disabled = false;
+    btn.textContent = 'Se connecter';
   }
 }
 
-// ── RENDER ──
-function renderAll() {
+function showError(msg) {
+  const err = document.getElementById('login-error');
+  err.textContent = '⚠️ ' + msg;
+  err.style.display = 'block';
+}
+
+async function doLogout() {
+  await window.papillon.logout();
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('user-name-sidebar').textContent = 'Non connecté';
+}
+
+// Enter key on password
+document.getElementById('input-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+// ── LOAD ALL ──
+async function loadAllData() {
+  loadTimetable();
+  loadHomework();
+  loadGrades();
+  loadNews();
+}
+
+// ── TIMETABLE ──
+async function loadTimetable() {
+  const el = document.getElementById('timetable-list');
+  const homeEl = document.getElementById('home-courses');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+
   const now = new Date();
-  const hour = now.getHours();
-  const greet = hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
-  document.getElementById('welcome-text').textContent = `${greet}, ${DEMO.name.split(' ')[0]} ! 👋`;
-  document.getElementById('welcome-sub').textContent = formatDate(now);
-  document.getElementById('profile-name').textContent = DEMO.name;
-  document.getElementById('profile-class').textContent = DEMO.class;
-  document.getElementById('profile-school').textContent = DEMO.school;
-  document.getElementById('timetable-date').textContent = `Emploi du temps — ${formatDate(now)}`;
+  document.getElementById('timetable-title').textContent =
+    'Emploi du temps — ' + now.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
 
-  const pending = DEMO.homework.filter(h => !h.done).length;
-  document.getElementById('stat-devoirs').textContent = pending;
+  const res = await window.papillon.timetable({ date: now.toISOString() });
+  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+  if (!res.lessons.length) { el.innerHTML = '<div class="empty">Aucun cours aujourd\'hui</div>'; return; }
 
-  renderCourses();
+  document.getElementById('s-cours').textContent = res.lessons.filter(l => !l.isCancelled).length;
+
+  const html = res.lessons.map(l => `
+    <div class="course-item">
+      <div>
+        <div class="course-time">${fmtTime(l.start)}</div>
+        <div class="course-time" style="color:var(--text3)">${fmtTime(l.end)}</div>
+      </div>
+      <div class="course-dot" style="background:${l.color}"></div>
+      <div style="flex:1">
+        <div class="course-name" style="color:${l.isCancelled ? 'var(--text3)' : 'var(--text)'}">${l.subject}</div>
+        <div class="course-sub">${[l.teacher, l.room].filter(Boolean).join(' · ')}</div>
+      </div>
+      ${l.isCancelled ? '<span class="badge badge-red">Annulé</span>' : ''}
+    </div>
+  `).join('');
+  el.innerHTML = html;
+  homeEl.innerHTML = res.lessons.slice(0,3).map(l => `
+    <div class="course-item">
+      <div class="course-dot" style="background:${l.color}"></div>
+      <div style="flex:1">
+        <div class="course-name" style="font-size:13px">${l.subject}</div>
+        <div class="course-sub">${fmtTime(l.start)} – ${fmtTime(l.end)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── HOMEWORK ──
+async function loadHomework() {
+  const el = document.getElementById('homework-list');
+  const homeEl = document.getElementById('home-hw');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+
+  const res = await window.papillon.homework();
+  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+
+  hwCache = res.homeworks;
   renderHomework();
-  renderGrades();
-  renderNews();
-}
-
-function formatDate(d) {
-  return d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-}
-
-function renderCourses() {
-  const html = DEMO.courses.map(c => `
-    <div class="course-item">
-      <div class="course-time">${c.time}</div>
-      <div class="course-dot" style="background:${c.color}"></div>
-      <div style="flex:1">
-        <div class="course-name" style="color:${c.status==='cancelled'?'var(--text3)':c.color}">${c.name}</div>
-        <div class="course-sub">${c.teacher} · ${c.room}</div>
-      </div>
-      ${c.status === 'cancelled' ? '<span class="course-badge cancelled">Annulé</span>' : ''}
-      ${c.status === 'online' ? '<span class="course-badge online">En ligne</span>' : ''}
-    </div>
-  `).join('');
-  document.getElementById('timetable-list').innerHTML = html;
-  document.getElementById('home-courses').innerHTML = DEMO.courses.slice(0,3).map(c => `
-    <div class="course-item">
-      <div class="course-dot" style="background:${c.color}"></div>
-      <div style="flex:1">
-        <div class="course-name" style="font-size:13px">${c.name}</div>
-        <div class="course-sub">${c.time}</div>
-      </div>
-    </div>
-  `).join('');
 }
 
 function renderHomework() {
-  const html = DEMO.homework.map((h, i) => `
+  if (!hwCache) return;
+  const el = document.getElementById('homework-list');
+  const homeEl = document.getElementById('home-hw');
+  const pending = hwCache.filter(h => !h.done);
+
+  document.getElementById('s-devoirs').textContent = pending.length;
+
+  if (!hwCache.length) { el.innerHTML = '<div class="empty">Aucun devoir à venir 🎉</div>'; homeEl.innerHTML = '<div class="empty" style="padding:10px">Aucun devoir</div>'; return; }
+
+  el.innerHTML = hwCache.map((h, i) => `
     <div class="task-item">
-      <div class="task-check ${h.done ? 'done' : ''}" onclick="toggleTask(${i})"></div>
-      <div class="task-content">
+      <div class="task-check ${h.done ? 'done' : ''}" onclick="toggleHW(${i})"></div>
+      <div style="flex:1">
         <div class="task-subject">${h.subject}</div>
-        <div class="task-title ${h.done ? 'done-text' : ''}">${h.title}</div>
-        <div class="task-date">📅 ${h.due}</div>
+        <div class="task-title ${h.done ? 'done-text' : ''}">${h.description}</div>
+        ${h.due ? `<div class="task-date">📅 ${fmtDate(h.due)}</div>` : ''}
       </div>
     </div>
   `).join('');
-  document.getElementById('homework-list').innerHTML = html;
-  document.getElementById('home-tasks').innerHTML = DEMO.homework.filter(h=>!h.done).slice(0,3).map(h => `
+
+  homeEl.innerHTML = pending.slice(0,3).map(h => `
     <div class="task-item">
       <div class="task-check"></div>
-      <div class="task-content">
+      <div style="flex:1">
         <div class="task-subject" style="font-size:11px">${h.subject}</div>
-        <div class="task-title" style="font-size:13px">${h.title.substring(0,50)}${h.title.length>50?'…':''}</div>
+        <div class="task-title" style="font-size:13px">${h.description.substring(0,60)}${h.description.length>60?'…':''}</div>
       </div>
     </div>
-  `).join('');
+  `).join('') || '<div class="empty" style="padding:10px">Tout est fait ! 🎉</div>';
 }
 
-function toggleTask(i) {
-  DEMO.homework[i].done = !DEMO.homework[i].done;
-  const pending = DEMO.homework.filter(h => !h.done).length;
-  document.getElementById('stat-devoirs').textContent = pending;
+async function toggleHW(i) {
+  hwCache[i].done = !hwCache[i].done;
   renderHomework();
+  await window.papillon.toggleHomework({ id: hwCache[i].id, done: hwCache[i].done });
 }
 
-function renderGrades() {
-  const html = DEMO.grades.map(g => {
-    const cls = g.value >= 14 ? '' : g.value >= 10 ? 'avg' : 'bad';
+// ── GRADES ──
+async function loadGrades() {
+  const el = document.getElementById('grades-list');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+
+  const res = await window.papillon.grades();
+  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+
+  gradesCache = res.grades;
+
+  const vals = res.grades.filter(g => g.value !== null).map(g => g.value);
+  if (vals.length) {
+    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
+    document.getElementById('s-moy').textContent = avg.toFixed(1);
+    document.getElementById('g-moy').textContent = avg.toFixed(1);
+    document.getElementById('g-best').textContent = Math.max(...vals).toFixed(1);
+    document.getElementById('g-low').textContent = Math.min(...vals).toFixed(1);
+  }
+
+  if (!res.grades.length) { el.innerHTML = '<div class="empty">Aucune note disponible</div>'; return; }
+
+  el.innerHTML = res.grades.map(g => {
+    const cls = g.value === null ? '' : g.value >= (g.outOf*0.7) ? '' : g.value >= (g.outOf*0.5) ? 'avg' : 'bad';
     return `
       <div class="grade-row">
-        <div class="grade-subject-dot" style="background:${g.color}"></div>
+        <div class="course-dot" style="background:${g.color}"></div>
         <div style="flex:1">
           <div class="grade-subject">${g.subject}</div>
-          <div class="grade-sub">${g.title} · ${g.date}</div>
+          <div class="grade-sub">${g.title}${g.date ? ' · ' + fmtDate(g.date) : ''}</div>
         </div>
         <div>
-          <div class="grade-value ${cls}">${g.value.toFixed(1)}</div>
-          <div class="grade-denom">/ ${g.max} · moy. ${g.avg}</div>
+          <div class="grade-value ${cls}">${g.value !== null ? g.value.toFixed(1) : 'Abs.'}</div>
+          <div class="grade-denom">/ ${g.outOf}${g.average !== null ? ' · moy. ' + g.average.toFixed(1) : ''}</div>
         </div>
       </div>
     `;
   }).join('');
-  document.getElementById('grades-list').innerHTML = html;
-  document.getElementById('home-grades').innerHTML = DEMO.grades.slice(0,2).map(g => {
-    const cls = g.value >= 14 ? '' : g.value >= 10 ? 'avg' : 'bad';
+
+  document.getElementById('home-grades').innerHTML = res.grades.slice(0,3).map(g => {
+    const cls = g.value === null ? '' : g.value >= (g.outOf*0.7) ? '' : g.value >= (g.outOf*0.5) ? 'avg' : 'bad';
     return `
       <div class="grade-row">
-        <div class="grade-subject-dot" style="background:${g.color}"></div>
+        <div class="course-dot" style="background:${g.color}"></div>
         <div style="flex:1">
           <div class="grade-subject" style="font-size:13px">${g.subject}</div>
           <div class="grade-sub">${g.title}</div>
         </div>
-        <div class="grade-value ${cls}" style="font-size:16px">${g.value.toFixed(1)}</div>
+        <div class="grade-value ${cls}" style="font-size:16px">${g.value !== null ? g.value.toFixed(1) : 'Abs.'}</div>
       </div>
     `;
   }).join('');
 }
 
-function renderNews() {
-  document.getElementById('news-list').innerHTML = DEMO.news.map(n => `
+// ── NEWS ──
+async function loadNews() {
+  const el = document.getElementById('news-list');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+  const res = await window.papillon.news();
+  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+  if (!res.news.length) { el.innerHTML = '<div class="empty">Aucune actualité</div>'; return; }
+  el.innerHTML = res.news.map(n => `
     <div class="news-item">
       <div class="news-meta">
-        <span class="news-source">${n.source}</span>
-        <span class="news-date">${n.date}</span>
+        <span class="news-source">${n.author || n.category || 'Établissement'}</span>
+        ${n.date ? `<span class="news-date">${fmtDate(n.date)}</span>` : ''}
       </div>
       <div class="news-title">${n.title}</div>
-      <div class="news-excerpt">${n.excerpt}</div>
+      ${n.content ? `<div class="news-excerpt">${n.content.substring(0,200)}${n.content.length>200?'…':''}</div>` : ''}
     </div>
   `).join('');
 }
 
-function refreshData() {
-  const btn = document.querySelector('.topbar-btn');
-  btn.textContent = '↻ Actualisation…';
-  setTimeout(() => { btn.textContent = '↻ Actualiser'; }, 1200);
+// ── UTILS ──
+function fmtTime(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
 }
 </script>
 </body>
