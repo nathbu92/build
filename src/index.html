@@ -4,153 +4,194 @@
 <meta charset="UTF-8">
 <title>Papillon</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  :root {
-    --green:#1a9c4e; --green-light:#22c55e; --green-dim:rgba(26,156,78,0.15);
-    --bg:#0f1a14; --bg2:#162011; --bg3:#1c2a1e;
-    --card:#1e2d20; --card2:#243328; --border:rgba(255,255,255,0.07);
-    --text:#e8f0e9; --text2:#9ab89e; --text3:#5d7d62;
-    --red:#e05252; --orange:#e07c32; --blue:#4a8fe8;
-    --radius:14px; --sidebar:220px;
-  }
-  body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif; background:var(--bg); color:var(--text); height:100vh; overflow:hidden; display:flex; }
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#1a9c4e;--green-light:#22c55e;--green-dim:rgba(26,156,78,0.15);
+  --bg:#0f1a14;--bg2:#162011;--bg3:#1c2a1e;
+  --card:#1e2d20;--card2:#243328;--border:rgba(255,255,255,0.07);
+  --text:#e8f0e9;--text2:#9ab89e;--text3:#5d7d62;
+  --red:#e05252;--orange:#e07c32;--blue:#4a8fe8;
+  --radius:14px;--sidebar:220px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
 
-  /* ── SIDEBAR ── */
-  #sidebar { width:var(--sidebar); min-width:var(--sidebar); height:100vh; background:var(--bg2); border-right:1px solid var(--border); display:flex; flex-direction:column; padding:20px 12px; gap:4px; }
-  .logo { display:flex; align-items:center; gap:10px; padding:8px 10px 20px; }
-  .logo img { width:32px; height:32px; border-radius:8px; }
-  .logo span { font-size:18px; font-weight:700; letter-spacing:-0.3px; }
-  .nav-item { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:500; color:var(--text2); transition:all 0.15s; user-select:none; }
-  .nav-item:hover { background:var(--bg3); color:var(--text); }
-  .nav-item.active { background:var(--green-dim); color:var(--green-light); }
-  .nav-icon { font-size:17px; width:20px; text-align:center; flex-shrink:0; }
-  .sidebar-spacer { flex:1; }
-  .sidebar-footer { padding:10px 12px; font-size:11px; color:var(--text3); line-height:1.7; }
-  #user-name-sidebar { color:var(--green-light); font-weight:600; }
+/* SIDEBAR */
+#sidebar{width:var(--sidebar);min-width:var(--sidebar);height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;gap:4px}
+.logo{display:flex;align-items:center;gap:10px;padding:8px 10px 20px}
+.logo img{width:32px;height:32px;border-radius:8px}
+.logo span{font-size:18px;font-weight:700;letter-spacing:-0.3px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2);transition:all .15s;user-select:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--green-dim);color:var(--green-light)}
+.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.sidebar-spacer{flex:1}
+.sidebar-footer{padding:8px 12px;font-size:11px;color:var(--text3);line-height:1.8}
 
-  /* ── MAIN ── */
-  #main { flex:1; height:100vh; overflow:hidden; display:flex; flex-direction:column; }
-  #topbar { height:56px; min-height:56px; display:flex; align-items:center; padding:0 28px; border-bottom:1px solid var(--border); gap:12px; }
-  #topbar h1 { font-size:17px; font-weight:600; flex:1; }
-  .topbar-btn { background:var(--card); border:1px solid var(--border); color:var(--text2); padding:6px 14px; border-radius:8px; font-size:13px; cursor:pointer; transition:all 0.15s; }
-  .topbar-btn:hover { background:var(--card2); color:var(--text); }
-  #content { flex:1; overflow-y:auto; padding:24px 28px; scrollbar-width:thin; scrollbar-color:var(--bg3) transparent; }
-  .page { display:none; }
-  .page.active { display:block; }
+/* MAIN */
+#main{flex:1;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+#topbar{height:56px;min-height:56px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border);gap:12px}
+#topbar h1{font-size:17px;font-weight:600;flex:1}
+.tbtn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .15s}
+.tbtn:hover{background:var(--card2);color:var(--text)}
+#content{flex:1;overflow-y:auto;padding:22px 24px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+.page{display:none}.page.active{display:block}
 
-  /* ── CARDS ── */
-  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:20px; }
-  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
-  .card-title { font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); margin-bottom:14px; }
+/* CARDS */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:12px}
 
-  /* ── STATS ── */
-  .stat-row { display:flex; gap:12px; margin-bottom:20px; }
-  .stat-badge { flex:1; background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:16px; text-align:center; }
-  .stat-value { font-size:26px; font-weight:800; color:var(--green-light); }
-  .stat-label { font-size:12px; color:var(--text2); margin-top:4px; }
+/* STATS */
+.stat-row{display:flex;gap:12px;margin-bottom:18px}
+.stat-badge{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
+.stat-value{font-size:24px;font-weight:800;color:var(--green-light)}
+.stat-label{font-size:11px;color:var(--text2);margin-top:3px}
 
-  /* ── COURSES ── */
-  .course-item { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
-  .course-item:last-child { border-bottom:none; }
-  .course-time { font-size:12px; color:var(--text3); min-width:90px; }
-  .course-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-  .course-name { font-size:14px; font-weight:600; flex:1; }
-  .course-sub { font-size:12px; color:var(--text2); margin-top:2px; }
-  .badge { font-size:11px; padding:3px 8px; border-radius:6px; font-weight:600; }
-  .badge-red { background:rgba(224,82,82,0.15); color:var(--red); }
-  .badge-blue { background:rgba(74,143,232,0.15); color:var(--blue); }
+/* COURSE */
+.c-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.c-item:last-child{border-bottom:none}
+.c-time{font-size:11px;color:var(--text3);min-width:85px;line-height:1.5}
+.c-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.c-name{font-size:14px;font-weight:600;flex:1}
+.c-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.badge{font-size:11px;padding:2px 8px;border-radius:5px;font-weight:600}
+.b-red{background:rgba(224,82,82,.15);color:var(--red)}
+.b-orange{background:rgba(224,124,50,.15);color:var(--orange)}
 
-  /* ── GRADES ── */
-  .grade-row { display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--border); }
-  .grade-row:last-child { border-bottom:none; }
-  .grade-subject { font-size:14px; font-weight:600; flex:1; }
-  .grade-sub { font-size:12px; color:var(--text2); margin-top:2px; }
-  .grade-value { font-size:20px; font-weight:700; color:var(--green-light); min-width:50px; text-align:right; }
-  .grade-value.bad { color:var(--red); }
-  .grade-value.avg { color:var(--orange); }
-  .grade-denom { font-size:11px; color:var(--text3); }
+/* GRADE */
+.g-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.g-row:last-child{border-bottom:none}
+.g-name{font-size:14px;font-weight:600;flex:1}
+.g-sub{font-size:12px;color:var(--text2);margin-top:1px}
+.g-val{font-size:19px;font-weight:700;min-width:48px;text-align:right}
+.g-val.good{color:var(--green-light)}.g-val.avg{color:var(--orange)}.g-val.bad{color:var(--red)}
+.g-den{font-size:11px;color:var(--text3)}
 
-  /* ── HOMEWORK ── */
-  .task-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
-  .task-item:last-child { border-bottom:none; }
-  .task-check { width:20px; height:20px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; margin-top:1px; cursor:pointer; transition:all 0.15s; display:flex; align-items:center; justify-content:center; }
-  .task-check:hover { border-color:var(--green); }
-  .task-check.done { background:var(--green); border-color:var(--green); }
-  .task-check.done::after { content:'✓'; color:white; font-size:11px; font-weight:700; }
-  .task-subject { font-size:12px; font-weight:700; color:var(--green-light); margin-bottom:3px; }
-  .task-title { font-size:14px; line-height:1.4; }
-  .task-title.done-text { text-decoration:line-through; color:var(--text3); }
-  .task-date { font-size:11px; color:var(--text3); margin-top:4px; }
+/* HOMEWORK */
+.h-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.h-item:last-child{border-bottom:none}
+.h-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.h-chk:hover{border-color:var(--green)}
+.h-chk.done{background:var(--green);border-color:var(--green)}
+.h-chk.done::after{content:"✓";color:white;font-size:11px;font-weight:700}
+.h-subj{font-size:12px;font-weight:700;color:var(--green-light);margin-bottom:2px}
+.h-txt{font-size:13px;line-height:1.4}
+.h-txt.done{text-decoration:line-through;color:var(--text3)}
+.h-date{font-size:11px;color:var(--text3);margin-top:3px}
 
-  /* ── NEWS ── */
-  .news-item { padding:14px 0; border-bottom:1px solid var(--border); }
-  .news-item:last-child { border-bottom:none; }
-  .news-meta { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
-  .news-source { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:var(--green-light); background:var(--green-dim); padding:2px 7px; border-radius:5px; }
-  .news-date { font-size:11px; color:var(--text3); }
-  .news-title { font-size:14px; font-weight:600; line-height:1.4; }
-  .news-excerpt { font-size:13px; color:var(--text2); margin-top:4px; line-height:1.5; }
+/* NEWS */
+.n-item{padding:12px 0;border-bottom:1px solid var(--border)}
+.n-item:last-child{border-bottom:none}
+.n-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.n-src{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green-light);background:var(--green-dim);padding:2px 7px;border-radius:5px}
+.n-date{font-size:11px;color:var(--text3)}
+.n-title{font-size:14px;font-weight:600;line-height:1.4}
+.n-body{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.5}
 
-  /* ── LOADING ── */
-  .loading { display:flex; align-items:center; gap:10px; padding:20px 0; color:var(--text2); font-size:14px; }
-  .spinner { width:18px; height:18px; border:2px solid var(--border); border-top-color:var(--green-light); border-radius:50%; animation:spin 0.7s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
+/* WEEK NAV */
+.week-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.week-nav button{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
+.week-nav button:hover{background:var(--card2);color:var(--text)}
+.week-label{font-size:14px;font-weight:600;color:var(--text);flex:1;text-align:center}
 
-  .empty { padding:30px; text-align:center; color:var(--text3); font-size:14px; }
+/* MISC */
+.loading{display:flex;align-items:center;gap:10px;padding:20px 0;color:var(--text2);font-size:14px}
+.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green-light);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{padding:28px;text-align:center;color:var(--text3);font-size:14px}
+.err{padding:12px;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.2);border-radius:10px;color:var(--red);font-size:13px;margin-bottom:12px}
 
-  /* ── LOGIN ── */
-  #login-screen { position:fixed; inset:0; background:var(--bg); display:flex; align-items:center; justify-content:center; z-index:1000; }
-  .login-box { width:440px; background:var(--bg2); border:1px solid var(--border); border-radius:20px; padding:36px; }
-  .login-box img { width:52px; height:52px; border-radius:14px; display:block; margin:0 auto 16px; }
-  .login-box h1 { font-size:22px; font-weight:800; text-align:center; margin-bottom:6px; }
-  .login-box p { font-size:13px; color:var(--text2); text-align:center; margin-bottom:28px; line-height:1.5; }
-  .form-group { margin-bottom:14px; }
-  .form-label { font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; display:block; }
-  .form-input { width:100%; background:var(--bg3); border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:10px; font-size:14px; outline:none; transition:border 0.15s; }
-  .form-input:focus { border-color:var(--green); }
-  .btn-primary { width:100%; background:var(--green); color:white; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer; margin-top:8px; transition:all 0.15s; }
-  .btn-primary:hover { background:#15803d; }
-  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; }
-  .login-error { background:rgba(224,82,82,0.12); border:1px solid rgba(224,82,82,0.3); color:var(--red); padding:10px 14px; border-radius:10px; font-size:13px; margin-top:12px; display:none; }
-  .login-hint { font-size:11px; color:var(--text3); text-align:center; margin-top:14px; line-height:1.6; }
+/* ── LOGIN OVERLAY ── */
+#login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.login-box{width:440px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px}
+.login-box img{width:52px;height:52px;border-radius:14px;display:block;margin:0 auto 16px}
+.login-box h1{font-size:22px;font-weight:800;text-align:center;margin-bottom:6px}
+.login-box .sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px;line-height:1.5}
+.tab-row{display:flex;gap:8px;margin-bottom:20px}
+.tab-btn{flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .15s}
+.tab-btn.active{background:var(--green-dim);color:var(--green-light);border-color:var(--green)}
+.form-group{margin-bottom:12px}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:10px;font-size:14px;outline:none;transition:border .15s}
+.form-input:focus{border-color:var(--green)}
+.form-input::placeholder{color:var(--text3)}
+.btn-primary{width:100%;background:var(--green);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:all .15s}
+.btn-primary:hover{background:#15803d}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.login-err{background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);color:var(--red);padding:10px 13px;border-radius:10px;font-size:13px;margin-top:10px;display:none}
+.login-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:12px;line-height:1.7}
 
-  ::-webkit-scrollbar { width:6px; }
-  ::-webkit-scrollbar-thumb { background:var(--bg3); border-radius:3px; }
+/* QR step */
+.qr-step{display:none}
+.qr-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;font-size:13px;color:var(--text2);line-height:1.6}
+.qr-box b{color:var(--text)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="login-screen">
+<div id="login-overlay">
   <div class="login-box">
-    <img src="../assets/icon.png" alt="Papillon">
+    <img src="../assets/icon.png" alt="">
     <h1>Connexion à Pronote</h1>
-    <p>Entre tes identifiants Pronote pour accéder à tes données scolaires.</p>
-    <div class="form-group">
-      <label class="form-label">URL Pronote de ton établissement</label>
-      <input class="form-input" id="input-url" type="url" placeholder="https://demo.index-education.net/pronote/">
+    <p class="sub">Connecte-toi avec ton compte Pronote pour accéder à tes données scolaires.</p>
+
+    <div class="tab-row">
+      <button class="tab-btn active" onclick="switchTab('qr',this)">📱 QR Code</button>
+      <button class="tab-btn" onclick="switchTab('token',this)">🔑 Token</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Identifiant</label>
-      <input class="form-input" id="input-user" type="text" placeholder="prenom.nom">
+
+    <!-- QR tab -->
+    <div id="tab-qr">
+      <div class="qr-box">
+        <b>Comment obtenir le QR Code ?</b><br>
+        Dans l'appli Pronote mobile : <b>Paramètres → Mon compte → Connexion avec QR Code</b>.<br>
+        Scanne-le avec ton téléphone et note le code PIN à 4 chiffres.
+      </div>
+      <div class="form-group">
+        <label class="form-label">Données QR Code (JSON)</label>
+        <textarea class="form-input" id="qr-data" rows="3" placeholder='{"jeton":"...","login":"...","url":"..."}'></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Code PIN (4 chiffres)</label>
+        <input class="form-input" id="qr-pin" type="password" maxlength="4" placeholder="••••">
+      </div>
+      <button class="btn-primary" id="btn-qr" onclick="doLoginQR()">Se connecter</button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Mot de passe</label>
-      <input class="form-input" id="input-pass" type="password" placeholder="••••••••">
+
+    <!-- Token tab -->
+    <div id="tab-token" style="display:none">
+      <div class="form-group">
+        <label class="form-label">URL Pronote</label>
+        <input class="form-input" id="tk-url" type="url" placeholder="https://monlycee.index-education.net/pronote/">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Identifiant</label>
+        <input class="form-input" id="tk-user" placeholder="prenom.nom">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Token de connexion</label>
+        <input class="form-input" id="tk-token" placeholder="Token (depuis les paramètres Pronote)">
+      </div>
+      <div class="form-group">
+        <label class="form-label">UUID de l'appareil</label>
+        <input class="form-input" id="tk-uuid" placeholder="UUID (généré lors du 1er QR Code)">
+      </div>
+      <button class="btn-primary" id="btn-tk" onclick="doLoginToken()">Se connecter</button>
     </div>
-    <button class="btn-primary" id="btn-login" onclick="doLogin()">Se connecter</button>
-    <div class="login-error" id="login-error"></div>
-    <div class="login-hint">
-      💡 Tu peux trouver l'URL Pronote sur le site de ton lycée<br>
-      ou dans l'application mobile Pronote.
-    </div>
+
+    <div class="login-err" id="login-err"></div>
+    <p class="login-hint">🔒 Tes identifiants ne quittent jamais ton appareil.<br>Connexion directe au serveur Pronote de ton lycée.</p>
   </div>
 </div>
 
 <!-- APP -->
 <div id="sidebar">
   <div class="logo">
-    <img src="../assets/icon.png" alt="Papillon">
+    <img src="../assets/icon.png" alt="">
     <span>Papillon</span>
   </div>
   <div class="nav-item active" onclick="showPage('home',this)"><span class="nav-icon">🏠</span>Accueil</div>
@@ -160,16 +201,17 @@
   <div class="nav-item" onclick="showPage('news',this)"><span class="nav-icon">📣</span>Actualités</div>
   <div class="sidebar-spacer"></div>
   <div class="sidebar-footer">
-    <span id="user-name-sidebar">Non connecté</span><br>
+    <span id="sb-name" style="color:var(--green-light);font-weight:600"></span><br>
+    <span id="sb-class" style="color:var(--text2)"></span><br>
     Papillon v8.4.2 · Windows<br>
-    <span style="cursor:pointer;color:var(--red)" onclick="doLogout()">Se déconnecter</span>
+    <span style="cursor:pointer;color:var(--red)" onclick="doLogout()">↩ Déconnexion</span>
   </div>
 </div>
 
 <div id="main">
   <div id="topbar">
     <h1 id="page-title">Accueil</h1>
-    <button class="topbar-btn" onclick="refreshCurrentPage()">↻ Actualiser</button>
+    <button class="tbtn" onclick="refresh()">↻ Actualiser</button>
   </div>
   <div id="content">
 
@@ -177,34 +219,45 @@
     <div class="page active" id="page-home">
       <div class="stat-row">
         <div class="stat-badge"><div class="stat-value" id="s-cours">—</div><div class="stat-label">Cours aujourd'hui</div></div>
-        <div class="stat-badge"><div class="stat-value" id="s-devoirs">—</div><div class="stat-label">Devoirs à faire</div></div>
+        <div class="stat-badge"><div class="stat-value" id="s-devoirs">—</div><div class="stat-label">Devoirs cette semaine</div></div>
         <div class="stat-badge"><div class="stat-value" id="s-moy">—</div><div class="stat-label">Moyenne générale</div></div>
       </div>
       <div class="grid-2">
-        <div class="card"><div class="card-title">Cours du jour</div><div id="home-courses"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+        <div class="card"><div class="card-title">Cours du jour</div><div id="home-tt"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
         <div class="card"><div class="card-title">Devoirs à faire</div><div id="home-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
       </div>
-      <div class="card"><div class="card-title">Dernières notes</div><div id="home-grades"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="card"><div class="card-title">Dernières notes</div><div id="home-gr"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- TIMETABLE -->
     <div class="page" id="page-timetable">
-      <div class="card"><div class="card-title" id="timetable-title">Emploi du temps</div><div id="timetable-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="week-nav">
+        <button onclick="changeWeek(-1)">‹ Semaine précédente</button>
+        <span class="week-label" id="week-label">Cette semaine</span>
+        <button onclick="changeWeek(1)">Semaine suivante ›</button>
+      </div>
+      <div id="tt-days"></div>
     </div>
 
     <!-- HOMEWORK -->
     <div class="page" id="page-homework">
-      <div class="card"><div class="card-title">À rendre prochainement</div><div id="homework-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="week-nav">
+        <button onclick="changeHWWeek(-1)">‹</button>
+        <span class="week-label" id="hw-week-label">Cette semaine</span>
+        <button onclick="changeHWWeek(1)">›</button>
+      </div>
+      <div class="card"><div class="card-title">Devoirs</div><div id="hw-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- GRADES -->
     <div class="page" id="page-grades">
       <div class="stat-row">
         <div class="stat-badge"><div class="stat-value" id="g-moy">—</div><div class="stat-label">Moyenne générale</div></div>
+        <div class="stat-badge"><div class="stat-value" id="g-cl">—</div><div class="stat-label">Moyenne classe</div></div>
         <div class="stat-badge"><div class="stat-value" id="g-best">—</div><div class="stat-label">Meilleure note</div></div>
         <div class="stat-badge"><div class="stat-value" id="g-low">—</div><div class="stat-label">Note la plus basse</div></div>
       </div>
-      <div class="card"><div class="card-title">Toutes les notes</div><div id="grades-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div id="grades-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- NEWS -->
@@ -217,255 +270,332 @@
 
 <script>
 let currentPage = 'home';
-let gradesCache = null;
-let hwCache = null;
+let ttWeekOffset = 0;
+let hwWeekOffset = 0;
+let hwCache = [];
+let savedCreds = null;
 
 // ── NAV ──
 function showPage(id, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
   el.classList.add('active');
-  const titles = { home:'Accueil', timetable:'Emploi du temps', homework:'Mes tâches', grades:'Notes', news:'Actualités' };
+  const titles={home:'Accueil',timetable:'Emploi du temps',homework:'Mes tâches',grades:'Notes',news:'Actualités'};
   document.getElementById('page-title').textContent = titles[id];
   currentPage = id;
-  loadPage(id);
+  if(id==='timetable') loadTimetable();
+  if(id==='homework') loadHomework();
+  if(id==='grades') loadGrades();
+  if(id==='news') loadNews();
 }
 
-function refreshCurrentPage() { loadPage(currentPage, true); }
-
-function loadPage(id, force) {
-  if (id === 'timetable') loadTimetable();
-  if (id === 'homework') loadHomework();
-  if (id === 'grades') loadGrades();
-  if (id === 'news') loadNews();
+function refresh() { loadPage(currentPage); }
+function loadPage(id) {
+  if(id==='home') { loadTimetable(true); loadHomework(true); loadGrades(true); }
+  if(id==='timetable') loadTimetable();
+  if(id==='homework') loadHomework();
+  if(id==='grades') loadGrades();
+  if(id==='news') loadNews();
 }
 
 // ── LOGIN ──
-async function doLogin() {
-  const url = document.getElementById('input-url').value.trim();
-  const username = document.getElementById('input-user').value.trim();
-  const password = document.getElementById('input-pass').value;
-  const btn = document.getElementById('btn-login');
-  const err = document.getElementById('login-error');
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-qr').style.display = tab==='qr'?'block':'none';
+  document.getElementById('tab-token').style.display = tab==='token'?'block':'none';
+  document.getElementById('login-err').style.display='none';
+}
 
-  if (!url || !username || !password) {
-    showError('Remplis tous les champs.'); return;
-  }
+async function doLoginQR() {
+  const qrData = document.getElementById('qr-data').value.trim();
+  const pin = document.getElementById('qr-pin').value.trim();
+  if(!qrData||!pin) { showErr('Remplis tous les champs.'); return; }
+  if(pin.length!==4) { showErr('Le PIN doit faire 4 chiffres.'); return; }
 
-  btn.disabled = true;
-  btn.textContent = 'Connexion en cours…';
-  err.style.display = 'none';
+  const deviceUUID = crypto.randomUUID();
+  setBtnLoading('btn-qr', true);
+  hideErr();
 
-  const res = await window.papillon.login({ url, username, password });
+  const res = await window.papillon.loginQR({ qrData, pin, deviceUUID });
+  setBtnLoading('btn-qr', false);
 
-  if (res.ok) {
-    document.getElementById('login-screen').style.display = 'none';
-    document.getElementById('user-name-sidebar').textContent = res.user.name;
-    loadAllData();
+  if(res.ok) {
+    // Save credentials for token refresh
+    savedCreds = { url: res.url, username: res.username, token: res.token, deviceUUID, kind: res.kind };
+    localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
+    onLogin(res.user);
   } else {
-    showError(res.error || 'Erreur de connexion. Vérifie tes identifiants.');
-    btn.disabled = false;
-    btn.textContent = 'Se connecter';
+    showErr(res.error || 'Erreur de connexion. Vérifie le QR Code et le PIN.');
   }
 }
 
-function showError(msg) {
-  const err = document.getElementById('login-error');
-  err.textContent = '⚠️ ' + msg;
-  err.style.display = 'block';
+async function doLoginToken() {
+  const url = document.getElementById('tk-url').value.trim();
+  const username = document.getElementById('tk-user').value.trim();
+  const token = document.getElementById('tk-token').value.trim();
+  const deviceUUID = document.getElementById('tk-uuid').value.trim();
+  if(!url||!username||!token||!deviceUUID) { showErr('Remplis tous les champs.'); return; }
+
+  setBtnLoading('btn-tk', true);
+  hideErr();
+
+  const res = await window.papillon.loginToken({ url, username, token, deviceUUID });
+  setBtnLoading('btn-tk', false);
+
+  if(res.ok) {
+    savedCreds = { url, username, token: res.token, deviceUUID };
+    localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
+    onLogin(res.user);
+  } else {
+    showErr(res.error || 'Erreur. Vérifie ton token et ton URL Pronote.');
+  }
+}
+
+function onLogin(user) {
+  document.getElementById('login-overlay').style.display='none';
+  document.getElementById('sb-name').textContent = user.name;
+  document.getElementById('sb-class').textContent = [user.class, user.school].filter(Boolean).join(' · ');
+  loadAll();
 }
 
 async function doLogout() {
   await window.papillon.logout();
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('user-name-sidebar').textContent = 'Non connecté';
+  localStorage.removeItem('papillon_creds');
+  savedCreds = null;
+  document.getElementById('login-overlay').style.display='flex';
+  document.getElementById('sb-name').textContent='';
+  document.getElementById('sb-class').textContent='';
 }
 
-// Enter key on password
-document.getElementById('input-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+// Auto-reconnect on startup
+window.addEventListener('load', async () => {
+  const raw = localStorage.getItem('papillon_creds');
+  if(raw) {
+    try {
+      savedCreds = JSON.parse(raw);
+      const res = await window.papillon.loginToken(savedCreds);
+      if(res.ok) {
+        // Update token
+        savedCreds.token = res.token;
+        localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
+        onLogin(res.user);
+        return;
+      }
+    } catch(e) {}
+    localStorage.removeItem('papillon_creds');
+  }
+});
+
+function showErr(msg) { const e=document.getElementById('login-err'); e.textContent='⚠️ '+msg; e.style.display='block'; }
+function hideErr() { document.getElementById('login-err').style.display='none'; }
+function setBtnLoading(id, loading) {
+  const btn = document.getElementById(id);
+  btn.disabled = loading;
+  btn.textContent = loading ? 'Connexion…' : 'Se connecter';
+}
 
 // ── LOAD ALL ──
-async function loadAllData() {
-  loadTimetable();
-  loadHomework();
-  loadGrades();
-  loadNews();
-}
+function loadAll() { loadTimetable(true); loadHomework(true); loadGrades(true); loadNews(); }
 
 // ── TIMETABLE ──
-async function loadTimetable() {
-  const el = document.getElementById('timetable-list');
-  const homeEl = document.getElementById('home-courses');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+async function loadTimetable(homeOnly=false) {
+  const d = offsetDate(ttWeekOffset);
+  updateWeekLabel('week-label', d);
 
-  const now = new Date();
-  document.getElementById('timetable-title').textContent =
-    'Emploi du temps — ' + now.toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long' });
+  if(!homeOnly) document.getElementById('tt-days').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+  document.getElementById('home-tt').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
 
-  const res = await window.papillon.timetable({ date: now.toISOString() });
-  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
-  if (!res.lessons.length) { el.innerHTML = '<div class="empty">Aucun cours aujourd\'hui</div>'; return; }
+  const res = await window.papillon.timetable({ date: d.toISOString() });
 
-  document.getElementById('s-cours').textContent = res.lessons.filter(l => !l.isCancelled).length;
+  if(!res.ok) {
+    if(!homeOnly) document.getElementById('tt-days').innerHTML = `<div class="err">${res.error}</div>`;
+    document.getElementById('home-tt').innerHTML = `<div class="err">${res.error}</div>`;
+    return;
+  }
 
-  const html = res.lessons.map(l => `
-    <div class="course-item">
-      <div>
-        <div class="course-time">${fmtTime(l.start)}</div>
-        <div class="course-time" style="color:var(--text3)">${fmtTime(l.end)}</div>
-      </div>
-      <div class="course-dot" style="background:${l.color}"></div>
-      <div style="flex:1">
-        <div class="course-name" style="color:${l.isCancelled ? 'var(--text3)' : 'var(--text)'}">${l.subject}</div>
-        <div class="course-sub">${[l.teacher, l.room].filter(Boolean).join(' · ')}</div>
-      </div>
-      ${l.isCancelled ? '<span class="badge badge-red">Annulé</span>' : ''}
+  const today = new Date().toDateString();
+  const todayLessons = res.lessons.filter(l => new Date(l.from).toDateString() === today);
+  document.getElementById('s-cours').textContent = todayLessons.filter(l=>!l.isCancelled).length;
+
+  // Home widget — today only
+  document.getElementById('home-tt').innerHTML = todayLessons.length
+    ? todayLessons.map(l => courseHTML(l, true)).join('')
+    : '<div class="empty">Aucun cours aujourd\'hui</div>';
+
+  if(homeOnly) return;
+
+  // Group by day
+  const days = {};
+  for(const l of res.lessons) {
+    const dk = new Date(l.from).toDateString();
+    if(!days[dk]) days[dk] = [];
+    days[dk].push(l);
+  }
+
+  document.getElementById('tt-days').innerHTML = Object.entries(days).map(([dk, lessons]) => `
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">${fmtDayFull(new Date(dk))}</div>
+      ${lessons.map(l=>courseHTML(l,false)).join('')}
     </div>
-  `).join('');
-  el.innerHTML = html;
-  homeEl.innerHTML = res.lessons.slice(0,3).map(l => `
-    <div class="course-item">
-      <div class="course-dot" style="background:${l.color}"></div>
-      <div style="flex:1">
-        <div class="course-name" style="font-size:13px">${l.subject}</div>
-        <div class="course-sub">${fmtTime(l.start)} – ${fmtTime(l.end)}</div>
-      </div>
-    </div>
-  `).join('');
+  `).join('') || '<div class="empty">Aucun cours cette semaine</div>';
 }
+
+function courseHTML(l, compact) {
+  const color = l.color || '#22c55e';
+  const badge = l.isCancelled ? '<span class="badge b-red">Annulé</span>'
+               : l.isDetention ? '<span class="badge b-orange">Retenue</span>' : '';
+  return `<div class="c-item">
+    <div class="c-time">${fmtTime(l.from)}<br><span style="color:var(--text3)">${fmtTime(l.to)}</span></div>
+    <div class="c-dot" style="background:${color}"></div>
+    <div style="flex:1">
+      <div class="c-name" style="color:${l.isCancelled?'var(--text3)':'var(--text)'}">${l.subject}</div>
+      <div class="c-sub">${[l.teacher,l.room].filter(Boolean).join(' · ') || '&nbsp;'}</div>
+    </div>
+    ${badge}
+  </div>`;
+}
+
+function changeWeek(d) { ttWeekOffset+=d; loadTimetable(); }
 
 // ── HOMEWORK ──
-async function loadHomework() {
-  const el = document.getElementById('homework-list');
-  const homeEl = document.getElementById('home-hw');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+async function loadHomework(homeOnly=false) {
+  const d = offsetDate(hwWeekOffset*7);
+  updateWeekLabel('hw-week-label', d);
+  if(!homeOnly) document.getElementById('hw-list').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
 
-  const res = await window.papillon.homework();
-  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+  const res = await window.papillon.homework({ weekOffset: hwWeekOffset });
+  if(!res.ok) {
+    if(!homeOnly) document.getElementById('hw-list').innerHTML = `<div class="err">${res.error}</div>`;
+    return;
+  }
 
   hwCache = res.homeworks;
-  renderHomework();
-}
-
-function renderHomework() {
-  if (!hwCache) return;
-  const el = document.getElementById('homework-list');
-  const homeEl = document.getElementById('home-hw');
-  const pending = hwCache.filter(h => !h.done);
-
+  const pending = hwCache.filter(h=>!h.done);
   document.getElementById('s-devoirs').textContent = pending.length;
 
-  if (!hwCache.length) { el.innerHTML = '<div class="empty">Aucun devoir à venir 🎉</div>'; homeEl.innerHTML = '<div class="empty" style="padding:10px">Aucun devoir</div>'; return; }
+  document.getElementById('home-hw').innerHTML = pending.length
+    ? pending.slice(0,3).map(h=>`
+        <div class="h-item">
+          <div class="h-chk"></div>
+          <div>
+            <div class="h-subj">${h.subject}</div>
+            <div class="h-txt">${h.content.substring(0,60)}${h.content.length>60?'…':''}</div>
+          </div>
+        </div>`).join('')
+    : '<div class="empty" style="padding:12px">Tout est fait ! 🎉</div>';
 
-  el.innerHTML = hwCache.map((h, i) => `
-    <div class="task-item">
-      <div class="task-check ${h.done ? 'done' : ''}" onclick="toggleHW(${i})"></div>
-      <div style="flex:1">
-        <div class="task-subject">${h.subject}</div>
-        <div class="task-title ${h.done ? 'done-text' : ''}">${h.description}</div>
-        ${h.due ? `<div class="task-date">📅 ${fmtDate(h.due)}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
+  if(homeOnly) return;
+  renderHW();
+}
 
-  homeEl.innerHTML = pending.slice(0,3).map(h => `
-    <div class="task-item">
-      <div class="task-check"></div>
-      <div style="flex:1">
-        <div class="task-subject" style="font-size:11px">${h.subject}</div>
-        <div class="task-title" style="font-size:13px">${h.description.substring(0,60)}${h.description.length>60?'…':''}</div>
-      </div>
-    </div>
-  `).join('') || '<div class="empty" style="padding:10px">Tout est fait ! 🎉</div>';
+function renderHW() {
+  document.getElementById('hw-list').innerHTML = hwCache.length
+    ? hwCache.map((h,i)=>`
+        <div class="h-item">
+          <div class="h-chk ${h.done?'done':''}" onclick="toggleHW(${i})"></div>
+          <div style="flex:1">
+            <div class="h-subj">${h.subject}</div>
+            <div class="h-txt ${h.done?'done':''}">${h.content}</div>
+            ${h.dueDate?`<div class="h-date">📅 ${fmtDate(h.dueDate)}</div>`:''}
+          </div>
+        </div>`).join('')
+    : '<div class="empty">Aucun devoir cette semaine 🎉</div>';
 }
 
 async function toggleHW(i) {
   hwCache[i].done = !hwCache[i].done;
-  renderHomework();
-  await window.papillon.toggleHomework({ id: hwCache[i].id, done: hwCache[i].done });
+  document.getElementById('s-devoirs').textContent = hwCache.filter(h=>!h.done).length;
+  renderHW();
+  await window.papillon.toggleHW({ id: hwCache[i].id, done: hwCache[i].done });
 }
 
+function changeHWWeek(d) { hwWeekOffset+=d; loadHomework(); }
+
 // ── GRADES ──
-async function loadGrades() {
-  const el = document.getElementById('grades-list');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+async function loadGrades(homeOnly=false) {
+  if(!homeOnly) document.getElementById('grades-content').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
 
   const res = await window.papillon.grades();
-  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
+  if(!res.ok) {
+    if(!homeOnly) document.getElementById('grades-content').innerHTML = `<div class="err">${res.error}</div>`;
+    return;
+  }
 
-  gradesCache = res.grades;
+  if(res.overall !== null && res.overall !== undefined) {
+    document.getElementById('s-moy').textContent = res.overall.toFixed(1);
+    document.getElementById('g-moy').textContent = res.overall.toFixed(1);
+  }
+  if(res.classAvg !== null && res.classAvg !== undefined) {
+    document.getElementById('g-cl').textContent = res.classAvg.toFixed(1);
+  }
 
-  const vals = res.grades.filter(g => g.value !== null).map(g => g.value);
-  if (vals.length) {
-    const avg = vals.reduce((a,b)=>a+b,0) / vals.length;
-    document.getElementById('s-moy').textContent = avg.toFixed(1);
-    document.getElementById('g-moy').textContent = avg.toFixed(1);
+  const vals = res.grades.filter(g=>g.value!==null).map(g=>g.value);
+  if(vals.length) {
     document.getElementById('g-best').textContent = Math.max(...vals).toFixed(1);
     document.getElementById('g-low').textContent = Math.min(...vals).toFixed(1);
   }
 
-  if (!res.grades.length) { el.innerHTML = '<div class="empty">Aucune note disponible</div>'; return; }
+  document.getElementById('home-gr').innerHTML = res.grades.slice(0,3).map(g=>gradeHTML(g,true)).join('')
+    || '<div class="empty" style="padding:12px">Aucune note</div>';
 
-  el.innerHTML = res.grades.map(g => {
-    const cls = g.value === null ? '' : g.value >= (g.outOf*0.7) ? '' : g.value >= (g.outOf*0.5) ? 'avg' : 'bad';
-    return `
-      <div class="grade-row">
-        <div class="course-dot" style="background:${g.color}"></div>
-        <div style="flex:1">
-          <div class="grade-subject">${g.subject}</div>
-          <div class="grade-sub">${g.title}${g.date ? ' · ' + fmtDate(g.date) : ''}</div>
-        </div>
-        <div>
-          <div class="grade-value ${cls}">${g.value !== null ? g.value.toFixed(1) : 'Abs.'}</div>
-          <div class="grade-denom">/ ${g.outOf}${g.average !== null ? ' · moy. ' + g.average.toFixed(1) : ''}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
+  if(homeOnly) return;
 
-  document.getElementById('home-grades').innerHTML = res.grades.slice(0,3).map(g => {
-    const cls = g.value === null ? '' : g.value >= (g.outOf*0.7) ? '' : g.value >= (g.outOf*0.5) ? 'avg' : 'bad';
-    return `
-      <div class="grade-row">
-        <div class="course-dot" style="background:${g.color}"></div>
-        <div style="flex:1">
-          <div class="grade-subject" style="font-size:13px">${g.subject}</div>
-          <div class="grade-sub">${g.title}</div>
-        </div>
-        <div class="grade-value ${cls}" style="font-size:16px">${g.value !== null ? g.value.toFixed(1) : 'Abs.'}</div>
+  // Group by subject
+  document.getElementById('grades-content').innerHTML = res.subjects.map(s=>`
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-title">${s.name}
+        ${s.student!==null?`<span style="float:right;color:${gradeColor(s.student,20)};font-size:13px;font-weight:700">${s.student.toFixed(1)}/20</span>`:''}
       </div>
-    `;
-  }).join('');
+      ${res.grades.filter(g=>g.subject===s.name).map(g=>gradeHTML(g,false)).join('') || '<div class="empty" style="padding:8px">Aucune note</div>'}
+    </div>
+  `).join('') || '<div class="empty">Aucune note disponible</div>';
+}
+
+function gradeHTML(g, compact) {
+  const display = g.valueStatus || (g.value!==null ? g.value.toFixed(1) : '—');
+  const cls = g.value!==null ? (g.value>=(g.outOf*0.7)?'good':g.value>=(g.outOf*0.5)?'avg':'bad') : '';
+  return `<div class="g-row">
+    <div style="flex:1">
+      ${!compact?'':''}<div class="g-name">${compact?g.subject:g.description||'Note'}</div>
+      <div class="g-sub">${compact?(g.description||''):(g.date?fmtDate(g.date):'')}${g.average!==null?` · moy. ${g.average.toFixed(1)}`:''}</div>
+    </div>
+    <div>
+      <div class="g-val ${cls}">${display}</div>
+      <div class="g-den">/${g.outOf} (coef.${g.coefficient})</div>
+    </div>
+  </div>`;
 }
 
 // ── NEWS ──
 async function loadNews() {
-  const el = document.getElementById('news-list');
-  el.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+  document.getElementById('news-list').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
   const res = await window.papillon.news();
-  if (!res.ok) { el.innerHTML = `<div class="empty">Erreur : ${res.error}</div>`; return; }
-  if (!res.news.length) { el.innerHTML = '<div class="empty">Aucune actualité</div>'; return; }
-  el.innerHTML = res.news.map(n => `
-    <div class="news-item">
-      <div class="news-meta">
-        <span class="news-source">${n.author || n.category || 'Établissement'}</span>
-        ${n.date ? `<span class="news-date">${fmtDate(n.date)}</span>` : ''}
-      </div>
-      <div class="news-title">${n.title}</div>
-      ${n.content ? `<div class="news-excerpt">${n.content.substring(0,200)}${n.content.length>200?'…':''}</div>` : ''}
-    </div>
-  `).join('');
+  if(!res.ok) { document.getElementById('news-list').innerHTML = `<div class="err">${res.error}</div>`; return; }
+  document.getElementById('news-list').innerHTML = res.news.length
+    ? res.news.map(n=>`
+        <div class="n-item">
+          <div class="n-meta">
+            <span class="n-src">${n.author||'Établissement'}</span>
+            ${n.date?`<span class="n-date">${fmtDate(n.date)}</span>`:''}
+          </div>
+          <div class="n-title">${n.title}</div>
+          ${n.content?`<div class="n-body">${n.content.substring(0,300)}${n.content.length>300?'…':''}</div>`:''}
+        </div>`).join('')
+    : '<div class="empty">Aucune actualité</div>';
 }
 
 // ── UTILS ──
-function fmtTime(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
-}
-function fmtDate(iso) {
-  if (!iso) return '';
-  return new Date(iso).toLocaleDateString('fr-FR', { weekday:'short', day:'numeric', month:'short' });
+function fmtTime(iso) { if(!iso)return''; return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(iso) { if(!iso)return''; return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); }
+function fmtDayFull(d) { return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }
+function offsetDate(days) { const d=new Date(); d.setDate(d.getDate()+days); return d; }
+function gradeColor(v,max) { return v>=(max*0.7)?'var(--green-light)':v>=(max*0.5)?'var(--orange)':'var(--red)'; }
+function updateWeekLabel(id, d) {
+  const start = new Date(d); start.setDate(d.getDate()-d.getDay()+1);
+  const end = new Date(start); end.setDate(start.getDate()+4);
+  document.getElementById(id).textContent = `${fmtDate(start.toISOString())} – ${fmtDate(end.toISOString())}`;
 }
 </script>
 </body>
