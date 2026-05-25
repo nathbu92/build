@@ -1,601 +1,820 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Papillon</title>
+<meta charset="UTF-8"><title>Papillon</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --green:#1a9c4e;--green-light:#22c55e;--green-dim:rgba(26,156,78,0.15);
+  --g:#1a9c4e;--gl:#22c55e;--gd:rgba(26,156,78,0.15);
   --bg:#0f1a14;--bg2:#162011;--bg3:#1c2a1e;
-  --card:#1e2d20;--card2:#243328;--border:rgba(255,255,255,0.07);
-  --text:#e8f0e9;--text2:#9ab89e;--text3:#5d7d62;
-  --red:#e05252;--orange:#e07c32;--blue:#4a8fe8;
-  --radius:14px;--sidebar:220px;
+  --card:#1e2d20;--card2:#243328;--bdr:rgba(255,255,255,0.07);
+  --t:#e8f0e9;--t2:#9ab89e;--t3:#5d7d62;
+  --red:#e05252;--ora:#e07c32;--blu:#4a8fe8;--pur:#9b6ee8;
+  --r:12px;--sw:230px;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);height:100vh;overflow:hidden;display:flex;font-size:14px}
 
 /* SIDEBAR */
-#sidebar{width:var(--sidebar);min-width:var(--sidebar);height:100vh;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:20px 12px;gap:4px}
-.logo{display:flex;align-items:center;gap:10px;padding:8px 10px 20px}
-.logo img{width:32px;height:32px;border-radius:8px}
-.logo span{font-size:18px;font-weight:700;letter-spacing:-0.3px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2);transition:all .15s;user-select:none}
-.nav-item:hover{background:var(--bg3);color:var(--text)}
-.nav-item.active{background:var(--green-dim);color:var(--green-light)}
-.nav-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.sidebar-spacer{flex:1}
-.sidebar-footer{padding:8px 12px;font-size:11px;color:var(--text3);line-height:1.8}
+#sb{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;padding:16px 10px;gap:2px;overflow:hidden}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 10px 18px}
+.logo img{width:30px;height:30px;border-radius:8px}
+.logo b{font-size:17px;font-weight:800;letter-spacing:-.3px}
+.nav{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-weight:500;color:var(--t2);transition:all .15s;user-select:none;font-size:13px}
+.nav:hover{background:var(--bg3);color:var(--t)}
+.nav.active{background:var(--gd);color:var(--gl)}
+.nav .ic{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sb-sep{height:1px;background:var(--bdr);margin:8px 4px}
+.sb-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);padding:4px 11px;margin-top:4px}
+.sp{flex:1}
+.sb-foot{padding:8px 11px;font-size:11px;color:var(--t3);line-height:1.8}
 
 /* MAIN */
 #main{flex:1;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-#topbar{height:56px;min-height:56px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border);gap:12px}
-#topbar h1{font-size:17px;font-weight:600;flex:1}
-.tbtn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer;transition:all .15s}
-.tbtn:hover{background:var(--card2);color:var(--text)}
-#content{flex:1;overflow-y:auto;padding:22px 24px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+#topbar{height:52px;min-height:52px;display:flex;align-items:center;padding:0 22px;border-bottom:1px solid var(--bdr);gap:10px}
+#topbar h1{font-size:16px;font-weight:700;flex:1}
+.tbtn{background:var(--card);border:1px solid var(--bdr);color:var(--t2);padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;transition:all .15s}
+.tbtn:hover{background:var(--card2);color:var(--t)}
+#cont{flex:1;overflow-y:auto;padding:20px 22px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
 .page{display:none}.page.active{display:block}
 
-/* CARDS */
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
-.card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:12px}
+/* LAYOUT */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:15px}
+.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin-bottom:11px}
 
-/* STATS */
-.stat-row{display:flex;gap:12px;margin-bottom:18px}
-.stat-badge{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;text-align:center}
-.stat-value{font-size:24px;font-weight:800;color:var(--green-light)}
-.stat-label{font-size:11px;color:var(--text2);margin-top:3px}
+/* STAT */
+.stat{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;text-align:center}
+.sv{font-size:22px;font-weight:800;color:var(--gl)}
+.sl{font-size:11px;color:var(--t2);margin-top:2px}
 
-/* COURSE */
-.c-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.c-item:last-child{border-bottom:none}
-.c-time{font-size:11px;color:var(--text3);min-width:85px;line-height:1.5}
-.c-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.c-name{font-size:14px;font-weight:600;flex:1}
-.c-sub{font-size:12px;color:var(--text2);margin-top:1px}
-.badge{font-size:11px;padding:2px 8px;border-radius:5px;font-weight:600}
-.b-red{background:rgba(224,82,82,.15);color:var(--red)}
-.b-orange{background:rgba(224,124,50,.15);color:var(--orange)}
+/* ROW */
+.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr)}
+.row:last-child{border-bottom:none}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.rn{font-size:13px;font-weight:600;flex:1}
+.rs{font-size:11px;color:var(--t2);margin-top:1px}
+.rt{font-size:11px;color:var(--t3);min-width:80px}
+
+/* BADGE */
+.bdg{font-size:11px;padding:2px 7px;border-radius:5px;font-weight:600;white-space:nowrap}
+.b-r{background:rgba(224,82,82,.15);color:var(--red)}
+.b-o{background:rgba(224,124,50,.15);color:var(--ora)}
+.b-b{background:rgba(74,143,232,.15);color:var(--blu)}
+.b-g{background:var(--gd);color:var(--gl)}
+.b-p{background:rgba(155,110,232,.15);color:var(--pur)}
 
 /* GRADE */
-.g-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
-.g-row:last-child{border-bottom:none}
-.g-name{font-size:14px;font-weight:600;flex:1}
-.g-sub{font-size:12px;color:var(--text2);margin-top:1px}
-.g-val{font-size:19px;font-weight:700;min-width:48px;text-align:right}
-.g-val.good{color:var(--green-light)}.g-val.avg{color:var(--orange)}.g-val.bad{color:var(--red)}
-.g-den{font-size:11px;color:var(--text3)}
+.gval{font-size:18px;font-weight:700;min-width:44px;text-align:right}
+.gval.good{color:var(--gl)}.gval.avg{color:var(--ora)}.gval.bad{color:var(--red)}.gval.dis{color:var(--t3)}
+.gden{font-size:10px;color:var(--t3)}
 
-/* HOMEWORK */
-.h-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
-.h-item:last-child{border-bottom:none}
-.h-chk{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.h-chk:hover{border-color:var(--green)}
-.h-chk.done{background:var(--green);border-color:var(--green)}
-.h-chk.done::after{content:"✓";color:white;font-size:11px;font-weight:700}
-.h-subj{font-size:12px;font-weight:700;color:var(--green-light);margin-bottom:2px}
-.h-txt{font-size:13px;line-height:1.4}
-.h-txt.done{text-decoration:line-through;color:var(--text3)}
-.h-date{font-size:11px;color:var(--text3);margin-top:3px}
+/* TASK */
+.titem{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.titem:last-child{border-bottom:none}
+.tchk{width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.tchk:hover{border-color:var(--gl)}
+.tchk.done{background:var(--gl);border-color:var(--gl)}
+.tchk.done::after{content:"✓";color:#fff;font-size:10px;font-weight:700}
+.tsubj{font-size:11px;font-weight:700;color:var(--gl);margin-bottom:2px}
+.ttxt{font-size:13px;line-height:1.4}
+.ttxt.done{text-decoration:line-through;color:var(--t3)}
+.tdate{font-size:10px;color:var(--t3);margin-top:3px}
 
 /* NEWS */
-.n-item{padding:12px 0;border-bottom:1px solid var(--border)}
-.n-item:last-child{border-bottom:none}
-.n-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px}
-.n-src{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--green-light);background:var(--green-dim);padding:2px 7px;border-radius:5px}
-.n-date{font-size:11px;color:var(--text3)}
-.n-title{font-size:14px;font-weight:600;line-height:1.4}
-.n-body{font-size:13px;color:var(--text2);margin-top:4px;line-height:1.5}
+.nitem{padding:11px 0;border-bottom:1px solid var(--bdr);cursor:pointer}
+.nitem:last-child{border-bottom:none}
+.nmeta{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
+.nsrc{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gl);background:var(--gd);padding:2px 6px;border-radius:4px}
+.ndate{font-size:10px;color:var(--t3)}
+.ntitle{font-size:13px;font-weight:600;line-height:1.4}
+.nbody{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.5}
+.nunread{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gl);margin-left:4px;vertical-align:middle}
+
+/* ATTENDANCE */
+.att-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+.att-item:last-child{border-bottom:none}
+.att-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.att-name{font-size:13px;font-weight:600;flex:1}
+.att-sub{font-size:11px;color:var(--t2);margin-top:2px}
+
+/* CANTEEN */
+.menu-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin:10px 0 5px}
+.menu-item{font-size:13px;padding:4px 0;border-bottom:1px solid var(--bdr);color:var(--t)}
+.menu-item:last-child{border-bottom:none}
+.menu-allergen{font-size:10px;color:var(--t3)}
 
 /* WEEK NAV */
-.week-nav{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.week-nav button{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:13px}
-.week-nav button:hover{background:var(--card2);color:var(--text)}
-.week-label{font-size:14px;font-weight:600;color:var(--text);flex:1;text-align:center}
+.wnav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.wnav button{background:var(--card);border:1px solid var(--bdr);color:var(--t2);padding:5px 11px;border-radius:8px;cursor:pointer;font-size:12px}
+.wnav button:hover{background:var(--card2);color:var(--t)}
+.wlbl{font-size:13px;font-weight:600;color:var(--t);flex:1;text-align:center}
+
+/* PERIOD SELECTOR */
+.per-sel{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.per-btn{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--t2)}
+.per-btn.active{background:var(--gd);color:var(--gl);border-color:var(--gl)}
 
 /* MISC */
-.loading{display:flex;align-items:center;gap:10px;padding:20px 0;color:var(--text2);font-size:14px}
-.spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--green-light);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.loading{display:flex;align-items:center;gap:9px;padding:18px 0;color:var(--t2);font-size:13px}
+.spinner{width:15px;height:15px;border:2px solid var(--bdr);border-top-color:var(--gl);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty{padding:28px;text-align:center;color:var(--text3);font-size:14px}
-.err{padding:12px;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.2);border-radius:10px;color:var(--red);font-size:13px;margin-bottom:12px}
+.empty{padding:24px;text-align:center;color:var(--t3);font-size:13px}
+.err-box{padding:10px;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.2);border-radius:9px;color:var(--red);font-size:12px;margin-bottom:10px}
 
-/* ── LOGIN OVERLAY ── */
-#login-overlay{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
-.login-box{width:440px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:36px}
-.login-box img{width:52px;height:52px;border-radius:14px;display:block;margin:0 auto 16px}
-.login-box h1{font-size:22px;font-weight:800;text-align:center;margin-bottom:6px}
-.login-box .sub{font-size:13px;color:var(--text2);text-align:center;margin-bottom:24px;line-height:1.5}
-.tab-row{display:flex;gap:8px;margin-bottom:20px}
-.tab-btn{flex:1;padding:8px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text2);transition:all .15s}
-.tab-btn.active{background:var(--green-dim);color:var(--green-light);border-color:var(--green)}
-.form-group{margin-bottom:12px}
-.form-label{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
-.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:10px 13px;border-radius:10px;font-size:14px;outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--green)}
-.form-input::placeholder{color:var(--text3)}
-.btn-primary{width:100%;background:var(--green);color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;transition:all .15s}
-.btn-primary:hover{background:#15803d}
-.btn-primary:disabled{opacity:.6;cursor:not-allowed}
-.login-err{background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);color:var(--red);padding:10px 13px;border-radius:10px;font-size:13px;margin-top:10px;display:none}
-.login-hint{font-size:11px;color:var(--text3);text-align:center;margin-top:12px;line-height:1.7}
+/* DETAIL PANEL */
+#detail{position:fixed;right:0;top:0;width:380px;height:100vh;background:var(--bg2);border-left:1px solid var(--bdr);display:none;flex-direction:column;z-index:100;overflow:hidden}
+#detail.open{display:flex}
+#detail-head{padding:16px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
+#detail-title{font-size:15px;font-weight:700;flex:1}
+#detail-close{background:var(--card);border:1px solid var(--bdr);color:var(--t2);width:28px;height:28px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
+#detail-body{flex:1;overflow-y:auto;padding:16px 18px}
 
-/* QR step */
-.qr-step{display:none}
-.qr-box{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:14px;font-size:13px;color:var(--text2);line-height:1.6}
-.qr-box b{color:var(--text)}
+/* LOGIN */
+#login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200}
+.lbox{width:420px;background:var(--bg2);border:1px solid var(--bdr);border-radius:18px;padding:32px}
+.lbox img{width:48px;height:48px;border-radius:13px;display:block;margin:0 auto 14px}
+.lbox h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:5px}
+.lbox .sub{font-size:12px;color:var(--t2);text-align:center;margin-bottom:22px;line-height:1.5}
+.tabs{display:flex;gap:6px;margin-bottom:18px}
+.tab{flex:1;padding:7px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--bg3);color:var(--t2)}
+.tab.active{background:var(--gd);color:var(--gl);border-color:var(--g)}
+.fl{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:4px;display:block}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--bdr);color:var(--t);padding:9px 12px;border-radius:9px;font-size:13px;outline:none;transition:border .15s;margin-bottom:10px}
+.fi:focus{border-color:var(--g)}
+.fi::placeholder{color:var(--t3)}
+textarea.fi{resize:vertical;min-height:72px}
+.btnp{width:100%;background:var(--g);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px}
+.btnp:hover{background:#15803d}
+.btnp:disabled{opacity:.6;cursor:not-allowed}
+.lerr{background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);color:var(--red);padding:9px 12px;border-radius:9px;font-size:12px;margin-top:8px;display:none}
+.lhint{font-size:10px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.7}
+.qr-info{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--t2);line-height:1.6}
+.qr-info b{color:var(--t)}
 
-::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
 </style>
 </head>
 <body>
 
 <!-- LOGIN -->
-<div id="login-overlay">
-  <div class="login-box">
+<div id="login">
+  <div class="lbox">
     <img src="../assets/icon.png" alt="">
-    <h1>Connexion à Pronote</h1>
-    <p class="sub">Connecte-toi avec ton compte Pronote pour accéder à tes données scolaires.</p>
-
-    <div class="tab-row">
-      <button class="tab-btn active" onclick="switchTab('qr',this)">📱 QR Code</button>
-      <button class="tab-btn" onclick="switchTab('token',this)">🔑 Token</button>
+    <h1>Connexion Pronote</h1>
+    <p class="sub">Connecte-toi pour accéder à toutes tes données scolaires.</p>
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('qr',this)">📱 QR Code</button>
+      <button class="tab" onclick="switchTab('token',this)">🔑 Token</button>
     </div>
-
-    <!-- QR tab -->
     <div id="tab-qr">
-      <div class="qr-box">
+      <div class="qr-info">
         <b>Comment obtenir le QR Code ?</b><br>
-        Dans l'appli Pronote mobile : <b>Paramètres → Mon compte → Connexion avec QR Code</b>.<br>
-        Scanne-le avec ton téléphone et note le code PIN à 4 chiffres.
+        Pronote mobile → <b>Paramètres → Mon profil → Mes appareils → Ajouter</b>.<br>
+        Scanne le QR Code affiché avec une app (ex: Google Lens) pour copier le JSON, et note le PIN à 4 chiffres.
       </div>
-      <div class="form-group">
-        <label class="form-label">Données QR Code (JSON)</label>
-        <textarea class="form-input" id="qr-data" rows="3" placeholder='{"jeton":"...","login":"...","url":"..."}'></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Code PIN (4 chiffres)</label>
-        <input class="form-input" id="qr-pin" type="password" maxlength="4" placeholder="••••">
-      </div>
-      <button class="btn-primary" id="btn-qr" onclick="doLoginQR()">Se connecter</button>
+      <label class="fl">Données QR Code (JSON)</label>
+      <textarea class="fi" id="qr-data" placeholder='{"jeton":"...","login":"...","url":"..."}'></textarea>
+      <label class="fl">Code PIN (4 chiffres)</label>
+      <input class="fi" id="qr-pin" type="password" maxlength="4" placeholder="••••">
+      <button class="btnp" id="btn-qr" onclick="doLoginQR()">Se connecter</button>
     </div>
-
-    <!-- Token tab -->
     <div id="tab-token" style="display:none">
-      <div class="form-group">
-        <label class="form-label">URL Pronote</label>
-        <input class="form-input" id="tk-url" type="url" placeholder="https://monlycee.index-education.net/pronote/">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Identifiant</label>
-        <input class="form-input" id="tk-user" placeholder="prenom.nom">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Token de connexion</label>
-        <input class="form-input" id="tk-token" placeholder="Token (depuis les paramètres Pronote)">
-      </div>
-      <div class="form-group">
-        <label class="form-label">UUID de l'appareil</label>
-        <input class="form-input" id="tk-uuid" placeholder="UUID (généré lors du 1er QR Code)">
-      </div>
-      <button class="btn-primary" id="btn-tk" onclick="doLoginToken()">Se connecter</button>
+      <label class="fl">URL Pronote</label>
+      <input class="fi" id="tk-url" placeholder="https://monlycee.index-education.net/pronote/">
+      <label class="fl">Identifiant</label>
+      <input class="fi" id="tk-user" placeholder="prenom.nom">
+      <label class="fl">Token</label>
+      <input class="fi" id="tk-token" placeholder="Token de connexion">
+      <label class="fl">UUID appareil</label>
+      <input class="fi" id="tk-uuid" placeholder="UUID généré lors du QR Code">
+      <button class="btnp" id="btn-tk" onclick="doLoginToken()">Se connecter</button>
     </div>
-
-    <div class="login-err" id="login-err"></div>
-    <p class="login-hint">🔒 Tes identifiants ne quittent jamais ton appareil.<br>Connexion directe au serveur Pronote de ton lycée.</p>
+    <div class="lerr" id="lerr"></div>
+    <p class="lhint">🔒 Tes données ne quittent jamais ton appareil<br>Connexion directe au serveur Pronote de ton lycée</p>
   </div>
 </div>
 
-<!-- APP -->
-<div id="sidebar">
-  <div class="logo">
-    <img src="../assets/icon.png" alt="">
-    <span>Papillon</span>
+<!-- DETAIL PANEL -->
+<div id="detail">
+  <div id="detail-head">
+    <span id="detail-title">Détail</span>
+    <div id="detail-close" onclick="closeDetail()">✕</div>
   </div>
-  <div class="nav-item active" onclick="showPage('home',this)"><span class="nav-icon">🏠</span>Accueil</div>
-  <div class="nav-item" onclick="showPage('timetable',this)"><span class="nav-icon">📅</span>Cours</div>
-  <div class="nav-item" onclick="showPage('homework',this)"><span class="nav-icon">📝</span>Tâches</div>
-  <div class="nav-item" onclick="showPage('grades',this)"><span class="nav-icon">📊</span>Notes</div>
-  <div class="nav-item" onclick="showPage('news',this)"><span class="nav-icon">📣</span>Actualités</div>
-  <div class="sidebar-spacer"></div>
-  <div class="sidebar-footer">
-    <span id="sb-name" style="color:var(--green-light);font-weight:600"></span><br>
-    <span id="sb-class" style="color:var(--text2)"></span><br>
+  <div id="detail-body"></div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sb">
+  <div class="logo"><img src="../assets/icon.png" alt=""><b>Papillon</b></div>
+
+  <div class="sb-sec">Principal</div>
+  <div class="nav active" onclick="go('home',this)"><span class="ic">🏠</span>Accueil</div>
+  <div class="nav" onclick="go('timetable',this)"><span class="ic">📅</span>Cours</div>
+  <div class="nav" onclick="go('homework',this)"><span class="ic">📝</span>Tâches</div>
+  <div class="nav" onclick="go('grades',this)"><span class="ic">📊</span>Notes</div>
+  <div class="nav" onclick="go('news',this)"><span class="ic">📣</span>Actualités</div>
+
+  <div class="sb-sep"></div>
+  <div class="sb-sec">Vie scolaire</div>
+  <div class="nav" onclick="go('attendance',this)"><span class="ic">📋</span>Absences & Retards</div>
+  <div class="nav" onclick="go('canteen',this)"><span class="ic">🍽️</span>Cantine</div>
+
+  <div class="sp"></div>
+  <div class="sb-foot">
+    <span id="sb-name" style="color:var(--gl);font-weight:600"></span><br>
+    <span id="sb-info" style="color:var(--t2)"></span><br>
     Papillon v8.4.2 · Windows<br>
     <span style="cursor:pointer;color:var(--red)" onclick="doLogout()">↩ Déconnexion</span>
   </div>
 </div>
 
+<!-- MAIN -->
 <div id="main">
   <div id="topbar">
-    <h1 id="page-title">Accueil</h1>
-    <button class="tbtn" onclick="refresh()">↻ Actualiser</button>
+    <h1 id="ptitle">Accueil</h1>
+    <select id="period-sel" style="display:none;background:var(--card);border:1px solid var(--bdr);color:var(--t);padding:5px 10px;border-radius:8px;font-size:12px;cursor:pointer" onchange="onPeriodChange()"></select>
+    <button class="tbtn" onclick="refreshPage()">↻ Actualiser</button>
   </div>
-  <div id="content">
+  <div id="cont">
 
     <!-- HOME -->
     <div class="page active" id="page-home">
-      <div class="stat-row">
-        <div class="stat-badge"><div class="stat-value" id="s-cours">—</div><div class="stat-label">Cours aujourd'hui</div></div>
-        <div class="stat-badge"><div class="stat-value" id="s-devoirs">—</div><div class="stat-label">Devoirs cette semaine</div></div>
-        <div class="stat-badge"><div class="stat-value" id="s-moy">—</div><div class="stat-label">Moyenne générale</div></div>
+      <div class="g4">
+        <div class="stat"><div class="sv" id="s-cours">—</div><div class="sl">Cours aujourd'hui</div></div>
+        <div class="stat"><div class="sv" id="s-hw">—</div><div class="sl">Devoirs en attente</div></div>
+        <div class="stat"><div class="sv" id="s-moy">—</div><div class="sl">Moyenne générale</div></div>
+        <div class="stat"><div class="sv" id="s-abs">—</div><div class="sl">Absences</div></div>
       </div>
-      <div class="grid-2">
-        <div class="card"><div class="card-title">Cours du jour</div><div id="home-tt"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
-        <div class="card"><div class="card-title">Devoirs à faire</div><div id="home-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="g2">
+        <div class="card"><div class="ct">Cours du jour</div><div id="h-tt"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+        <div class="card"><div class="ct">Devoirs à faire</div><div id="h-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
       </div>
-      <div class="card"><div class="card-title">Dernières notes</div><div id="home-gr"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="card"><div class="ct">Dernières notes</div><div id="h-gr"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- TIMETABLE -->
     <div class="page" id="page-timetable">
-      <div class="week-nav">
-        <button onclick="changeWeek(-1)">‹ Semaine précédente</button>
-        <span class="week-label" id="week-label">Cette semaine</span>
-        <button onclick="changeWeek(1)">Semaine suivante ›</button>
+      <div class="wnav">
+        <button onclick="changeWeek(-1)">‹ Semaine préc.</button>
+        <span class="wlbl" id="tt-wlbl"></span>
+        <button onclick="changeWeek(1)">Semaine suiv. ›</button>
       </div>
-      <div id="tt-days"></div>
+      <div id="tt-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- HOMEWORK -->
     <div class="page" id="page-homework">
-      <div class="week-nav">
+      <div class="wnav">
         <button onclick="changeHWWeek(-1)">‹</button>
-        <span class="week-label" id="hw-week-label">Cette semaine</span>
+        <span class="wlbl" id="hw-wlbl"></span>
         <button onclick="changeHWWeek(1)">›</button>
       </div>
-      <div class="card"><div class="card-title">Devoirs</div><div id="hw-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div id="hw-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- GRADES -->
     <div class="page" id="page-grades">
-      <div class="stat-row">
-        <div class="stat-badge"><div class="stat-value" id="g-moy">—</div><div class="stat-label">Moyenne générale</div></div>
-        <div class="stat-badge"><div class="stat-value" id="g-cl">—</div><div class="stat-label">Moyenne classe</div></div>
-        <div class="stat-badge"><div class="stat-value" id="g-best">—</div><div class="stat-label">Meilleure note</div></div>
-        <div class="stat-badge"><div class="stat-value" id="g-low">—</div><div class="stat-label">Note la plus basse</div></div>
+      <div class="g4" id="g-stats">
+        <div class="stat"><div class="sv" id="g-moy">—</div><div class="sl">Moyenne générale</div></div>
+        <div class="stat"><div class="sv" id="g-cl">—</div><div class="sl">Moyenne classe</div></div>
+        <div class="stat"><div class="sv" id="g-best">—</div><div class="sl">Meilleure note</div></div>
+        <div class="stat"><div class="sv" id="g-low">—</div><div class="sl">Note la plus basse</div></div>
       </div>
-      <div id="grades-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="g-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- NEWS -->
     <div class="page" id="page-news">
-      <div class="card"><div class="card-title">Actualités</div><div id="news-list"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div id="news-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div class="page" id="page-attendance">
+      <div class="g4" id="att-stats">
+        <div class="stat"><div class="sv" id="a-abs">—</div><div class="sl">Absences</div></div>
+        <div class="stat"><div class="sv" id="a-ret">—</div><div class="sl">Retards</div></div>
+        <div class="stat"><div class="sv" id="a-pun">—</div><div class="sl">Punitions</div></div>
+        <div class="stat"><div class="sv" id="a-obs">—</div><div class="sl">Observations</div></div>
+      </div>
+      <div id="att-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+    </div>
+
+    <!-- CANTEEN -->
+    <div class="page" id="page-canteen">
+      <div class="wnav">
+        <button onclick="changeCanteenWeek(-1)">‹</button>
+        <span class="wlbl" id="cn-wlbl"></span>
+        <button onclick="changeCanteenWeek(1)">›</button>
+      </div>
+      <div id="cn-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
   </div>
 </div>
 
 <script>
-let currentPage = 'home';
-let ttWeekOffset = 0;
-let hwWeekOffset = 0;
+let curPage = 'home';
+let ttWeek = 0, hwWeek = 0, cnWeek = 0;
 let hwCache = [];
-let savedCreds = null;
+let gradesPeriods = [], attPeriods = [];
+let curGradePeriod = null, curAttPeriod = null;
 
 // ── NAV ──
-function showPage(id, el) {
+function go(id, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
-  el.classList.add('active');
-  const titles={home:'Accueil',timetable:'Emploi du temps',homework:'Mes tâches',grades:'Notes',news:'Actualités'};
-  document.getElementById('page-title').textContent = titles[id];
-  currentPage = id;
-  if(id==='timetable') loadTimetable();
-  if(id==='homework') loadHomework();
-  if(id==='grades') loadGrades();
-  if(id==='news') loadNews();
+  if(el) el.classList.add('active');
+  const titles={home:'Accueil',timetable:'Emploi du temps',homework:'Mes tâches',grades:'Notes',news:'Actualités',attendance:'Vie scolaire',canteen:'Cantine'};
+  document.getElementById('ptitle').textContent = titles[id]||id;
+  curPage = id;
+  closeDetail();
+  // show/hide period selector
+  const showPer = (id==='grades'||id==='attendance');
+  document.getElementById('period-sel').style.display = showPer?'block':'none';
+  loadPage(id);
 }
 
-function refresh() { loadPage(currentPage); }
-function loadPage(id) {
-  if(id==='home') { loadTimetable(true); loadHomework(true); loadGrades(true); }
-  if(id==='timetable') loadTimetable();
-  if(id==='homework') loadHomework();
-  if(id==='grades') loadGrades();
-  if(id==='news') loadNews();
+function refreshPage() { loadPage(curPage, true); }
+
+function loadPage(id, force) {
+  if(id==='home') loadHome();
+  else if(id==='timetable') loadTimetable();
+  else if(id==='homework') loadHomework();
+  else if(id==='grades') loadGrades();
+  else if(id==='news') loadNews();
+  else if(id==='attendance') loadAttendance();
+  else if(id==='canteen') loadCanteen();
 }
 
 // ── LOGIN ──
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+function switchTab(t, btn) {
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('tab-qr').style.display = tab==='qr'?'block':'none';
-  document.getElementById('tab-token').style.display = tab==='token'?'block':'none';
-  document.getElementById('login-err').style.display='none';
+  document.getElementById('tab-qr').style.display = t==='qr'?'block':'none';
+  document.getElementById('tab-token').style.display = t==='token'?'block':'none';
+  document.getElementById('lerr').style.display='none';
 }
 
 async function doLoginQR() {
-  const qrData = document.getElementById('qr-data').value.trim();
-  const pin = document.getElementById('qr-pin').value.trim();
-  if(!qrData||!pin) { showErr('Remplis tous les champs.'); return; }
-  if(pin.length!==4) { showErr('Le PIN doit faire 4 chiffres.'); return; }
-
+  const qrData=document.getElementById('qr-data').value.trim();
+  const pin=document.getElementById('qr-pin').value.trim();
+  if(!qrData||!pin){showLErr('Remplis tous les champs.');return}
+  if(pin.length!==4){showLErr('Le PIN doit faire 4 chiffres.');return}
+  setBtn('btn-qr',true);hideLErr();
   const deviceUUID = crypto.randomUUID();
-  setBtnLoading('btn-qr', true);
-  hideErr();
-
-  const res = await window.papillon.loginQR({ qrData, pin, deviceUUID });
-  setBtnLoading('btn-qr', false);
-
-  if(res.ok) {
-    // Save credentials for token refresh
-    savedCreds = { url: res.url, username: res.username, token: res.token, deviceUUID, kind: res.kind };
-    localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
+  const res = await window.papillon.loginQR({qrData,pin,deviceUUID});
+  setBtn('btn-qr',false);
+  if(res.ok){
+    const creds={url:res.url,username:res.username,token:res.token,deviceUUID,kind:res.kind};
+    localStorage.setItem('pp_creds',JSON.stringify(creds));
     onLogin(res.user);
-  } else {
-    showErr(res.error || 'Erreur de connexion. Vérifie le QR Code et le PIN.');
-  }
+  } else { showLErr(res.error||'Erreur de connexion. Vérifie le QR Code et le PIN.'); }
 }
 
 async function doLoginToken() {
-  const url = document.getElementById('tk-url').value.trim();
-  const username = document.getElementById('tk-user').value.trim();
-  const token = document.getElementById('tk-token').value.trim();
-  const deviceUUID = document.getElementById('tk-uuid').value.trim();
-  if(!url||!username||!token||!deviceUUID) { showErr('Remplis tous les champs.'); return; }
-
-  setBtnLoading('btn-tk', true);
-  hideErr();
-
-  const res = await window.papillon.loginToken({ url, username, token, deviceUUID });
-  setBtnLoading('btn-tk', false);
-
-  if(res.ok) {
-    savedCreds = { url, username, token: res.token, deviceUUID };
-    localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
+  const url=document.getElementById('tk-url').value.trim();
+  const username=document.getElementById('tk-user').value.trim();
+  const token=document.getElementById('tk-token').value.trim();
+  const deviceUUID=document.getElementById('tk-uuid').value.trim();
+  if(!url||!username||!token||!deviceUUID){showLErr('Remplis tous les champs.');return}
+  setBtn('btn-tk',true);hideLErr();
+  const res=await window.papillon.loginToken({url,username,token,deviceUUID});
+  setBtn('btn-tk',false);
+  if(res.ok){
+    localStorage.setItem('pp_creds',JSON.stringify({url,username,token:res.token,deviceUUID}));
     onLogin(res.user);
-  } else {
-    showErr(res.error || 'Erreur. Vérifie ton token et ton URL Pronote.');
-  }
+  } else { showLErr(res.error||'Erreur. Vérifie ton token.'); }
 }
 
-function onLogin(user) {
-  document.getElementById('login-overlay').style.display='none';
-  document.getElementById('sb-name').textContent = user.name;
-  document.getElementById('sb-class').textContent = [user.class, user.school].filter(Boolean).join(' · ');
-  loadAll();
+async function onLogin(user) {
+  document.getElementById('login').style.display='none';
+  document.getElementById('sb-name').textContent=user.name;
+  document.getElementById('sb-info').textContent=[user.class,user.school].filter(Boolean).join(' · ');
+  // Load periods
+  const gp=await window.papillon.periods({tab:'grades'});
+  if(gp.ok){
+    gradesPeriods=gp.periods;
+    curGradePeriod=gp.periods[0]?.name||null;
+    buildPeriodSel(gp.periods, 'grades');
+  }
+  const ap=await window.papillon.periods({tab:'attendance'});
+  if(ap.ok){ attPeriods=ap.periods; curAttPeriod=ap.periods[0]?.name||null; }
+  loadHome();
+}
+
+function buildPeriodSel(periods, tab) {
+  const sel=document.getElementById('period-sel');
+  sel.innerHTML = periods.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+}
+
+function onPeriodChange() {
+  const val=document.getElementById('period-sel').value;
+  if(curPage==='grades'){curGradePeriod=val;loadGrades();}
+  if(curPage==='attendance'){curAttPeriod=val;loadAttendance();}
 }
 
 async function doLogout() {
   await window.papillon.logout();
-  localStorage.removeItem('papillon_creds');
-  savedCreds = null;
-  document.getElementById('login-overlay').style.display='flex';
+  localStorage.removeItem('pp_creds');
+  document.getElementById('login').style.display='flex';
   document.getElementById('sb-name').textContent='';
-  document.getElementById('sb-class').textContent='';
+  document.getElementById('sb-info').textContent='';
 }
 
-// Auto-reconnect on startup
-window.addEventListener('load', async () => {
-  const raw = localStorage.getItem('papillon_creds');
-  if(raw) {
-    try {
-      savedCreds = JSON.parse(raw);
-      const res = await window.papillon.loginToken(savedCreds);
-      if(res.ok) {
-        // Update token
-        savedCreds.token = res.token;
-        localStorage.setItem('papillon_creds', JSON.stringify(savedCreds));
-        onLogin(res.user);
-        return;
+// Auto-reconnect
+window.addEventListener('load',async()=>{
+  const raw=localStorage.getItem('pp_creds');
+  if(raw){
+    try{
+      const c=JSON.parse(raw);
+      const res=await window.papillon.loginToken(c);
+      if(res.ok){
+        localStorage.setItem('pp_creds',JSON.stringify({...c,token:res.token}));
+        await onLogin(res.user);return;
       }
-    } catch(e) {}
-    localStorage.removeItem('papillon_creds');
+    }catch(e){}
+    localStorage.removeItem('pp_creds');
   }
 });
 
-function showErr(msg) { const e=document.getElementById('login-err'); e.textContent='⚠️ '+msg; e.style.display='block'; }
-function hideErr() { document.getElementById('login-err').style.display='none'; }
-function setBtnLoading(id, loading) {
-  const btn = document.getElementById(id);
-  btn.disabled = loading;
-  btn.textContent = loading ? 'Connexion…' : 'Se connecter';
-}
+document.getElementById('qr-pin').addEventListener('keydown',e=>{if(e.key==='Enter')doLoginQR();});
 
-// ── LOAD ALL ──
-function loadAll() { loadTimetable(true); loadHomework(true); loadGrades(true); loadNews(); }
+function showLErr(m){const e=document.getElementById('lerr');e.textContent='⚠️ '+m;e.style.display='block';}
+function hideLErr(){document.getElementById('lerr').style.display='none';}
+function setBtn(id,loading){const b=document.getElementById(id);b.disabled=loading;b.textContent=loading?'Connexion…':'Se connecter';}
+
+// ── HOME ──
+async function loadHome() {
+  setEl('h-tt','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  setEl('h-hw','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  setEl('h-gr','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const [tt,hw,gr,att]=await Promise.all([
+    window.papillon.timetable({date:new Date().toISOString()}),
+    window.papillon.homework({weekOffset:0}),
+    window.papillon.grades({periodName:curGradePeriod}),
+    window.papillon.attendance({periodName:curAttPeriod}),
+  ]);
+  // Timetable
+  if(tt.ok){
+    const today=new Date().toDateString();
+    const todayL=tt.lessons.filter(l=>new Date(l.from).toDateString()===today);
+    setEl('s-cours',todayL.filter(l=>!l.isCancelled).length);
+    setEl('h-tt',todayL.length?todayL.map(l=>lessonRowHTML(l)).join(''):'<div class="empty">Aucun cours aujourd\'hui</div>');
+  }
+  // Homework
+  if(hw.ok){
+    hwCache=hw.homeworks;
+    const pend=hw.homeworks.filter(h=>!h.isDone);
+    setEl('s-hw',pend.length);
+    setEl('h-hw',pend.length?pend.slice(0,4).map(h=>hwRowHTML(h,true)).join(''):'<div class="empty">Aucun devoir en attente 🎉</div>');
+  }
+  // Grades
+  if(gr.ok){
+    const allG=gr.subjects.flatMap(s=>s.grades);
+    if(!gr.overall?.disabled) setEl('s-moy',gr.overall?.value?.toFixed(1)||'—');
+    setEl('h-gr',allG.slice(0,4).map(g=>gradeRowHTML(g)).join('')||'<div class="empty">Aucune note</div>');
+  }
+  // Attendance
+  if(att.ok){
+    setEl('s-abs',att.absences.length);
+  }
+}
 
 // ── TIMETABLE ──
-async function loadTimetable(homeOnly=false) {
-  const d = offsetDate(ttWeekOffset);
-  updateWeekLabel('week-label', d);
-
-  if(!homeOnly) document.getElementById('tt-days').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
-  document.getElementById('home-tt').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
-
-  const res = await window.papillon.timetable({ date: d.toISOString() });
-
-  if(!res.ok) {
-    if(!homeOnly) document.getElementById('tt-days').innerHTML = `<div class="err">${res.error}</div>`;
-    document.getElementById('home-tt').innerHTML = `<div class="err">${res.error}</div>`;
-    return;
-  }
-
-  const today = new Date().toDateString();
-  const todayLessons = res.lessons.filter(l => new Date(l.from).toDateString() === today);
-  document.getElementById('s-cours').textContent = todayLessons.filter(l=>!l.isCancelled).length;
-
-  // Home widget — today only
-  document.getElementById('home-tt').innerHTML = todayLessons.length
-    ? todayLessons.map(l => courseHTML(l, true)).join('')
-    : '<div class="empty">Aucun cours aujourd\'hui</div>';
-
-  if(homeOnly) return;
-
+async function loadTimetable() {
+  setEl('tt-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=weekDate(ttWeek);
+  updateWLbl('tt-wlbl',d);
+  const res=await window.papillon.timetable({date:d.toISOString()});
+  if(!res.ok){setEl('tt-content',errHTML(res.error));return;}
+  if(!res.lessons.length){setEl('tt-content','<div class="empty">Aucun cours cette semaine</div>');return;}
   // Group by day
-  const days = {};
-  for(const l of res.lessons) {
-    const dk = new Date(l.from).toDateString();
-    if(!days[dk]) days[dk] = [];
+  const days={};
+  for(const l of res.lessons){
+    const dk=new Date(l.from).toDateString();
+    days[dk]=days[dk]||[];
     days[dk].push(l);
   }
-
-  document.getElementById('tt-days').innerHTML = Object.entries(days).map(([dk, lessons]) => `
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-title">${fmtDayFull(new Date(dk))}</div>
-      ${lessons.map(l=>courseHTML(l,false)).join('')}
+  setEl('tt-content',Object.entries(days).map(([dk,ls])=>`
+    <div class="card" style="margin-bottom:12px">
+      <div class="ct">${fmtDayFull(new Date(dk))}</div>
+      ${ls.map(l=>lessonRowHTML(l)).join('')}
     </div>
-  `).join('') || '<div class="empty">Aucun cours cette semaine</div>';
+  `).join(''));
 }
 
-function courseHTML(l, compact) {
-  const color = l.color || '#22c55e';
-  const badge = l.isCancelled ? '<span class="badge b-red">Annulé</span>'
-               : l.isDetention ? '<span class="badge b-orange">Retenue</span>' : '';
-  return `<div class="c-item">
-    <div class="c-time">${fmtTime(l.from)}<br><span style="color:var(--text3)">${fmtTime(l.to)}</span></div>
-    <div class="c-dot" style="background:${color}"></div>
+function lessonRowHTML(l) {
+  const color = l.color||'#22c55e';
+  const badges = [];
+  if(l.isCancelled) badges.push('<span class="bdg b-r">Annulé</span>');
+  else if(l.isTest) badges.push('<span class="bdg b-o">Évaluation</span>');
+  if(l.type==='detention') badges.push('<span class="bdg b-p">Retenue</span>');
+  return `<div class="row" style="cursor:pointer" onclick="showCourseDetail(${JSON.stringify(l).replace(/"/g,'&quot;')})">
+    <div style="min-width:72px;font-size:11px;color:var(--t3);line-height:1.5">${fmtTime(l.from)}<br>${fmtTime(l.to)}</div>
+    <div class="dot" style="background:${color}"></div>
     <div style="flex:1">
-      <div class="c-name" style="color:${l.isCancelled?'var(--text3)':'var(--text)'}">${l.subject}</div>
-      <div class="c-sub">${[l.teacher,l.room].filter(Boolean).join(' · ') || '&nbsp;'}</div>
+      <div class="rn" style="color:${l.isCancelled?'var(--t3)':'var(--t)'}">${l.subject}</div>
+      <div class="rs">${[l.teacher,l.room].filter(Boolean).join(' · ')||'&nbsp;'}</div>
     </div>
-    ${badge}
+    ${badges.join('')}
   </div>`;
 }
 
-function changeWeek(d) { ttWeekOffset+=d; loadTimetable(); }
+function changeWeek(d){ttWeek+=d;loadTimetable();}
 
 // ── HOMEWORK ──
-async function loadHomework(homeOnly=false) {
-  const d = offsetDate(hwWeekOffset*7);
-  updateWeekLabel('hw-week-label', d);
-  if(!homeOnly) document.getElementById('hw-list').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
-
-  const res = await window.papillon.homework({ weekOffset: hwWeekOffset });
-  if(!res.ok) {
-    if(!homeOnly) document.getElementById('hw-list').innerHTML = `<div class="err">${res.error}</div>`;
-    return;
-  }
-
-  hwCache = res.homeworks;
-  const pending = hwCache.filter(h=>!h.done);
-  document.getElementById('s-devoirs').textContent = pending.length;
-
-  document.getElementById('home-hw').innerHTML = pending.length
-    ? pending.slice(0,3).map(h=>`
-        <div class="h-item">
-          <div class="h-chk"></div>
-          <div>
-            <div class="h-subj">${h.subject}</div>
-            <div class="h-txt">${h.content.substring(0,60)}${h.content.length>60?'…':''}</div>
-          </div>
-        </div>`).join('')
-    : '<div class="empty" style="padding:12px">Tout est fait ! 🎉</div>';
-
-  if(homeOnly) return;
+async function loadHomework() {
+  setEl('hw-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=weekDate(hwWeek);
+  updateWLbl('hw-wlbl',d);
+  const res=await window.papillon.homework({weekOffset:hwWeek});
+  if(!res.ok){setEl('hw-content',errHTML(res.error));return;}
+  hwCache=res.homeworks;
   renderHW();
 }
 
 function renderHW() {
-  document.getElementById('hw-list').innerHTML = hwCache.length
-    ? hwCache.map((h,i)=>`
-        <div class="h-item">
-          <div class="h-chk ${h.done?'done':''}" onclick="toggleHW(${i})"></div>
-          <div style="flex:1">
-            <div class="h-subj">${h.subject}</div>
-            <div class="h-txt ${h.done?'done':''}">${h.content}</div>
-            ${h.dueDate?`<div class="h-date">📅 ${fmtDate(h.dueDate)}</div>`:''}
-          </div>
-        </div>`).join('')
-    : '<div class="empty">Aucun devoir cette semaine 🎉</div>';
+  if(!hwCache.length){setEl('hw-content','<div class="empty">Aucun devoir cette semaine 🎉</div>');return;}
+  // Group by due date
+  const days={};
+  for(const h of hwCache){
+    const dk=h.dueDate?new Date(h.dueDate).toDateString():'Sans date';
+    days[dk]=days[dk]||[];
+    days[dk].push(h);
+  }
+  setEl('hw-content',Object.entries(days).map(([dk,hs])=>`
+    <div class="card" style="margin-bottom:12px">
+      <div class="ct">Pour le ${dk==='Sans date'?'—':fmtDate(new Date(dk))}</div>
+      ${hs.map((h,i)=>hwRowHTML(h,false,hwCache.indexOf(h))).join('')}
+    </div>
+  `).join(''));
+  setEl('s-hw',hwCache.filter(h=>!h.isDone).length);
+}
+
+function hwRowHTML(h, compact, idx) {
+  return `<div class="titem">
+    <div class="tchk ${h.isDone?'done':''}" onclick="toggleHW(${idx??0})"></div>
+    <div style="flex:1" onclick="showHWDetail(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+      <div class="tsubj">${h.subject}</div>
+      <div class="ttxt ${h.isDone?'done':''}">${compact?h.content.substring(0,70)+(h.content.length>70?'…':''):h.content}</div>
+      ${h.dueDate&&!compact?`<div class="tdate">📅 ${fmtDate(new Date(h.dueDate))}</div>`:''}
+      ${h.attachments?.length?`<div class="tdate">📎 ${h.attachments.length} pièce(s) jointe(s)</div>`:''}
+    </div>
+  </div>`;
 }
 
 async function toggleHW(i) {
-  hwCache[i].done = !hwCache[i].done;
-  document.getElementById('s-devoirs').textContent = hwCache.filter(h=>!h.done).length;
+  if(i===undefined||i===null)return;
+  hwCache[i].isDone=!hwCache[i].isDone;
   renderHW();
-  await window.papillon.toggleHW({ id: hwCache[i].id, done: hwCache[i].done });
+  await window.papillon.toggleHW({id:hwCache[i].id,status:hwCache[i].isDone});
 }
 
-function changeHWWeek(d) { hwWeekOffset+=d; loadHomework(); }
+function changeHWWeek(d){hwWeek+=d;loadHomework();}
 
 // ── GRADES ──
-async function loadGrades(homeOnly=false) {
-  if(!homeOnly) document.getElementById('grades-content').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
+async function loadGrades() {
+  setEl('g-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const res=await window.papillon.grades({periodName:curGradePeriod});
+  if(!res.ok){setEl('g-content',errHTML(res.error));return;}
 
-  const res = await window.papillon.grades();
-  if(!res.ok) {
-    if(!homeOnly) document.getElementById('grades-content').innerHTML = `<div class="err">${res.error}</div>`;
-    return;
-  }
+  const allG=res.subjects.flatMap(s=>s.grades).filter(g=>!g.studentScore.disabled);
+  const vals=allG.map(g=>g.studentScore.value);
 
-  if(res.overall !== null && res.overall !== undefined) {
-    document.getElementById('s-moy').textContent = res.overall.toFixed(1);
-    document.getElementById('g-moy').textContent = res.overall.toFixed(1);
-  }
-  if(res.classAvg !== null && res.classAvg !== undefined) {
-    document.getElementById('g-cl').textContent = res.classAvg.toFixed(1);
-  }
+  if(!res.overall?.disabled){setEl('g-moy',res.overall.value.toFixed(2));setEl('s-moy',res.overall.value.toFixed(1));}
+  if(!res.classAverage?.disabled) setEl('g-cl',res.classAverage.value.toFixed(2));
+  if(vals.length){setEl('g-best',Math.max(...vals).toFixed(1));setEl('g-low',Math.min(...vals).toFixed(1));}
 
-  const vals = res.grades.filter(g=>g.value!==null).map(g=>g.value);
-  if(vals.length) {
-    document.getElementById('g-best').textContent = Math.max(...vals).toFixed(1);
-    document.getElementById('g-low').textContent = Math.min(...vals).toFixed(1);
-  }
-
-  document.getElementById('home-gr').innerHTML = res.grades.slice(0,3).map(g=>gradeHTML(g,true)).join('')
-    || '<div class="empty" style="padding:12px">Aucune note</div>';
-
-  if(homeOnly) return;
-
-  // Group by subject
-  document.getElementById('grades-content').innerHTML = res.subjects.map(s=>`
-    <div class="card" style="margin-bottom:14px">
-      <div class="card-title">${s.name}
-        ${s.student!==null?`<span style="float:right;color:${gradeColor(s.student,20)};font-size:13px;font-weight:700">${s.student.toFixed(1)}/20</span>`:''}
+  setEl('g-content',res.subjects.map(s=>`
+    <div class="card" style="margin-bottom:12px">
+      <div class="ct" style="display:flex;justify-content:space-between;align-items:center">
+        <span>${s.name}</span>
+        <span style="color:${gradeColor(s.studentAverage?.value,20)};font-size:12px;font-weight:700">
+          ${!s.studentAverage?.disabled?s.studentAverage.value.toFixed(2)+'/20':'—'}
+        </span>
       </div>
-      ${res.grades.filter(g=>g.subject===s.name).map(g=>gradeHTML(g,false)).join('') || '<div class="empty" style="padding:8px">Aucune note</div>'}
+      ${s.grades.length?s.grades.map(g=>gradeRowHTML(g)).join(''):'<div class="empty" style="padding:8px">Aucune note</div>'}
     </div>
-  `).join('') || '<div class="empty">Aucune note disponible</div>';
+  `).join('')||'<div class="empty">Aucune note disponible</div>');
 }
 
-function gradeHTML(g, compact) {
-  const display = g.valueStatus || (g.value!==null ? g.value.toFixed(1) : '—');
-  const cls = g.value!==null ? (g.value>=(g.outOf*0.7)?'good':g.value>=(g.outOf*0.5)?'avg':'bad') : '';
-  return `<div class="g-row">
+function gradeRowHTML(g) {
+  const sc=g.studentScore;
+  const display=sc.status||sc.value.toFixed(2);
+  const cls=sc.disabled?'dis':sc.value>=(g.outOf.value*.7)?'good':sc.value>=(g.outOf.value*.5)?'avg':'bad';
+  return `<div class="row" style="cursor:pointer" onclick="showGradeDetail(${JSON.stringify(g).replace(/"/g,'&quot;')})">
     <div style="flex:1">
-      ${!compact?'':''}<div class="g-name">${compact?g.subject:g.description||'Note'}</div>
-      <div class="g-sub">${compact?(g.description||''):(g.date?fmtDate(g.date):'')}${g.average!==null?` · moy. ${g.average.toFixed(1)}`:''}</div>
+      <div class="rn">${g.subjectName||g.description||'Note'}</div>
+      <div class="rs">${g.description||''}${g.givenAt?' · '+fmtDate(new Date(g.givenAt)):''}</div>
     </div>
-    <div>
-      <div class="g-val ${cls}">${display}</div>
-      <div class="g-den">/${g.outOf} (coef.${g.coefficient})</div>
+    <div style="text-align:right">
+      <div class="gval ${cls}">${display}</div>
+      <div class="gden">/${g.outOf.value} coef.${g.coefficient}</div>
     </div>
   </div>`;
 }
 
 // ── NEWS ──
 async function loadNews() {
-  document.getElementById('news-list').innerHTML = '<div class="loading"><div class="spinner"></div>Chargement…</div>';
-  const res = await window.papillon.news();
-  if(!res.ok) { document.getElementById('news-list').innerHTML = `<div class="err">${res.error}</div>`; return; }
-  document.getElementById('news-list').innerHTML = res.news.length
-    ? res.news.map(n=>`
-        <div class="n-item">
-          <div class="n-meta">
-            <span class="n-src">${n.author||'Établissement'}</span>
-            ${n.date?`<span class="n-date">${fmtDate(n.date)}</span>`:''}
-          </div>
-          <div class="n-title">${n.title}</div>
-          ${n.content?`<div class="n-body">${n.content.substring(0,300)}${n.content.length>300?'…':''}</div>`:''}
-        </div>`).join('')
-    : '<div class="empty">Aucune actualité</div>';
+  setEl('news-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const res=await window.papillon.news();
+  if(!res.ok){setEl('news-content',errHTML(res.error));return;}
+  if(!res.news.length){setEl('news-content','<div class="empty">Aucune actualité</div>');return;}
+  setEl('news-content',`<div class="card">${res.news.map(n=>`
+    <div class="nitem" onclick="showNewsDetail(${JSON.stringify(n).replace(/"/g,'&quot;')})">
+      <div class="nmeta">
+        <span class="nsrc">${n.category||n.author||'Établissement'}</span>
+        ${n.createdAt?`<span class="ndate">${fmtDate(new Date(n.createdAt))}</span>`:''}
+        ${!n.acknowledged?'<span class="nunread"></span>':''}
+      </div>
+      <div class="ntitle">${n.title}</div>
+      ${n.content?`<div class="nbody">${n.content.substring(0,120)}${n.content.length>120?'…':''}</div>`:''}
+      ${n.attachments?.length?`<div class="tdate" style="margin-top:4px">📎 ${n.attachments.length} pièce(s) jointe(s)</div>`:''}
+    </div>
+  `).join('')}</div>`);
 }
 
+// ── ATTENDANCE ──
+async function loadAttendance() {
+  setEl('att-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const res=await window.papillon.attendance({periodName:curAttPeriod});
+  if(!res.ok){setEl('att-content',errHTML(res.error));return;}
+  setEl('a-abs',res.absences.length);setEl('a-ret',res.delays.length);
+  setEl('a-pun',res.punishments.length);setEl('a-obs',res.observations.length);
+  setEl('s-abs',res.absences.length);
+
+  let html='';
+  if(res.absences.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Absences (${res.absences.length})</div>${res.absences.map(a=>`
+    <div class="att-item">
+      <div class="att-icon" style="background:rgba(224,82,82,.15)">🚫</div>
+      <div style="flex:1">
+        <div class="att-name">${fmtDate(new Date(a.from))} – ${fmtDate(new Date(a.to))}</div>
+        <div class="att-sub">${Math.floor(a.timeMissed/60)}h${a.timeMissed%60>0?(a.timeMissed%60)+'min':''} manqué(es) · ${a.justified?'<span style="color:var(--gl)">Justifiée</span>':'<span style="color:var(--red)">Non justifiée</span>'}</div>
+        ${a.reason?`<div class="att-sub">${a.reason}</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  if(res.delays.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Retards (${res.delays.length})</div>${res.delays.map(d=>`
+    <div class="att-item">
+      <div class="att-icon" style="background:rgba(224,124,50,.15)">⏰</div>
+      <div style="flex:1">
+        <div class="att-name">${fmtDate(new Date(d.givenAt))}</div>
+        <div class="att-sub">${d.duration} minute(s) · ${d.justified?'<span style="color:var(--gl)">Justifié</span>':'<span style="color:var(--red)">Non justifié</span>'}</div>
+        ${d.reason?`<div class="att-sub">${d.reason}</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  if(res.punishments.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Punitions (${res.punishments.length})</div>${res.punishments.map(p=>`
+    <div class="att-item">
+      <div class="att-icon" style="background:rgba(155,110,232,.15)">⚠️</div>
+      <div style="flex:1">
+        <div class="att-name">${p.nature||'Punition'}</div>
+        <div class="att-sub">${fmtDate(new Date(p.givenAt))} · ${p.givenBy}</div>
+        ${p.reason?`<div class="att-sub">${p.reason}</div>`:''}
+        ${p.duration?`<div class="att-sub">Durée : ${p.duration} min</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  if(res.observations.length) html+=`<div class="card"><div class="ct">Observations (${res.observations.length})</div>${res.observations.map(o=>`
+    <div class="att-item">
+      <div class="att-icon" style="background:rgba(74,143,232,.15)">📌</div>
+      <div style="flex:1">
+        <div class="att-name">${o.sectionName||'Observation'}</div>
+        <div class="att-sub">${fmtDate(new Date(o.givenAt))}${o.subjectName?' · '+o.subjectName:''}</div>
+        ${o.reason?`<div class="att-sub">${o.reason}</div>`:''}
+      </div>
+    </div>`).join('')}</div>`;
+
+  setEl('att-content',html||'<div class="empty">Aucun événement cette période 🎉</div>');
+}
+
+// ── CANTEEN ──
+async function loadCanteen() {
+  setEl('cn-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=weekDate(cnWeek);
+  updateWLbl('cn-wlbl',d);
+  const res=await window.papillon.canteen({date:d.toISOString()});
+  if(!res.ok){setEl('cn-content',errHTML(res.error));return;}
+  if(!res.days?.length){setEl('cn-content','<div class="empty">Aucun menu disponible cette semaine</div>');return;}
+
+  const mapMeal=(meal,label)=>{
+    if(!meal)return'';
+    const cats=[['Entrée',meal.entry],['Plat',meal.main],['Accompagnement',meal.side],['Fromage',meal.cheese],['Dessert',meal.dessert],['Boisson',meal.drink]];
+    const filled=cats.filter(([,foods])=>foods?.length>0);
+    if(!filled.length)return'';
+    return `<div style="margin-bottom:8px"><b style="font-size:12px;color:var(--gl)">${label}</b>${filled.map(([cat,foods])=>`
+      <div class="menu-cat">${cat}</div>
+      ${foods.map(f=>`<div class="menu-item">${f.name}${f.allergens?.length?`<span class="menu-allergen"> (${f.allergens.join(', ')})</span>`:''}</div>`).join('')}
+    `).join('')}</div>`;
+  };
+
+  setEl('cn-content',`<div class="g2">${res.days.map(day=>`
+    <div class="card">
+      <div class="ct">${fmtDayFull(new Date(day.date))}</div>
+      ${mapMeal(day.lunch,'🌞 Déjeuner')}
+      ${mapMeal(day.dinner,'🌙 Dîner')}
+    </div>
+  `).join('')}</div>`);
+}
+
+function changeCanteenWeek(d){cnWeek+=d;loadCanteen();}
+
+// ── DETAIL PANELS ──
+function showCourseDetail(l) {
+  document.getElementById('detail-title').textContent=l.subject;
+  document.getElementById('detail-body').innerHTML=`
+    <div class="stat" style="margin-bottom:12px;text-align:left;padding:14px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div class="dot" style="background:${l.color||'#22c55e'};width:12px;height:12px"></div>
+        <b style="font-size:16px">${l.subject}</b>
+        ${l.isCancelled?'<span class="bdg b-r">Annulé</span>':''}
+        ${l.isTest?'<span class="bdg b-o">Évaluation</span>':''}
+      </div>
+      <div class="rs">🕐 ${fmtTime(l.from)} – ${fmtTime(l.to)}</div>
+      ${l.teacher?`<div class="rs">👨‍🏫 ${l.teacher}</div>`:''}
+      ${l.room?`<div class="rs">📍 ${l.room}</div>`:''}
+      ${l.group?`<div class="rs">👥 ${l.group}</div>`:''}
+      ${l.notes?`<div style="margin-top:10px;font-size:13px;color:var(--t2);line-height:1.5">${l.notes}</div>`:''}
+    </div>
+  `;
+  openDetail();
+}
+
+function showGradeDetail(g) {
+  const sc=g.studentScore;
+  const display=sc.status||sc.value.toFixed(2);
+  const cls=sc.disabled?'dis':sc.value>=(g.outOf.value*.7)?'good':sc.value>=(g.outOf.value*.5)?'avg':'bad';
+  document.getElementById('detail-title').textContent=g.subjectName;
+  document.getElementById('detail-body').innerHTML=`
+    <div style="text-align:center;padding:20px 0 16px">
+      <div class="gval ${cls}" style="font-size:42px">${display}</div>
+      <div class="gden" style="font-size:14px;margin-top:4px">/ ${g.outOf.value} · coefficient ${g.coefficient}</div>
+    </div>
+    <div class="card">
+      <div class="ct">Détails</div>
+      ${g.description?`<div class="row"><span style="color:var(--t2)">Intitulé</span><span style="flex:1;text-align:right">${g.description}</span></div>`:''}
+      ${g.givenAt?`<div class="row"><span style="color:var(--t2)">Date</span><span style="flex:1;text-align:right">${fmtDate(new Date(g.givenAt))}</span></div>`:''}
+      ${!g.averageScore?.disabled?`<div class="row"><span style="color:var(--t2)">Moyenne classe</span><span style="flex:1;text-align:right">${g.averageScore.value.toFixed(2)}</span></div>`:''}
+      ${!g.minScore?.disabled?`<div class="row"><span style="color:var(--t2)">Note minimale</span><span style="flex:1;text-align:right;color:var(--red)">${g.minScore.value.toFixed(2)}</span></div>`:''}
+      ${!g.maxScore?.disabled?`<div class="row"><span style="color:var(--t2)">Note maximale</span><span style="flex:1;text-align:right;color:var(--gl)">${g.maxScore.value.toFixed(2)}</span></div>`:''}
+      ${g.isBonus?`<div class="row"><span class="bdg b-g">Bonus</span></div>`:''}
+      ${g.isOptional?`<div class="row"><span class="bdg b-b">Optionnel</span></div>`:''}
+    </div>
+  `;
+  openDetail();
+}
+
+function showHWDetail(h) {
+  document.getElementById('detail-title').textContent=h.subject;
+  document.getElementById('detail-body').innerHTML=`
+    <div class="card" style="margin-bottom:12px">
+      <div class="ct">Contenu</div>
+      <div style="font-size:13px;line-height:1.6;color:var(--t)">${h.content}</div>
+    </div>
+    ${h.dueDate?`<div class="card" style="margin-bottom:12px"><div class="ct">À rendre pour le</div><div style="font-size:14px;font-weight:600">${fmtDate(new Date(h.dueDate))}</div></div>`:''}
+    ${h.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${h.attachments.map(a=>`
+      <div class="row" style="cursor:pointer" onclick="window.papillon.openExternal('${a.url}')">
+        <span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span>
+      </div>`).join('')}</div>`:''}
+  `;
+  openDetail();
+}
+
+function showNewsDetail(n) {
+  document.getElementById('detail-title').textContent=n.title;
+  document.getElementById('detail-body').innerHTML=`
+    <div class="nmeta" style="margin-bottom:12px">
+      <span class="nsrc">${n.category||n.author||'Établissement'}</span>
+      ${n.createdAt?`<span class="ndate">${fmtDate(new Date(n.createdAt))}</span>`:''}
+    </div>
+    <div style="font-size:13px;line-height:1.7;color:var(--t);margin-bottom:14px">${n.content||'Pas de contenu'}</div>
+    ${n.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${n.attachments.map(a=>`
+      <div class="row" style="cursor:pointer" onclick="window.papillon.openExternal('${a.url}')">
+        <span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span>
+      </div>`).join('')}</div>`:''}
+  `;
+  openDetail();
+}
+
+function openDetail(){document.getElementById('detail').classList.add('open');}
+function closeDetail(){document.getElementById('detail').classList.remove('open');}
+
 // ── UTILS ──
-function fmtTime(iso) { if(!iso)return''; return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); }
-function fmtDate(iso) { if(!iso)return''; return new Date(iso).toLocaleDateString('fr-FR',{day:'numeric',month:'short'}); }
-function fmtDayFull(d) { return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}); }
-function offsetDate(days) { const d=new Date(); d.setDate(d.getDate()+days); return d; }
-function gradeColor(v,max) { return v>=(max*0.7)?'var(--green-light)':v>=(max*0.5)?'var(--orange)':'var(--red)'; }
-function updateWeekLabel(id, d) {
-  const start = new Date(d); start.setDate(d.getDate()-d.getDay()+1);
-  const end = new Date(start); end.setDate(start.getDate()+4);
-  document.getElementById(id).textContent = `${fmtDate(start.toISOString())} – ${fmtDate(end.toISOString())}`;
+function setEl(id,html){const e=document.getElementById(id);if(e)e.innerHTML=html;}
+function errHTML(msg){return`<div class="err-box">⚠️ ${msg}</div>`;}
+function fmtTime(iso){if(!iso)return'';return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
+function fmtDate(d){if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
+function fmtDayFull(d){if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
+function weekDate(off){const d=new Date();d.setDate(d.getDate()+off*7);return d;}
+function gradeColor(v,max){if(!v)return'var(--t3)';return v>=(max*.7)?'var(--gl)':v>=(max*.5)?'var(--ora)':'var(--red)';}
+function updateWLbl(id,d){
+  const s=new Date(d);const day=s.getDay();s.setDate(s.getDate()-day+(day===0?-6:1));
+  const e=new Date(s);e.setDate(s.getDate()+4);
+  setEl(id,`${fmtDate(s)} – ${fmtDate(e)}`);
 }
 </script>
 </body>
