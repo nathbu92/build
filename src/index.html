@@ -3,240 +3,366 @@
 <head>
 <meta charset="UTF-8"><title>Papillon</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --g:#1a9c4e;--gl:#22c55e;--gd:rgba(26,156,78,0.15);
-  --bg:#0f1a14;--bg2:#162011;--bg3:#1c2a1e;
-  --card:#1e2d20;--card2:#243328;--bdr:rgba(255,255,255,0.07);
-  --t:#e8f0e9;--t2:#9ab89e;--t3:#5d7d62;
-  --red:#e05252;--ora:#e07c32;--blu:#4a8fe8;--pur:#9b6ee8;
-  --r:12px;--sw:230px;
+  --acc:#22c55e;--acc2:#16a34a;--acc-dim:rgba(34,197,94,0.12);--acc-glow:rgba(34,197,94,0.25);
+  --bg:#0d1710;--bg2:#111e14;--bg3:#162219;--bg4:#1a2a1e;
+  --card:#1a2a1e;--card2:#1f3224;--card-border:rgba(255,255,255,0.06);
+  --t:#f0f7f1;--t2:#8aab8e;--t3:#4d6b51;
+  --red:#f87171;--red-dim:rgba(248,113,113,0.12);
+  --ora:#fb923c;--ora-dim:rgba(251,146,60,0.12);
+  --blu:#60a5fa;--blu-dim:rgba(96,165,250,0.12);
+  --pur:#a78bfa;--pur-dim:rgba(167,139,250,0.12);
+  --r:13px;--sw:240px;
+  --pronote:#5C5CEB;--ed:#1788bc;--skolengo:#e05a00;
 }
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--t);height:100vh;overflow:hidden;display:flex;font-size:14px}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t);display:flex;font-size:14px;line-height:1.5}
 
-/* SIDEBAR */
-#sb{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--bg2);border-right:1px solid var(--bdr);display:flex;flex-direction:column;padding:16px 10px;gap:2px;overflow:hidden}
-.logo{display:flex;align-items:center;gap:10px;padding:6px 10px 18px}
-.logo img{width:30px;height:30px;border-radius:8px}
-.logo b{font-size:17px;font-weight:800;letter-spacing:-.3px}
-.nav{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;font-weight:500;color:var(--t2);transition:all .15s;user-select:none;font-size:13px}
+/* ── SIDEBAR ── */
+#sb{width:var(--sw);min-width:var(--sw);height:100vh;background:var(--bg2);border-right:1px solid var(--card-border);display:flex;flex-direction:column;padding:0;overflow:hidden;position:relative}
+#sb::after{content:'';position:absolute;top:-60px;left:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,197,94,0.08),transparent 70%);pointer-events:none}
+.sb-top{padding:20px 16px 12px}
+.logo{display:flex;align-items:center;gap:10px;padding:4px 0 16px;cursor:default}
+.logo img{width:32px;height:32px;border-radius:9px;box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.logo-text{font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--t)}
+.logo-ver{font-size:10px;font-weight:500;color:var(--t3);margin-top:1px}
+.sb-section{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--t3);padding:12px 16px 4px}
+.nav{display:flex;align-items:center;gap:10px;padding:8px 12px;margin:1px 8px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);transition:all .15s;user-select:none;position:relative}
 .nav:hover{background:var(--bg3);color:var(--t)}
-.nav.active{background:var(--gd);color:var(--gl)}
-.nav .ic{font-size:15px;width:18px;text-align:center;flex-shrink:0}
-.sb-sep{height:1px;background:var(--bdr);margin:8px 4px}
-.sb-sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);padding:4px 11px;margin-top:4px}
+.nav.active{background:var(--acc-dim);color:var(--acc)}
+.nav.active .nav-ic{opacity:1}
+.nav-ic{font-size:16px;width:20px;text-align:center;flex-shrink:0;opacity:.7}
+.nav-badge{margin-left:auto;background:var(--acc);color:#000;font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center}
+.sb-div{height:1px;background:var(--card-border);margin:6px 16px}
 .sp{flex:1}
-.sb-foot{padding:8px 11px;font-size:11px;color:var(--t3);line-height:1.8}
+.sb-user{padding:14px 16px;border-top:1px solid var(--card-border)}
+.sb-user-row{display:flex;align-items:center;gap:10px}
+.sb-avatar{width:34px;height:34px;border-radius:50%;background:var(--acc-dim);border:2px solid var(--acc-glow);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden}
+.sb-avatar img{width:100%;height:100%;object-fit:cover}
+.sb-uname{font-size:13px;font-weight:600;color:var(--t);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-uclass{font-size:11px;color:var(--t2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-logout{margin-top:8px;font-size:11px;color:var(--t3);cursor:pointer;padding:4px 0}
+.sb-logout:hover{color:var(--red)}
 
-/* MAIN */
-#main{flex:1;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-#topbar{height:52px;min-height:52px;display:flex;align-items:center;padding:0 22px;border-bottom:1px solid var(--bdr);gap:10px}
-#topbar h1{font-size:16px;font-weight:700;flex:1}
-.tbtn{background:var(--card);border:1px solid var(--bdr);color:var(--t2);padding:5px 12px;border-radius:8px;font-size:12px;cursor:pointer;transition:all .15s}
-.tbtn:hover{background:var(--card2);color:var(--t)}
-#cont{flex:1;overflow-y:auto;padding:20px 22px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
-.page{display:none}.page.active{display:block}
+/* ── MAIN ── */
+#main{flex:1;height:100vh;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+#topbar{height:54px;min-height:54px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--card-border);gap:10px;background:rgba(13,23,16,0.8);backdrop-filter:blur(12px)}
+.tb-title{font-size:16px;font-weight:700;flex:1;letter-spacing:-.2px}
+.tb-btn{background:var(--card);border:1px solid var(--card-border);color:var(--t2);padding:5px 13px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tb-btn:hover{background:var(--card2);color:var(--t)}
+.tb-select{background:var(--card);border:1px solid var(--card-border);color:var(--t);padding:5px 10px;border-radius:8px;font-size:12px;cursor:pointer;outline:none}
+#cont{flex:1;overflow-y:auto;padding:22px 24px 30px;scrollbar-width:thin;scrollbar-color:var(--bg3) transparent}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+.page{display:none;animation:fadeIn .2s ease}.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
-/* LAYOUT */
+/* ── GRID ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
-.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:16px}
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:15px}
-.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);margin-bottom:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
 
-/* STAT */
-.stat{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:14px;text-align:center}
-.sv{font-size:22px;font-weight:800;color:var(--gl)}
-.sl{font-size:11px;color:var(--t2);margin-top:2px}
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:16px}
+.card-lg{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:20px}
+.ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--t3);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.ct-action{font-size:11px;font-weight:600;color:var(--acc);cursor:pointer;text-transform:none;letter-spacing:0}
 
-/* ROW */
-.row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bdr)}
+/* ── STAT CARDS ── */
+.stat{background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);padding:16px;position:relative;overflow:hidden}
+.stat::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(34,197,94,0.04),transparent);pointer-events:none}
+.sv{font-size:26px;font-weight:800;color:var(--acc);letter-spacing:-.5px;line-height:1}
+.sl{font-size:11px;color:var(--t2);margin-top:5px;font-weight:500}
+.stat.red .sv{color:var(--red)}
+.stat.ora .sv{color:var(--ora)}
+.stat.blu .sv{color:var(--blu)}
+
+/* ── ROWS ── */
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--card-border);cursor:default}
 .row:last-child{border-bottom:none}
+.row.clickable{cursor:pointer;border-radius:8px;padding:10px 8px;margin:0 -8px;transition:background .12s}
+.row.clickable:hover{background:var(--bg3)}
 .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.rn{font-size:13px;font-weight:600;flex:1}
-.rs{font-size:11px;color:var(--t2);margin-top:1px}
-.rt{font-size:11px;color:var(--t3);min-width:80px}
+.rn{font-size:13px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rs{font-size:11px;color:var(--t2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* BADGE */
-.bdg{font-size:11px;padding:2px 7px;border-radius:5px;font-weight:600;white-space:nowrap}
-.b-r{background:rgba(224,82,82,.15);color:var(--red)}
-.b-o{background:rgba(224,124,50,.15);color:var(--ora)}
-.b-b{background:rgba(74,143,232,.15);color:var(--blu)}
-.b-g{background:var(--gd);color:var(--gl)}
-.b-p{background:rgba(155,110,232,.15);color:var(--pur)}
+/* ── BADGE ── */
+.bdg{font-size:10px;padding:2px 7px;border-radius:5px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.b-r{background:var(--red-dim);color:var(--red)}
+.b-o{background:var(--ora-dim);color:var(--ora)}
+.b-b{background:var(--blu-dim);color:var(--blu)}
+.b-g{background:var(--acc-dim);color:var(--acc)}
+.b-p{background:var(--pur-dim);color:var(--pur)}
 
-/* GRADE */
-.gval{font-size:18px;font-weight:700;min-width:44px;text-align:right}
-.gval.good{color:var(--gl)}.gval.avg{color:var(--ora)}.gval.bad{color:var(--red)}.gval.dis{color:var(--t3)}
-.gden{font-size:10px;color:var(--t3)}
+/* ── GRADES ── */
+.gval{font-size:19px;font-weight:800;letter-spacing:-.3px}
+.gval.good{color:var(--acc)}.gval.avg{color:var(--ora)}.gval.bad{color:var(--red)}.gval.dis{color:var(--t3);font-size:12px}
+.gden{font-size:10px;color:var(--t3);margin-top:1px}
 
-/* TASK */
-.titem{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr)}
+/* ── TASKS ── */
+.titem{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--card-border)}
 .titem:last-child{border-bottom:none}
-.tchk{width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.tchk:hover{border-color:var(--gl)}
-.tchk.done{background:var(--gl);border-color:var(--gl)}
-.tchk.done::after{content:"✓";color:#fff;font-size:10px;font-weight:700}
-.tsubj{font-size:11px;font-weight:700;color:var(--gl);margin-bottom:2px}
-.ttxt{font-size:13px;line-height:1.4}
-.ttxt.done{text-decoration:line-through;color:var(--t3)}
-.tdate{font-size:10px;color:var(--t3);margin-top:3px}
+.tchk{width:18px;height:18px;border-radius:50%;border:2px solid var(--card-border);flex-shrink:0;margin-top:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.tchk:hover{border-color:var(--acc)}.tchk.done{background:var(--acc);border-color:var(--acc)}
+.tchk.done::after{content:"✓";color:#000;font-size:9px;font-weight:900}
+.tsubj{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;color:var(--acc);margin-bottom:3px}
+.ttxt{font-size:13px;line-height:1.5;color:var(--t)}.ttxt.done{text-decoration:line-through;color:var(--t3)}
+.tdate{font-size:10px;color:var(--t3);margin-top:4px}
 
-/* NEWS */
-.nitem{padding:11px 0;border-bottom:1px solid var(--bdr);cursor:pointer}
-.nitem:last-child{border-bottom:none}
-.nmeta{display:flex;align-items:center;gap:7px;margin-bottom:4px;flex-wrap:wrap}
-.nsrc{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--gl);background:var(--gd);padding:2px 6px;border-radius:4px}
-.ndate{font-size:10px;color:var(--t3)}
-.ntitle{font-size:13px;font-weight:600;line-height:1.4}
-.nbody{font-size:12px;color:var(--t2);margin-top:3px;line-height:1.5}
-.nunread{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gl);margin-left:4px;vertical-align:middle}
+/* ── NEWS ── */
+.nitem{padding:12px 0;border-bottom:1px solid var(--card-border);cursor:pointer;transition:opacity .15s}
+.nitem:last-child{border-bottom:none}.nitem:hover{opacity:.85}
+.nmeta{display:flex;align-items:center;gap:7px;margin-bottom:5px;flex-wrap:wrap}
+.nsrc{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--acc);background:var(--acc-dim);padding:2px 7px;border-radius:4px}
+.ndate{font-size:10px;color:var(--t3)}.ntitle{font-size:13px;font-weight:600;line-height:1.4}
+.nbody{font-size:12px;color:var(--t2);margin-top:4px;line-height:1.5}
+.ndot{width:6px;height:6px;border-radius:50%;background:var(--acc);flex-shrink:0}
 
-/* ATTENDANCE */
-.att-item{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr)}
-.att-item:last-child{border-bottom:none}
-.att-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.att-name{font-size:13px;font-weight:600;flex:1}
-.att-sub{font-size:11px;color:var(--t2);margin-top:2px}
+/* ── WEEK NAV ── */
+.wnav{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.wnav-btn{background:var(--card);border:1px solid var(--card-border);color:var(--t2);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;transition:all .15s}
+.wnav-btn:hover{background:var(--card2);color:var(--t)}
+.wnav-lbl{font-size:13px;font-weight:600;color:var(--t);flex:1;text-align:center}
+.wnav-today{background:var(--acc-dim);border:1px solid var(--acc-glow);color:var(--acc);padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700}
 
-/* CANTEEN */
-.menu-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin:10px 0 5px}
-.menu-item{font-size:13px;padding:4px 0;border-bottom:1px solid var(--bdr);color:var(--t)}
-.menu-item:last-child{border-bottom:none}
-.menu-allergen{font-size:10px;color:var(--t3)}
-
-/* WEEK NAV */
-.wnav{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.wnav button{background:var(--card);border:1px solid var(--bdr);color:var(--t2);padding:5px 11px;border-radius:8px;cursor:pointer;font-size:12px}
-.wnav button:hover{background:var(--card2);color:var(--t)}
-.wlbl{font-size:13px;font-weight:600;color:var(--t);flex:1;text-align:center}
-
-/* PERIOD SELECTOR */
-.per-sel{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.per-btn{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--t2)}
-.per-btn.active{background:var(--gd);color:var(--gl);border-color:var(--gl)}
-
-/* MISC */
-.loading{display:flex;align-items:center;gap:9px;padding:18px 0;color:var(--t2);font-size:13px}
-.spinner{width:15px;height:15px;border:2px solid var(--bdr);border-top-color:var(--gl);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+/* ── MISC ── */
+.loading{display:flex;align-items:center;gap:10px;padding:24px 0;color:var(--t2);font-size:13px}
+.spinner{width:16px;height:16px;border:2px solid var(--card-border);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.empty{padding:24px;text-align:center;color:var(--t3);font-size:13px}
-.err-box{padding:10px;background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.2);border-radius:9px;color:var(--red);font-size:12px;margin-bottom:10px}
+.empty{padding:32px;text-align:center;color:var(--t3);font-size:13px}
+.err-box{padding:12px 14px;background:var(--red-dim);border:1px solid rgba(248,113,113,.2);border-radius:10px;color:var(--red);font-size:12px;margin-bottom:12px}
 
-/* DETAIL PANEL */
-#detail{position:fixed;right:0;top:0;width:380px;height:100vh;background:var(--bg2);border-left:1px solid var(--bdr);display:none;flex-direction:column;z-index:100;overflow:hidden}
-#detail.open{display:flex}
-#detail-head{padding:16px 18px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px}
-#detail-title{font-size:15px;font-weight:700;flex:1}
-#detail-close{background:var(--card);border:1px solid var(--bdr);color:var(--t2);width:28px;height:28px;border-radius:7px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px}
-#detail-body{flex:1;overflow-y:auto;padding:16px 18px}
+/* ── DETAIL PANEL ── */
+#dp{position:fixed;right:0;top:0;width:400px;height:100vh;background:var(--bg2);border-left:1px solid var(--card-border);display:none;flex-direction:column;z-index:200;box-shadow:-20px 0 60px rgba(0,0,0,.4)}
+#dp.open{display:flex;animation:slideIn .2s ease}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+#dp-head{padding:16px 18px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;gap:10px;background:var(--bg2)}
+#dp-title{font-size:15px;font-weight:700;flex:1;letter-spacing:-.2px}
+#dp-close{background:var(--card);border:1px solid var(--card-border);color:var(--t2);width:28px;height:28px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:all .15s}
+#dp-close:hover{background:var(--red-dim);color:var(--red);border-color:var(--red)}
+#dp-body{flex:1;overflow-y:auto;padding:18px}
 
-/* LOGIN */
-#login{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200}
-.lbox{width:420px;background:var(--bg2);border:1px solid var(--bdr);border-radius:18px;padding:32px}
-.lbox img{width:48px;height:48px;border-radius:13px;display:block;margin:0 auto 14px}
-.lbox h1{font-size:20px;font-weight:800;text-align:center;margin-bottom:5px}
-.lbox .sub{font-size:12px;color:var(--t2);text-align:center;margin-bottom:22px;line-height:1.5}
-.tabs{display:flex;gap:6px;margin-bottom:18px}
-.tab{flex:1;padding:7px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:var(--bg3);color:var(--t2)}
-.tab.active{background:var(--gd);color:var(--gl);border-color:var(--g)}
-.fl{font-size:11px;font-weight:600;color:var(--t2);margin-bottom:4px;display:block}
-.fi{width:100%;background:var(--bg3);border:1px solid var(--bdr);color:var(--t);padding:9px 12px;border-radius:9px;font-size:13px;outline:none;transition:border .15s;margin-bottom:10px}
-.fi:focus{border-color:var(--g)}
-.fi::placeholder{color:var(--t3)}
-textarea.fi{resize:vertical;min-height:72px}
-.btnp{width:100%;background:var(--g);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px}
-.btnp:hover{background:#15803d}
-.btnp:disabled{opacity:.6;cursor:not-allowed}
-.lerr{background:rgba(224,82,82,.1);border:1px solid rgba(224,82,82,.25);color:var(--red);padding:9px 12px;border-radius:9px;font-size:12px;margin-top:8px;display:none}
-.lhint{font-size:10px;color:var(--t3);text-align:center;margin-top:10px;line-height:1.7}
-.qr-info{background:var(--bg3);border:1px solid var(--bdr);border-radius:10px;padding:12px;margin-bottom:14px;font-size:12px;color:var(--t2);line-height:1.6}
-.qr-info b{color:var(--t)}
+/* ── ONBOARDING ── */
+#ob{position:fixed;inset:0;background:var(--bg);display:flex;z-index:500;overflow:hidden}
+#ob-left{width:420px;min-width:420px;background:var(--bg2);border-right:1px solid var(--card-border);display:flex;flex-direction:column;padding:40px 36px;position:relative;overflow:hidden}
+#ob-left::before{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(34,197,94,0.1),transparent 70%);pointer-events:none}
+#ob-left::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(34,197,94,0.06),transparent 70%);pointer-events:none}
+#ob-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px;position:relative;overflow:hidden}
+#ob-right::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(34,197,94,0.04),transparent 60%)}
+.ob-logo{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.ob-logo img{width:44px;height:44px;border-radius:12px}
+.ob-logo span{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.ob-tagline{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.3;color:var(--t);margin-bottom:10px}
+.ob-sub{font-size:14px;color:var(--t2);line-height:1.7;margin-bottom:32px}
+.ob-hint{font-size:11px;color:var(--t3);margin-top:20px;line-height:1.7}
+.ob-hint a{color:var(--acc);cursor:pointer}
 
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:3px}
+/* SERVICE BUTTONS */
+.svc-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+.svc-btn{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--r);cursor:pointer;transition:all .18s;text-align:left;width:100%}
+.svc-btn:hover{border-color:var(--acc-glow);background:var(--card2);transform:translateY(-1px)}
+.svc-btn .svc-img{width:38px;height:38px;border-radius:10px;object-fit:contain;flex-shrink:0}
+.svc-btn .svc-name{font-size:15px;font-weight:700}
+.svc-btn .svc-sub{font-size:11px;color:var(--t2);margin-top:2px}
+.svc-btn .svc-arrow{margin-left:auto;color:var(--t3);font-size:16px}
+
+/* STEPS */
+.ob-panel{display:none;animation:fadeIn .2s ease}.ob-panel.active{display:block}
+.ob-back{background:none;border:none;color:var(--t2);font-size:12px;font-weight:600;cursor:pointer;padding:0 0 16px;display:flex;align-items:center;gap:6px;transition:color .15s}
+.ob-back:hover{color:var(--t)}
+.ob-step-title{font-size:18px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+.ob-step-sub{font-size:12px;color:var(--t2);margin-bottom:20px;line-height:1.6}
+
+/* SEARCH */
+.search-box{display:flex;gap:8px;margin-bottom:14px}
+.search-input{flex:1;background:var(--bg3);border:1px solid var(--card-border);color:var(--t);padding:9px 13px;border-radius:10px;font-size:13px;outline:none;transition:border .15s}
+.search-input:focus{border-color:var(--acc)}
+.search-input::placeholder{color:var(--t3)}
+.search-btn{background:var(--acc);color:#000;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .15s}
+.search-btn:hover{background:#16a34a}
+.school-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;cursor:pointer;transition:background .15s;border:1px solid transparent;margin-bottom:6px}
+.school-item:hover{background:var(--card);border-color:var(--card-border)}
+.school-item img{width:28px;height:28px;border-radius:7px;flex-shrink:0}
+.school-name{font-size:13px;font-weight:600;flex:1}
+.school-url{font-size:10px;color:var(--t3);margin-top:1px}
+.school-dist{font-size:10px;color:var(--acc);font-weight:600;margin-left:auto;white-space:nowrap}
+
+/* FORM */
+.fl{font-size:11px;font-weight:700;color:var(--t2);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
+.fi{width:100%;background:var(--bg3);border:1px solid var(--card-border);color:var(--t);padding:10px 13px;border-radius:10px;font-size:13px;outline:none;transition:border .15s;margin-bottom:12px}
+.fi:focus{border-color:var(--acc)}.fi::placeholder{color:var(--t3)}
+.fi-group{position:relative;margin-bottom:12px}
+.fi-group .fi{margin-bottom:0}
+.fi-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--t3);font-size:14px}
+.btn-primary{width:100%;background:var(--acc);color:#000;border:none;border-radius:11px;padding:12px;font-size:14px;font-weight:800;cursor:pointer;transition:all .18s;letter-spacing:-.1px}
+.btn-primary:hover{background:#16a34a;transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.ob-err{background:var(--red-dim);border:1px solid rgba(248,113,113,.25);color:var(--red);padding:10px 13px;border-radius:10px;font-size:12px;margin-top:10px;display:none}
+
+/* PREVIEW (right side of onboarding) */
+.preview-card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:20px;width:340px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.preview-title{font-size:13px;font-weight:700;color:var(--t);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.preview-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--card-border)}
+.preview-item:last-child{border-bottom:none}
+.preview-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.preview-name{font-size:12px;font-weight:600;flex:1}
+.preview-time{font-size:11px;color:var(--t3)}
+
+/* THEMING */
+.ob-panel[data-color="pronote"] .btn-primary{background:var(--pronote);color:#fff}
+.ob-panel[data-color="pronote"] .btn-primary:hover{background:#4a4ad4}
+.ob-panel[data-color="ed"] .btn-primary{background:var(--ed);color:#fff}
+.ob-panel[data-color="ed"] .btn-primary:hover{background:#1270a0}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login">
-  <div class="lbox">
-    <img src="../assets/icon.png" alt="">
-    <h1>Connexion Pronote</h1>
-    <p class="sub">Connecte-toi pour accéder à toutes tes données scolaires.</p>
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('qr',this)">📱 QR Code</button>
-      <button class="tab" onclick="switchTab('token',this)">🔑 Token</button>
+<!-- ═══ ONBOARDING ═══ -->
+<div id="ob">
+  <div id="ob-left">
+    <div class="ob-logo">
+      <img src="../assets/icon.png" alt="">
+      <span>Papillon</span>
     </div>
-    <div id="tab-qr">
-      <div class="qr-info">
-        <b>Comment obtenir le QR Code ?</b><br>
-        Pronote mobile → <b>Paramètres → Mon profil → Mes appareils → Ajouter</b>.<br>
-        Scanne le QR Code affiché avec une app (ex: Google Lens) pour copier le JSON, et note le PIN à 4 chiffres.
+
+    <!-- STEP 0: Choose service -->
+    <div class="ob-panel active" id="step-0">
+      <div class="ob-tagline">Ton école dans ta poche.</div>
+      <div class="ob-sub">Connecte ton service scolaire pour accéder à tes notes, cours, devoirs et plus encore.</div>
+      <div class="svc-list">
+        <button class="svc-btn" onclick="showStep('pronote')">
+          <img src="../assets/service_pronote.png" class="svc-img" alt="">
+          <div><div class="svc-name">PRONOTE</div><div class="svc-sub">Via ton ENT ou l'URL de l'établissement</div></div>
+          <span class="svc-arrow">›</span>
+        </button>
+        <button class="svc-btn" onclick="showStep('ed')">
+          <img src="../assets/service_ed.png" class="svc-img" alt="">
+          <div><div class="svc-name">ÉcoleDirecte</div><div class="svc-sub">Identifiant et mot de passe</div></div>
+          <span class="svc-arrow">›</span>
+        </button>
+        <button class="svc-btn" onclick="showStep('skolengo')">
+          <img src="../assets/service_skolengo.png" class="svc-img" alt="">
+          <div><div class="svc-name">Skolengo</div><div class="svc-sub">Via votre académie</div></div>
+          <span class="svc-arrow">›</span>
+        </button>
       </div>
-      <label class="fl">Données QR Code (JSON)</label>
-      <textarea class="fi" id="qr-data" placeholder='{"jeton":"...","login":"...","url":"..."}'></textarea>
-      <label class="fl">Code PIN (4 chiffres)</label>
-      <input class="fi" id="qr-pin" type="password" maxlength="4" placeholder="••••">
-      <button class="btnp" id="btn-qr" onclick="doLoginQR()">Se connecter</button>
+      <p class="ob-hint">🔒 Tes données ne quittent jamais ton appareil.<br>Connexion directe au serveur de ton lycée.</p>
     </div>
-    <div id="tab-token" style="display:none">
-      <label class="fl">URL Pronote</label>
-      <input class="fi" id="tk-url" placeholder="https://monlycee.index-education.net/pronote/">
+
+    <!-- STEP: PRONOTE search -->
+    <div class="ob-panel" id="step-pronote" data-color="pronote">
+      <button class="ob-back" onclick="showStep('0')">← Retour</button>
+      <div class="ob-step-title">Trouver ton établissement</div>
+      <div class="ob-step-sub">Recherche par nom de ville ou utilise ta géolocalisation pour trouver ton lycée.</div>
+      <div class="search-box">
+        <input class="search-input" id="school-query" placeholder="Ville ou code postal…" onkeydown="if(event.key==='Enter')searchSchools()">
+        <button class="search-btn" onclick="searchSchools()">🔍 Chercher</button>
+      </div>
+      <button class="svc-btn" style="margin-bottom:12px;border-color:var(--acc-glow)" onclick="geolocate()">
+        <span style="font-size:22px">📍</span>
+        <div><div class="svc-name" style="font-size:13px">Utiliser ma position</div><div class="svc-sub">Trouver les établissements près de moi</div></div>
+      </button>
+      <div id="school-list" style="max-height:280px;overflow-y:auto"></div>
+    </div>
+
+    <!-- STEP: PRONOTE webview (after school selected) -->
+    <div class="ob-panel" id="step-pronote-login" data-color="pronote">
+      <button class="ob-back" onclick="showStep('pronote')">← Retour</button>
+      <div class="ob-step-title" id="school-login-title">Connexion à Pronote</div>
+      <div class="ob-step-sub">Une fenêtre de connexion va s'ouvrir. Connecte-toi avec tes identifiants habituels.</div>
+      <div id="selected-school-card" class="school-item" style="background:var(--card);border-color:var(--card-border);margin-bottom:16px;cursor:default"></div>
+      <button class="btn-primary" id="btn-open-webview" onclick="openPronoteWebview()">🔐 Ouvrir la fenêtre de connexion</button>
+      <div class="ob-err" id="pronote-err"></div>
+      <div class="ob-hint" style="margin-top:16px">Une fenêtre Pronote s'ouvrira — connecte-toi normalement avec tes identifiants ENT. La connexion sera détectée automatiquement.</div>
+    </div>
+
+    <!-- STEP: EcoleDirecte -->
+    <div class="ob-panel" id="step-ed" data-color="ed">
+      <button class="ob-back" onclick="showStep('0')">← Retour</button>
+      <div class="ob-step-title">Connexion ÉcoleDirecte</div>
+      <div class="ob-step-sub">Entre tes identifiants ÉcoleDirecte pour accéder à tes données.</div>
       <label class="fl">Identifiant</label>
-      <input class="fi" id="tk-user" placeholder="prenom.nom">
-      <label class="fl">Token</label>
-      <input class="fi" id="tk-token" placeholder="Token de connexion">
-      <label class="fl">UUID appareil</label>
-      <input class="fi" id="tk-uuid" placeholder="UUID généré lors du QR Code">
-      <button class="btnp" id="btn-tk" onclick="doLoginToken()">Se connecter</button>
+      <input class="fi" id="ed-user" placeholder="prenom.nom" autocomplete="username">
+      <label class="fl">Mot de passe</label>
+      <div class="fi-group">
+        <input class="fi" id="ed-pass" type="password" placeholder="••••••••" autocomplete="current-password">
+        <span class="fi-eye" onclick="togglePass('ed-pass',this)">👁</span>
+      </div>
+      <button class="btn-primary" id="btn-ed" onclick="doEDLogin()">Se connecter</button>
+      <div class="ob-err" id="ed-err"></div>
     </div>
-    <div class="lerr" id="lerr"></div>
-    <p class="lhint">🔒 Tes données ne quittent jamais ton appareil<br>Connexion directe au serveur Pronote de ton lycée</p>
+
+    <!-- STEP: Skolengo -->
+    <div class="ob-panel" id="step-skolengo">
+      <button class="ob-back" onclick="showStep('0')">← Retour</button>
+      <div class="ob-step-title">Skolengo</div>
+      <div class="ob-step-sub">Skolengo n'est pas encore disponible sur cette version Windows de Papillon.<br>Supporte sur mobile!</div>
+      <div style="padding:20px;text-align:center;font-size:32px;margin:10px 0">📱</div>
+      <a class="svc-btn" onclick="window.papillon.openExternal('https://getpapillon.xyz')">
+        <span style="font-size:20px">🌐</span>
+        <div><div class="svc-name" style="font-size:13px">Télécharger Papillon Mobile</div><div class="svc-sub">iOS & Android</div></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: PREVIEW -->
+  <div id="ob-right">
+    <div>
+      <div style="font-size:28px;font-weight:800;letter-spacing:-.5px;color:var(--t);margin-bottom:8px;text-align:center">Tout ton lycée en un clic.</div>
+      <div style="font-size:14px;color:var(--t2);margin-bottom:32px;text-align:center;line-height:1.6">Notes, cours, devoirs, cantine — tout est là.</div>
+      <div class="preview-card">
+        <div class="preview-title">📅 Emploi du temps du jour</div>
+        <div class="preview-item"><div class="preview-dot" style="background:#6366f1"></div><div><div class="preview-name">Mathématiques</div><div style="font-size:10px;color:var(--t3)">Salle 12 · M. Dupont</div></div><div class="preview-time">08h00 – 09h00</div></div>
+        <div class="preview-item"><div class="preview-dot" style="background:#22c55e"></div><div><div class="preview-name">Physique-Chimie</div><div style="font-size:10px;color:var(--t3)">Labo 3 · Mme Martin</div></div><div class="preview-time">09h00 – 10h00</div></div>
+        <div class="preview-item"><div class="preview-dot" style="background:#f87171"></div><div><div class="preview-name" style="text-decoration:line-through;color:var(--t3)">Français</div><div style="font-size:10px;color:var(--t3)">Cours annulé</div></div><span class="bdg b-r">Annulé</span></div>
+        <div class="preview-item"><div class="preview-dot" style="background:#fb923c"></div><div><div class="preview-name">Histoire-Géo</div><div style="font-size:10px;color:var(--t3)">Salle 21 · M. Leroy</div></div><div class="preview-time">13h00 – 14h00</div></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- DETAIL PANEL -->
-<div id="detail">
-  <div id="detail-head">
-    <span id="detail-title">Détail</span>
-    <div id="detail-close" onclick="closeDetail()">✕</div>
-  </div>
-  <div id="detail-body"></div>
+<!-- ═══ DETAIL PANEL ═══ -->
+<div id="dp">
+  <div id="dp-head"><span id="dp-title">Détail</span><div id="dp-close" onclick="closeDP()">✕</div></div>
+  <div id="dp-body"></div>
 </div>
 
-<!-- SIDEBAR -->
+<!-- ═══ SIDEBAR ═══ -->
 <div id="sb">
-  <div class="logo"><img src="../assets/icon.png" alt=""><b>Papillon</b></div>
-
-  <div class="sb-sec">Principal</div>
-  <div class="nav active" onclick="go('home',this)"><span class="ic">🏠</span>Accueil</div>
-  <div class="nav" onclick="go('timetable',this)"><span class="ic">📅</span>Cours</div>
-  <div class="nav" onclick="go('homework',this)"><span class="ic">📝</span>Tâches</div>
-  <div class="nav" onclick="go('grades',this)"><span class="ic">📊</span>Notes</div>
-  <div class="nav" onclick="go('news',this)"><span class="ic">📣</span>Actualités</div>
-
-  <div class="sb-sep"></div>
-  <div class="sb-sec">Vie scolaire</div>
-  <div class="nav" onclick="go('attendance',this)"><span class="ic">📋</span>Absences & Retards</div>
-  <div class="nav" onclick="go('canteen',this)"><span class="ic">🍽️</span>Cantine</div>
-
+  <div class="sb-top">
+    <div class="logo">
+      <img src="../assets/icon.png" alt="">
+      <div><div class="logo-text">Papillon</div><div class="logo-ver">v8.4.2 Windows</div></div>
+    </div>
+    <div class="nav active" onclick="go('home',this)"><span class="nav-ic">🏠</span>Accueil</div>
+    <div class="nav" onclick="go('timetable',this)"><span class="nav-ic">📅</span>Cours</div>
+    <div class="nav" onclick="go('homework',this)"><span class="nav-ic">📝</span>Tâches<span class="nav-badge" id="hw-badge" style="display:none">0</span></div>
+    <div class="nav" onclick="go('grades',this)"><span class="nav-ic">📊</span>Notes</div>
+    <div class="nav" onclick="go('news',this)"><span class="nav-ic">📣</span>Actualités<span class="nav-badge" id="news-badge" style="display:none">0</span></div>
+    <div class="sb-div"></div>
+    <div class="nav" onclick="go('attendance',this)"><span class="nav-ic">📋</span>Vie scolaire</div>
+    <div class="nav" onclick="go('canteen',this)"><span class="nav-ic">🍽️</span>Cantine</div>
+  </div>
   <div class="sp"></div>
-  <div class="sb-foot">
-    <span id="sb-name" style="color:var(--gl);font-weight:600"></span><br>
-    <span id="sb-info" style="color:var(--t2)"></span><br>
-    Papillon v8.4.2 · Windows<br>
-    <span style="cursor:pointer;color:var(--red)" onclick="doLogout()">↩ Déconnexion</span>
+  <div class="sb-user">
+    <div class="sb-user-row">
+      <div class="sb-avatar" id="sb-av">🎓</div>
+      <div style="min-width:0;flex:1">
+        <div class="sb-uname" id="sb-name">Non connecté</div>
+        <div class="sb-uclass" id="sb-class"></div>
+      </div>
+    </div>
+    <div class="sb-logout" onclick="doLogout()">↩ Se déconnecter</div>
   </div>
 </div>
 
-<!-- MAIN -->
+<!-- ═══ MAIN ═══ -->
 <div id="main">
   <div id="topbar">
-    <h1 id="ptitle">Accueil</h1>
-    <select id="period-sel" style="display:none;background:var(--card);border:1px solid var(--bdr);color:var(--t);padding:5px 10px;border-radius:8px;font-size:12px;cursor:pointer" onchange="onPeriodChange()"></select>
-    <button class="tbtn" onclick="refreshPage()">↻ Actualiser</button>
+    <div class="tb-title" id="ptitle">Accueil</div>
+    <select id="per-sel" class="tb-select" style="display:none" onchange="onPerChange()"></select>
+    <button class="tb-btn" onclick="refreshPage()">↻ Actualiser</button>
   </div>
   <div id="cont">
 
@@ -246,575 +372,551 @@ textarea.fi{resize:vertical;min-height:72px}
         <div class="stat"><div class="sv" id="s-cours">—</div><div class="sl">Cours aujourd'hui</div></div>
         <div class="stat"><div class="sv" id="s-hw">—</div><div class="sl">Devoirs en attente</div></div>
         <div class="stat"><div class="sv" id="s-moy">—</div><div class="sl">Moyenne générale</div></div>
-        <div class="stat"><div class="sv" id="s-abs">—</div><div class="sl">Absences</div></div>
+        <div class="stat red"><div class="sv" id="s-abs">—</div><div class="sl">Absences</div></div>
       </div>
       <div class="g2">
-        <div class="card"><div class="ct">Cours du jour</div><div id="h-tt"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
-        <div class="card"><div class="ct">Devoirs à faire</div><div id="h-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+        <div class="card"><div class="ct">Cours du jour<span class="ct-action" onclick="go('timetable',document.querySelectorAll('.nav')[1])">Voir tout</span></div><div id="h-tt"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+        <div class="card"><div class="ct">Devoirs à faire<span class="ct-action" onclick="go('homework',document.querySelectorAll('.nav')[2])">Voir tout</span></div><div id="h-hw"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
       </div>
-      <div class="card"><div class="ct">Dernières notes</div><div id="h-gr"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
+      <div class="card"><div class="ct">Dernières notes<span class="ct-action" onclick="go('grades',document.querySelectorAll('.nav')[3])">Voir tout</span></div><div id="h-gr"><div class="loading"><div class="spinner"></div>Chargement…</div></div></div>
     </div>
 
     <!-- TIMETABLE -->
     <div class="page" id="page-timetable">
       <div class="wnav">
-        <button onclick="changeWeek(-1)">‹ Semaine préc.</button>
-        <span class="wlbl" id="tt-wlbl"></span>
-        <button onclick="changeWeek(1)">Semaine suiv. ›</button>
+        <button class="wnav-btn" onclick="chgWeek(-1)">‹</button>
+        <button class="wnav-today" onclick="ttWeek=0;loadTT()">Aujourd'hui</button>
+        <span class="wnav-lbl" id="tt-lbl"></span>
+        <button class="wnav-btn" onclick="chgWeek(1)">›</button>
       </div>
-      <div id="tt-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="tt-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- HOMEWORK -->
     <div class="page" id="page-homework">
       <div class="wnav">
-        <button onclick="changeHWWeek(-1)">‹</button>
-        <span class="wlbl" id="hw-wlbl"></span>
-        <button onclick="changeHWWeek(1)">›</button>
+        <button class="wnav-btn" onclick="chgHW(-1)">‹</button>
+        <button class="wnav-today" onclick="hwWeek=0;loadHW()">Cette semaine</button>
+        <span class="wnav-lbl" id="hw-lbl"></span>
+        <button class="wnav-btn" onclick="chgHW(1)">›</button>
       </div>
-      <div id="hw-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="hw-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- GRADES -->
     <div class="page" id="page-grades">
-      <div class="g4" id="g-stats">
+      <div class="g4">
         <div class="stat"><div class="sv" id="g-moy">—</div><div class="sl">Moyenne générale</div></div>
-        <div class="stat"><div class="sv" id="g-cl">—</div><div class="sl">Moyenne classe</div></div>
+        <div class="stat blu"><div class="sv" id="g-cl">—</div><div class="sl">Moyenne classe</div></div>
         <div class="stat"><div class="sv" id="g-best">—</div><div class="sl">Meilleure note</div></div>
-        <div class="stat"><div class="sv" id="g-low">—</div><div class="sl">Note la plus basse</div></div>
+        <div class="stat red"><div class="sv" id="g-low">—</div><div class="sl">Note la plus basse</div></div>
       </div>
-      <div id="g-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="g-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- NEWS -->
     <div class="page" id="page-news">
-      <div id="news-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="n-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- ATTENDANCE -->
     <div class="page" id="page-attendance">
-      <div class="g4" id="att-stats">
-        <div class="stat"><div class="sv" id="a-abs">—</div><div class="sl">Absences</div></div>
-        <div class="stat"><div class="sv" id="a-ret">—</div><div class="sl">Retards</div></div>
+      <div class="g4">
+        <div class="stat red"><div class="sv" id="a-abs">—</div><div class="sl">Absences</div></div>
+        <div class="stat ora"><div class="sv" id="a-ret">—</div><div class="sl">Retards</div></div>
         <div class="stat"><div class="sv" id="a-pun">—</div><div class="sl">Punitions</div></div>
-        <div class="stat"><div class="sv" id="a-obs">—</div><div class="sl">Observations</div></div>
+        <div class="stat blu"><div class="sv" id="a-obs">—</div><div class="sl">Observations</div></div>
       </div>
-      <div id="att-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="att-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
     <!-- CANTEEN -->
     <div class="page" id="page-canteen">
       <div class="wnav">
-        <button onclick="changeCanteenWeek(-1)">‹</button>
-        <span class="wlbl" id="cn-wlbl"></span>
-        <button onclick="changeCanteenWeek(1)">›</button>
+        <button class="wnav-btn" onclick="chgCN(-1)">‹</button>
+        <button class="wnav-today" onclick="cnWeek=0;loadCN()">Cette semaine</button>
+        <span class="wnav-lbl" id="cn-lbl"></span>
+        <button class="wnav-btn" onclick="chgCN(1)">›</button>
       </div>
-      <div id="cn-content"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
+      <div id="cn-cont"><div class="loading"><div class="spinner"></div>Chargement…</div></div>
     </div>
 
   </div>
 </div>
 
 <script>
-let curPage = 'home';
-let ttWeek = 0, hwWeek = 0, cnWeek = 0;
-let hwCache = [];
-let gradesPeriods = [], attPeriods = [];
-let curGradePeriod = null, curAttPeriod = null;
+// ── STATE ──
+let curPage='home', ttWeek=0, hwWeek=0, cnWeek=0;
+let hwCache=[], grPeriods=[], attPeriods=[], curGrPer=null, curAttPer=null;
+let selectedSchool=null;
 
 // ── NAV ──
 function go(id, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
+  document.getElementById('page-'+id)?.classList.add('active');
   if(el) el.classList.add('active');
-  const titles={home:'Accueil',timetable:'Emploi du temps',homework:'Mes tâches',grades:'Notes',news:'Actualités',attendance:'Vie scolaire',canteen:'Cantine'};
-  document.getElementById('ptitle').textContent = titles[id]||id;
-  curPage = id;
-  closeDetail();
-  // show/hide period selector
-  const showPer = (id==='grades'||id==='attendance');
-  document.getElementById('period-sel').style.display = showPer?'block':'none';
+  const T={home:'Accueil',timetable:'Emploi du temps',homework:'Mes tâches',grades:'Notes',news:'Actualités',attendance:'Vie scolaire',canteen:'Cantine'};
+  document.getElementById('ptitle').textContent=T[id]||id;
+  curPage=id; closeDP();
+  const showPer=id==='grades'||id==='attendance';
+  document.getElementById('per-sel').style.display=showPer?'block':'none';
+  if(showPer) buildPerSel(id==='grades'?grPeriods:attPeriods);
   loadPage(id);
 }
-
-function refreshPage() { loadPage(curPage, true); }
-
-function loadPage(id, force) {
-  if(id==='home') loadHome();
-  else if(id==='timetable') loadTimetable();
-  else if(id==='homework') loadHomework();
-  else if(id==='grades') loadGrades();
-  else if(id==='news') loadNews();
-  else if(id==='attendance') loadAttendance();
-  else if(id==='canteen') loadCanteen();
+function refreshPage(){loadPage(curPage,true);}
+function loadPage(id){
+  if(id==='home')loadHome();
+  else if(id==='timetable')loadTT();
+  else if(id==='homework')loadHW();
+  else if(id==='grades')loadGrades();
+  else if(id==='news')loadNews();
+  else if(id==='attendance')loadAtt();
+  else if(id==='canteen')loadCN();
 }
 
-// ── LOGIN ──
-function switchTab(t, btn) {
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('tab-qr').style.display = t==='qr'?'block':'none';
-  document.getElementById('tab-token').style.display = t==='token'?'block':'none';
-  document.getElementById('lerr').style.display='none';
+// ── ONBOARDING ──
+let curStep='0';
+function showStep(id) {
+  document.querySelectorAll('.ob-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('step-'+id)?.classList.add('active');
+  curStep=id;
 }
 
-async function doLoginQR() {
-  const qrData=document.getElementById('qr-data').value.trim();
-  const pin=document.getElementById('qr-pin').value.trim();
-  if(!qrData||!pin){showLErr('Remplis tous les champs.');return}
-  if(pin.length!==4){showLErr('Le PIN doit faire 4 chiffres.');return}
-  setBtn('btn-qr',true);hideLErr();
-  const deviceUUID = crypto.randomUUID();
-  const res = await window.papillon.loginQR({qrData,pin,deviceUUID});
-  setBtn('btn-qr',false);
-  if(res.ok){
-    const creds={url:res.url,username:res.username,token:res.token,deviceUUID,kind:res.kind};
+async function searchSchools() {
+  const q = document.getElementById('school-query').value.trim();
+  if(!q) return;
+  const el = document.getElementById('school-list');
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Recherche en cours…</div>';
+  const res = await window.papillon.searchSchools({query:q});
+  if(!res.ok||!res.schools.length){el.innerHTML='<div class="empty">Aucun établissement trouvé.<br>Essaie une ville ou un code postal.</div>';return;}
+  el.innerHTML=res.schools.slice(0,15).map(s=>`
+    <div class="school-item" onclick="selectSchool(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+      <img src="../assets/service_pronote.png" alt="">
+      <div style="flex:1;min-width:0">
+        <div class="school-name">${s.name}</div>
+        <div class="school-url">${s.url}</div>
+      </div>
+      ${s.distance?`<div class="school-dist">${(s.distance/1000).toFixed(1)} km</div>`:''}
+    </div>
+  `).join('');
+}
+
+async function geolocate() {
+  const el = document.getElementById('school-list');
+  el.innerHTML='<div class="loading"><div class="spinner"></div>Géolocalisation…</div>';
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const res = await window.papillon.searchSchools({lat:pos.coords.latitude, lon:pos.coords.longitude});
+    if(!res.ok||!res.schools.length){el.innerHTML='<div class="empty">Aucun établissement trouvé près de vous.</div>';return;}
+    el.innerHTML=res.schools.slice(0,15).map(s=>`
+      <div class="school-item" onclick="selectSchool(${JSON.stringify(s).replace(/"/g,'&quot;')})">
+        <img src="../assets/service_pronote.png" alt="">
+        <div style="flex:1;min-width:0">
+          <div class="school-name">${s.name}</div>
+          <div class="school-url">${s.url}</div>
+        </div>
+        ${s.distance?`<div class="school-dist">${(s.distance/1000).toFixed(1)} km</div>`:''}
+      </div>
+    `).join('');
+  }, () => { el.innerHTML='<div class="empty">Impossible d\'accéder à la géolocalisation.</div>'; });
+}
+
+function selectSchool(school) {
+  selectedSchool = school;
+  document.getElementById('school-login-title').textContent = 'Connexion — ' + school.name;
+  document.getElementById('selected-school-card').innerHTML=`
+    <img src="../assets/service_pronote.png" style="width:28px;height:28px;border-radius:7px">
+    <div><div class="school-name">${school.name}</div><div class="school-url">${school.url}</div></div>
+  `;
+  showStep('pronote-login');
+}
+
+async function openPronoteWebview() {
+  if(!selectedSchool) return;
+  const btn = document.getElementById('btn-open-webview');
+  const errEl = document.getElementById('pronote-err');
+  btn.disabled=true; btn.textContent='Connexion en cours…'; errEl.style.display='none';
+  const res = await window.papillon.openWebview({url:selectedSchool.url, schoolName:selectedSchool.name});
+  btn.disabled=false; btn.textContent='🔐 Ouvrir la fenêtre de connexion';
+  if(res.ok) {
+    const creds={url:res.url,username:res.username,token:res.token,deviceUUID:res.deviceUUID||crypto.randomUUID(),kind:res.kind,service:'pronote'};
     localStorage.setItem('pp_creds',JSON.stringify(creds));
-    onLogin(res.user);
-  } else { showLErr(res.error||'Erreur de connexion. Vérifie le QR Code et le PIN.'); }
+    onLogin(res.user,'pronote');
+  } else if(res.error && res.error!=='Fenêtre fermée') {
+    errEl.textContent='⚠️ '+res.error; errEl.style.display='block';
+  }
 }
 
-async function doLoginToken() {
-  const url=document.getElementById('tk-url').value.trim();
-  const username=document.getElementById('tk-user').value.trim();
-  const token=document.getElementById('tk-token').value.trim();
-  const deviceUUID=document.getElementById('tk-uuid').value.trim();
-  if(!url||!username||!token||!deviceUUID){showLErr('Remplis tous les champs.');return}
-  setBtn('btn-tk',true);hideLErr();
-  const res=await window.papillon.loginToken({url,username,token,deviceUUID});
-  setBtn('btn-tk',false);
+async function doEDLogin() {
+  const u=document.getElementById('ed-user').value.trim();
+  const p=document.getElementById('ed-pass').value;
+  const errEl=document.getElementById('ed-err');
+  if(!u||!p){errEl.textContent='⚠️ Remplis tous les champs.';errEl.style.display='block';return;}
+  const btn=document.getElementById('btn-ed');
+  btn.disabled=true; btn.textContent='Connexion…'; errEl.style.display='none';
+  const res=await window.papillon.edLogin({username:u,password:p});
+  btn.disabled=false; btn.textContent='Se connecter';
   if(res.ok){
-    localStorage.setItem('pp_creds',JSON.stringify({url,username,token:res.token,deviceUUID}));
-    onLogin(res.user);
-  } else { showLErr(res.error||'Erreur. Vérifie ton token.'); }
+    localStorage.setItem('pp_creds',JSON.stringify({service:'ed',username:u,token:res.token}));
+    onLogin(res.user,'ed');
+  } else {
+    errEl.textContent='⚠️ '+(res.error||'Identifiants incorrects.');errEl.style.display='block';
+  }
 }
 
-async function onLogin(user) {
-  document.getElementById('login').style.display='none';
+async function onLogin(user, service) {
+  document.getElementById('ob').style.display='none';
   document.getElementById('sb-name').textContent=user.name;
-  document.getElementById('sb-info').textContent=[user.class,user.school].filter(Boolean).join(' · ');
+  document.getElementById('sb-class').textContent=[user.class,user.school].filter(Boolean).join(' · ');
   // Load periods
   const gp=await window.papillon.periods({tab:'grades'});
-  if(gp.ok){
-    gradesPeriods=gp.periods;
-    curGradePeriod=gp.periods[0]?.name||null;
-    buildPeriodSel(gp.periods, 'grades');
-  }
+  if(gp.ok){grPeriods=gp.periods;curGrPer=gp.periods[0]?.name||null;}
   const ap=await window.papillon.periods({tab:'attendance'});
-  if(ap.ok){ attPeriods=ap.periods; curAttPeriod=ap.periods[0]?.name||null; }
+  if(ap.ok){attPeriods=ap.periods;curAttPer=ap.periods[0]?.name||null;}
   loadHome();
 }
 
-function buildPeriodSel(periods, tab) {
-  const sel=document.getElementById('period-sel');
-  sel.innerHTML = periods.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+function buildPerSel(periods) {
+  const sel=document.getElementById('per-sel');
+  sel.innerHTML=periods.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
 }
 
-function onPeriodChange() {
-  const val=document.getElementById('period-sel').value;
-  if(curPage==='grades'){curGradePeriod=val;loadGrades();}
-  if(curPage==='attendance'){curAttPeriod=val;loadAttendance();}
+function onPerChange(){
+  const v=document.getElementById('per-sel').value;
+  if(curPage==='grades'){curGrPer=v;loadGrades();}
+  if(curPage==='attendance'){curAttPer=v;loadAtt();}
 }
 
-async function doLogout() {
+async function doLogout(){
   await window.papillon.logout();
   localStorage.removeItem('pp_creds');
-  document.getElementById('login').style.display='flex';
-  document.getElementById('sb-name').textContent='';
-  document.getElementById('sb-info').textContent='';
+  document.getElementById('ob').style.display='flex';
+  showStep('0');
+  document.getElementById('sb-name').textContent='Non connecté';
+  document.getElementById('sb-class').textContent='';
 }
 
-// Auto-reconnect
+// Auto reconnect
 window.addEventListener('load',async()=>{
   const raw=localStorage.getItem('pp_creds');
-  if(raw){
-    try{
-      const c=JSON.parse(raw);
+  if(!raw) return;
+  try {
+    const c=JSON.parse(raw);
+    if(c.service==='pronote'){
       const res=await window.papillon.loginToken(c);
-      if(res.ok){
-        localStorage.setItem('pp_creds',JSON.stringify({...c,token:res.token}));
-        await onLogin(res.user);return;
-      }
-    }catch(e){}
-    localStorage.removeItem('pp_creds');
-  }
+      if(res.ok){localStorage.setItem('pp_creds',JSON.stringify({...c,token:res.token}));await onLogin(res.user,'pronote');return;}
+    }
+  } catch(e){}
+  localStorage.removeItem('pp_creds');
 });
 
-document.getElementById('qr-pin').addEventListener('keydown',e=>{if(e.key==='Enter')doLoginQR();});
-
-function showLErr(m){const e=document.getElementById('lerr');e.textContent='⚠️ '+m;e.style.display='block';}
-function hideLErr(){document.getElementById('lerr').style.display='none';}
-function setBtn(id,loading){const b=document.getElementById(id);b.disabled=loading;b.textContent=loading?'Connexion…':'Se connecter';}
+function togglePass(id,el){const i=document.getElementById(id);i.type=i.type==='password'?'text':'password';el.textContent=i.type==='password'?'👁':'🙈';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeDP();});
 
 // ── HOME ──
-async function loadHome() {
-  setEl('h-tt','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  setEl('h-hw','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  setEl('h-gr','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+async function loadHome(){
+  ['h-tt','h-hw','h-gr'].forEach(id=>setEl(id,'<div class="loading"><div class="spinner"></div>Chargement…</div>'));
   const [tt,hw,gr,att]=await Promise.all([
     window.papillon.timetable({date:new Date().toISOString()}),
     window.papillon.homework({weekOffset:0}),
-    window.papillon.grades({periodName:curGradePeriod}),
-    window.papillon.attendance({periodName:curAttPeriod}),
+    window.papillon.grades({periodName:curGrPer}),
+    window.papillon.attendance({periodName:curAttPer}),
   ]);
-  // Timetable
   if(tt.ok){
     const today=new Date().toDateString();
     const todayL=tt.lessons.filter(l=>new Date(l.from).toDateString()===today);
     setEl('s-cours',todayL.filter(l=>!l.isCancelled).length);
-    setEl('h-tt',todayL.length?todayL.map(l=>lessonRowHTML(l)).join(''):'<div class="empty">Aucun cours aujourd\'hui</div>');
+    setEl('h-tt',todayL.length?todayL.map(l=>lRow(l)).join(''):'<div class="empty">Aucun cours aujourd\'hui</div>');
   }
-  // Homework
   if(hw.ok){
     hwCache=hw.homeworks;
     const pend=hw.homeworks.filter(h=>!h.isDone);
     setEl('s-hw',pend.length);
-    setEl('h-hw',pend.length?pend.slice(0,4).map(h=>hwRowHTML(h,true)).join(''):'<div class="empty">Aucun devoir en attente 🎉</div>');
+    setBadge('hw-badge',pend.length);
+    setEl('h-hw',pend.length?pend.slice(0,4).map(h=>hwRow(h,true)).join(''):'<div class="empty">Aucun devoir en attente 🎉</div>');
   }
-  // Grades
   if(gr.ok){
     const allG=gr.subjects.flatMap(s=>s.grades);
-    if(!gr.overall?.disabled) setEl('s-moy',gr.overall?.value?.toFixed(1)||'—');
-    setEl('h-gr',allG.slice(0,4).map(g=>gradeRowHTML(g)).join('')||'<div class="empty">Aucune note</div>');
+    if(!gr.overall?.disabled) setEl('s-moy',gr.overall.value.toFixed(1));
+    setEl('h-gr',allG.slice(0,4).map(g=>gRow(g,true)).join('')||'<div class="empty">Aucune note récente</div>');
   }
-  // Attendance
-  if(att.ok){
-    setEl('s-abs',att.absences.length);
-  }
+  if(att.ok) setEl('s-abs',att.absences.length);
 }
 
 // ── TIMETABLE ──
-async function loadTimetable() {
-  setEl('tt-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  const d=weekDate(ttWeek);
-  updateWLbl('tt-wlbl',d);
+async function loadTT(){
+  setEl('tt-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=wkDate(ttWeek); wkLbl('tt-lbl',d);
   const res=await window.papillon.timetable({date:d.toISOString()});
-  if(!res.ok){setEl('tt-content',errHTML(res.error));return;}
-  if(!res.lessons.length){setEl('tt-content','<div class="empty">Aucun cours cette semaine</div>');return;}
-  // Group by day
+  if(!res.ok){setEl('tt-cont',errBox(res.error));return;}
+  if(!res.lessons.length){setEl('tt-cont','<div class="empty">Aucun cours cette semaine</div>');return;}
   const days={};
-  for(const l of res.lessons){
-    const dk=new Date(l.from).toDateString();
-    days[dk]=days[dk]||[];
-    days[dk].push(l);
-  }
-  setEl('tt-content',Object.entries(days).map(([dk,ls])=>`
-    <div class="card" style="margin-bottom:12px">
+  for(const l of res.lessons){const dk=new Date(l.from).toDateString();days[dk]=days[dk]||[];days[dk].push(l);}
+  setEl('tt-cont',Object.entries(days).map(([dk,ls])=>`
+    <div class="card" style="margin-bottom:14px">
       <div class="ct">${fmtDayFull(new Date(dk))}</div>
-      ${ls.map(l=>lessonRowHTML(l)).join('')}
-    </div>
-  `).join(''));
+      ${ls.map(l=>lRow(l)).join('')}
+    </div>`).join(''));
 }
 
-function lessonRowHTML(l) {
-  const color = l.color||'#22c55e';
-  const badges = [];
+function lRow(l) {
+  const badges=[];
   if(l.isCancelled) badges.push('<span class="bdg b-r">Annulé</span>');
   else if(l.isTest) badges.push('<span class="bdg b-o">Évaluation</span>');
   if(l.type==='detention') badges.push('<span class="bdg b-p">Retenue</span>');
-  return `<div class="row" style="cursor:pointer" onclick="showCourseDetail(${JSON.stringify(l).replace(/"/g,'&quot;')})">
-    <div style="min-width:72px;font-size:11px;color:var(--t3);line-height:1.5">${fmtTime(l.from)}<br>${fmtTime(l.to)}</div>
-    <div class="dot" style="background:${color}"></div>
-    <div style="flex:1">
+  return `<div class="row clickable" onclick="showCourseDP(${esc(l)})">
+    <div style="min-width:70px;font-size:11px;color:var(--t3);line-height:1.6">${fmtTime(l.from)}<br>${fmtTime(l.to)}</div>
+    <div class="dot" style="background:${l.color||'#22c55e'}"></div>
+    <div style="flex:1;min-width:0">
       <div class="rn" style="color:${l.isCancelled?'var(--t3)':'var(--t)'}">${l.subject}</div>
       <div class="rs">${[l.teacher,l.room].filter(Boolean).join(' · ')||'&nbsp;'}</div>
     </div>
     ${badges.join('')}
   </div>`;
 }
-
-function changeWeek(d){ttWeek+=d;loadTimetable();}
+function chgWeek(d){ttWeek+=d;loadTT();}
 
 // ── HOMEWORK ──
-async function loadHomework() {
-  setEl('hw-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  const d=weekDate(hwWeek);
-  updateWLbl('hw-wlbl',d);
+async function loadHW(){
+  setEl('hw-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=wkDate(hwWeek); wkLbl('hw-lbl',d);
   const res=await window.papillon.homework({weekOffset:hwWeek});
-  if(!res.ok){setEl('hw-content',errHTML(res.error));return;}
-  hwCache=res.homeworks;
-  renderHW();
+  if(!res.ok){setEl('hw-cont',errBox(res.error));return;}
+  hwCache=res.homeworks; renderHW();
 }
 
-function renderHW() {
-  if(!hwCache.length){setEl('hw-content','<div class="empty">Aucun devoir cette semaine 🎉</div>');return;}
-  // Group by due date
+function renderHW(){
+  const pend=hwCache.filter(h=>!h.isDone).length;
+  setEl('s-hw',pend); setBadge('hw-badge',pend);
+  if(!hwCache.length){setEl('hw-cont','<div class="empty">Aucun devoir cette semaine 🎉</div>');return;}
   const days={};
-  for(const h of hwCache){
-    const dk=h.dueDate?new Date(h.dueDate).toDateString():'Sans date';
-    days[dk]=days[dk]||[];
-    days[dk].push(h);
-  }
-  setEl('hw-content',Object.entries(days).map(([dk,hs])=>`
-    <div class="card" style="margin-bottom:12px">
-      <div class="ct">Pour le ${dk==='Sans date'?'—':fmtDate(new Date(dk))}</div>
-      ${hs.map((h,i)=>hwRowHTML(h,false,hwCache.indexOf(h))).join('')}
-    </div>
-  `).join(''));
-  setEl('s-hw',hwCache.filter(h=>!h.isDone).length);
+  for(const h of hwCache){const dk=h.dueDate?new Date(h.dueDate).toDateString():'Sans date';days[dk]=days[dk]||[];days[dk].push(h);}
+  setEl('hw-cont',Object.entries(days).map(([dk,hs])=>`
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">Pour le ${dk==='Sans date'?'—':fmtDayFull(new Date(dk))}</div>
+      ${hs.map(h=>hwRow(h,false,hwCache.indexOf(h))).join('')}
+    </div>`).join(''));
 }
 
-function hwRowHTML(h, compact, idx) {
+function hwRow(h,compact,idx){
   return `<div class="titem">
-    <div class="tchk ${h.isDone?'done':''}" onclick="toggleHW(${idx??0})"></div>
-    <div style="flex:1" onclick="showHWDetail(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+    <div class="tchk${h.isDone?' done':''}" onclick="event.stopPropagation();toggleHW(${idx??0})"></div>
+    <div style="flex:1;cursor:pointer" onclick="showHWDP(${esc(h)})">
       <div class="tsubj">${h.subject}</div>
-      <div class="ttxt ${h.isDone?'done':''}">${compact?h.content.substring(0,70)+(h.content.length>70?'…':''):h.content}</div>
+      <div class="ttxt${h.isDone?' done':''}">${compact?h.content.substring(0,80)+(h.content.length>80?'…':''):h.content}</div>
       ${h.dueDate&&!compact?`<div class="tdate">📅 ${fmtDate(new Date(h.dueDate))}</div>`:''}
       ${h.attachments?.length?`<div class="tdate">📎 ${h.attachments.length} pièce(s) jointe(s)</div>`:''}
     </div>
   </div>`;
 }
 
-async function toggleHW(i) {
-  if(i===undefined||i===null)return;
+async function toggleHW(i){
+  if(i===undefined||!hwCache[i])return;
   hwCache[i].isDone=!hwCache[i].isDone;
   renderHW();
   await window.papillon.toggleHW({id:hwCache[i].id,status:hwCache[i].isDone});
 }
-
-function changeHWWeek(d){hwWeek+=d;loadHomework();}
+function chgHW(d){hwWeek+=d;loadHW();}
 
 // ── GRADES ──
-async function loadGrades() {
-  setEl('g-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  const res=await window.papillon.grades({periodName:curGradePeriod});
-  if(!res.ok){setEl('g-content',errHTML(res.error));return;}
-
+async function loadGrades(){
+  setEl('g-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const res=await window.papillon.grades({periodName:curGrPer});
+  if(!res.ok){setEl('g-cont',errBox(res.error));return;}
   const allG=res.subjects.flatMap(s=>s.grades).filter(g=>!g.studentScore.disabled);
   const vals=allG.map(g=>g.studentScore.value);
-
   if(!res.overall?.disabled){setEl('g-moy',res.overall.value.toFixed(2));setEl('s-moy',res.overall.value.toFixed(1));}
   if(!res.classAverage?.disabled) setEl('g-cl',res.classAverage.value.toFixed(2));
   if(vals.length){setEl('g-best',Math.max(...vals).toFixed(1));setEl('g-low',Math.min(...vals).toFixed(1));}
-
-  setEl('g-content',res.subjects.map(s=>`
-    <div class="card" style="margin-bottom:12px">
-      <div class="ct" style="display:flex;justify-content:space-between;align-items:center">
-        <span>${s.name}</span>
-        <span style="color:${gradeColor(s.studentAverage?.value,20)};font-size:12px;font-weight:700">
+  setEl('g-cont',res.subjects.map(s=>`
+    <div class="card" style="margin-bottom:14px">
+      <div class="ct">${s.name}
+        <span style="color:${gClr(s.studentAverage?.value,20)};font-size:12px;font-weight:700;text-transform:none;letter-spacing:0">
           ${!s.studentAverage?.disabled?s.studentAverage.value.toFixed(2)+'/20':'—'}
         </span>
       </div>
-      ${s.grades.length?s.grades.map(g=>gradeRowHTML(g)).join(''):'<div class="empty" style="padding:8px">Aucune note</div>'}
-    </div>
-  `).join('')||'<div class="empty">Aucune note disponible</div>');
+      ${s.grades.length?s.grades.map(g=>gRow(g,false)).join(''):'<div class="empty" style="padding:8px">Aucune note</div>'}
+    </div>`).join('')||'<div class="empty">Aucune note disponible</div>');
 }
 
-function gradeRowHTML(g) {
+function gRow(g,compact){
   const sc=g.studentScore;
-  const display=sc.status||sc.value.toFixed(2);
+  const disp=sc.status||sc.value.toFixed(2);
   const cls=sc.disabled?'dis':sc.value>=(g.outOf.value*.7)?'good':sc.value>=(g.outOf.value*.5)?'avg':'bad';
-  return `<div class="row" style="cursor:pointer" onclick="showGradeDetail(${JSON.stringify(g).replace(/"/g,'&quot;')})">
-    <div style="flex:1">
-      <div class="rn">${g.subjectName||g.description||'Note'}</div>
-      <div class="rs">${g.description||''}${g.givenAt?' · '+fmtDate(new Date(g.givenAt)):''}</div>
+  return `<div class="row clickable" onclick="showGradeDP(${esc(g)})">
+    <div style="flex:1;min-width:0">
+      <div class="rn">${compact?g.subjectName:g.description||'Note'}</div>
+      <div class="rs">${compact?g.description||'':g.givenAt?fmtDate(new Date(g.givenAt)):''}${!compact&&g.averageScore&&!g.averageScore.disabled?' · moy. '+g.averageScore.value.toFixed(2):''}</div>
     </div>
-    <div style="text-align:right">
-      <div class="gval ${cls}">${display}</div>
-      <div class="gden">/${g.outOf.value} coef.${g.coefficient}</div>
+    <div style="text-align:right;flex-shrink:0">
+      <div class="gval ${cls}">${disp}</div>
+      <div class="gden">/${g.outOf.value} · coef ${g.coefficient}</div>
     </div>
   </div>`;
 }
 
 // ── NEWS ──
-async function loadNews() {
-  setEl('news-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+async function loadNews(){
+  setEl('n-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
   const res=await window.papillon.news();
-  if(!res.ok){setEl('news-content',errHTML(res.error));return;}
-  if(!res.news.length){setEl('news-content','<div class="empty">Aucune actualité</div>');return;}
-  setEl('news-content',`<div class="card">${res.news.map(n=>`
-    <div class="nitem" onclick="showNewsDetail(${JSON.stringify(n).replace(/"/g,'&quot;')})">
+  if(!res.ok){setEl('n-cont',errBox(res.error));return;}
+  const unread=res.news.filter(n=>!n.acknowledged).length;
+  setBadge('news-badge',unread);
+  setEl('n-cont',res.news.length?`<div class="card">${res.news.map(n=>`
+    <div class="nitem" onclick="showNewsDP(${esc(n)})">
       <div class="nmeta">
         <span class="nsrc">${n.category||n.author||'Établissement'}</span>
         ${n.createdAt?`<span class="ndate">${fmtDate(new Date(n.createdAt))}</span>`:''}
-        ${!n.acknowledged?'<span class="nunread"></span>':''}
+        ${!n.acknowledged?'<span class="ndot"></span>':''}
       </div>
       <div class="ntitle">${n.title}</div>
-      ${n.content?`<div class="nbody">${n.content.substring(0,120)}${n.content.length>120?'…':''}</div>`:''}
-      ${n.attachments?.length?`<div class="tdate" style="margin-top:4px">📎 ${n.attachments.length} pièce(s) jointe(s)</div>`:''}
-    </div>
-  `).join('')}</div>`);
+      ${n.content?`<div class="nbody">${n.content.substring(0,140)}${n.content.length>140?'…':''}</div>`:''}
+    </div>`).join('')}</div>`:'<div class="empty">Aucune actualité</div>');
 }
 
 // ── ATTENDANCE ──
-async function loadAttendance() {
-  setEl('att-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  const res=await window.papillon.attendance({periodName:curAttPeriod});
-  if(!res.ok){setEl('att-content',errHTML(res.error));return;}
+async function loadAtt(){
+  setEl('att-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const res=await window.papillon.attendance({periodName:curAttPer});
+  if(!res.ok){setEl('att-cont',errBox(res.error));return;}
   setEl('a-abs',res.absences.length);setEl('a-ret',res.delays.length);
-  setEl('a-pun',res.punishments.length);setEl('a-obs',res.observations.length);
-  setEl('s-abs',res.absences.length);
-
+  setEl('a-pun',res.punishments.length);setEl('a-obs',res.observations.length);setEl('s-abs',res.absences.length);
   let html='';
-  if(res.absences.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Absences (${res.absences.length})</div>${res.absences.map(a=>`
-    <div class="att-item">
-      <div class="att-icon" style="background:rgba(224,82,82,.15)">🚫</div>
-      <div style="flex:1">
-        <div class="att-name">${fmtDate(new Date(a.from))} – ${fmtDate(new Date(a.to))}</div>
-        <div class="att-sub">${Math.floor(a.timeMissed/60)}h${a.timeMissed%60>0?(a.timeMissed%60)+'min':''} manqué(es) · ${a.justified?'<span style="color:var(--gl)">Justifiée</span>':'<span style="color:var(--red)">Non justifiée</span>'}</div>
-        ${a.reason?`<div class="att-sub">${a.reason}</div>`:''}
+  if(res.absences.length) html+=attSection('Absences',res.absences.map(a=>`
+    <div class="row">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--red-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">🚫</div>
+      <div style="flex:1"><div class="rn">${fmtDate(new Date(a.from))} → ${fmtDate(new Date(a.to))}</div>
+      <div class="rs">${Math.floor(a.timeMissed/60)}h${a.timeMissed%60>0?(a.timeMissed%60)+'min':''} · ${a.justified?'<span style="color:var(--acc)">✓ Justifiée</span>':'<span style="color:var(--red)">✗ Non justifiée</span>'}</div>
+      ${a.reason?`<div class="rs">${a.reason}</div>`:''}
       </div>
-    </div>`).join('')}</div>`;
-
-  if(res.delays.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Retards (${res.delays.length})</div>${res.delays.map(d=>`
-    <div class="att-item">
-      <div class="att-icon" style="background:rgba(224,124,50,.15)">⏰</div>
-      <div style="flex:1">
-        <div class="att-name">${fmtDate(new Date(d.givenAt))}</div>
-        <div class="att-sub">${d.duration} minute(s) · ${d.justified?'<span style="color:var(--gl)">Justifié</span>':'<span style="color:var(--red)">Non justifié</span>'}</div>
-        ${d.reason?`<div class="att-sub">${d.reason}</div>`:''}
+    </div>`).join(''));
+  if(res.delays.length) html+=attSection('Retards',res.delays.map(d=>`
+    <div class="row">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--ora-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">⏰</div>
+      <div style="flex:1"><div class="rn">${fmtDate(new Date(d.givenAt))}</div>
+      <div class="rs">${d.duration} min · ${d.justified?'<span style="color:var(--acc)">✓ Justifié</span>':'<span style="color:var(--red)">✗ Non justifié</span>'}</div>
+      ${d.reason?`<div class="rs">${d.reason}</div>`:''}
       </div>
-    </div>`).join('')}</div>`;
-
-  if(res.punishments.length) html+=`<div class="card" style="margin-bottom:12px"><div class="ct">Punitions (${res.punishments.length})</div>${res.punishments.map(p=>`
-    <div class="att-item">
-      <div class="att-icon" style="background:rgba(155,110,232,.15)">⚠️</div>
-      <div style="flex:1">
-        <div class="att-name">${p.nature||'Punition'}</div>
-        <div class="att-sub">${fmtDate(new Date(p.givenAt))} · ${p.givenBy}</div>
-        ${p.reason?`<div class="att-sub">${p.reason}</div>`:''}
-        ${p.duration?`<div class="att-sub">Durée : ${p.duration} min</div>`:''}
+    </div>`).join(''));
+  if(res.punishments.length) html+=attSection('Punitions',res.punishments.map(p=>`
+    <div class="row">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--pur-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">⚠️</div>
+      <div style="flex:1"><div class="rn">${p.nature||'Punition'}</div>
+      <div class="rs">${fmtDate(new Date(p.givenAt))} · ${p.givenBy}</div>
+      ${p.reason?`<div class="rs">${p.reason}</div>`:''}
+      ${p.duration?`<div class="rs">Durée : ${p.duration} min</div>`:''}
       </div>
-    </div>`).join('')}</div>`;
-
-  if(res.observations.length) html+=`<div class="card"><div class="ct">Observations (${res.observations.length})</div>${res.observations.map(o=>`
-    <div class="att-item">
-      <div class="att-icon" style="background:rgba(74,143,232,.15)">📌</div>
-      <div style="flex:1">
-        <div class="att-name">${o.sectionName||'Observation'}</div>
-        <div class="att-sub">${fmtDate(new Date(o.givenAt))}${o.subjectName?' · '+o.subjectName:''}</div>
-        ${o.reason?`<div class="att-sub">${o.reason}</div>`:''}
+    </div>`).join(''));
+  if(res.observations.length) html+=attSection('Observations',res.observations.map(o=>`
+    <div class="row">
+      <div style="width:32px;height:32px;border-radius:8px;background:var(--blu-dim);display:flex;align-items:center;justify-content:center;flex-shrink:0">📌</div>
+      <div style="flex:1"><div class="rn">${o.sectionName||'Observation'}</div>
+      <div class="rs">${fmtDate(new Date(o.givenAt))}${o.subjectName?' · '+o.subjectName:''}</div>
+      ${o.reason?`<div class="rs">${o.reason}</div>`:''}
       </div>
-    </div>`).join('')}</div>`;
+    </div>`).join(''));
+  setEl('att-cont',html||'<div class="empty">Aucun événement cette période 🎉</div>');
+}
 
-  setEl('att-content',html||'<div class="empty">Aucun événement cette période 🎉</div>');
+function attSection(title,rows){
+  return`<div class="card" style="margin-bottom:14px"><div class="ct">${title}</div>${rows}</div>`;
 }
 
 // ── CANTEEN ──
-async function loadCanteen() {
-  setEl('cn-content','<div class="loading"><div class="spinner"></div>Chargement…</div>');
-  const d=weekDate(cnWeek);
-  updateWLbl('cn-wlbl',d);
+async function loadCN(){
+  setEl('cn-cont','<div class="loading"><div class="spinner"></div>Chargement…</div>');
+  const d=wkDate(cnWeek); wkLbl('cn-lbl',d);
   const res=await window.papillon.canteen({date:d.toISOString()});
-  if(!res.ok){setEl('cn-content',errHTML(res.error));return;}
-  if(!res.days?.length){setEl('cn-content','<div class="empty">Aucun menu disponible cette semaine</div>');return;}
-
-  const mapMeal=(meal,label)=>{
-    if(!meal)return'';
-    const cats=[['Entrée',meal.entry],['Plat',meal.main],['Accompagnement',meal.side],['Fromage',meal.cheese],['Dessert',meal.dessert],['Boisson',meal.drink]];
-    const filled=cats.filter(([,foods])=>foods?.length>0);
-    if(!filled.length)return'';
-    return `<div style="margin-bottom:8px"><b style="font-size:12px;color:var(--gl)">${label}</b>${filled.map(([cat,foods])=>`
-      <div class="menu-cat">${cat}</div>
-      ${foods.map(f=>`<div class="menu-item">${f.name}${f.allergens?.length?`<span class="menu-allergen"> (${f.allergens.join(', ')})</span>`:''}</div>`).join('')}
-    `).join('')}</div>`;
-  };
-
-  setEl('cn-content',`<div class="g2">${res.days.map(day=>`
+  if(!res.ok){setEl('cn-cont',errBox(res.error));return;}
+  if(!res.days?.length){setEl('cn-cont','<div class="empty">Aucun menu cette semaine</div>');return;}
+  const mF=(f)=>(f||[]).map(x=>`<div style="padding:5px 0;border-bottom:1px solid var(--card-border);font-size:13px">${x.name}${x.allergens?.length?`<span style="font-size:10px;color:var(--t3)"> (${x.allergens.join(', ')})</span>`:''}</div>`).join('');
+  const meal=(m,l)=>{if(!m)return'';const cs=[['Entrée',m.entry],['Plat',m.main],['Accompagnement',m.side],['Fromage',m.cheese],['Dessert',m.dessert],['Boisson',m.drink]].filter(([,f])=>f?.length);if(!cs.length)return'';return`<div style="margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:var(--acc);margin-bottom:6px">${l}</div>${cs.map(([c,f])=>`<div style="font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin:8px 0 3px">${c}</div>${mF(f)}`).join('')}</div>`;};
+  setEl('cn-cont',`<div class="g2">${res.days.map(day=>`
     <div class="card">
       <div class="ct">${fmtDayFull(new Date(day.date))}</div>
-      ${mapMeal(day.lunch,'🌞 Déjeuner')}
-      ${mapMeal(day.dinner,'🌙 Dîner')}
-    </div>
-  `).join('')}</div>`);
+      ${meal(day.lunch,'☀️ Déjeuner')}
+      ${meal(day.dinner,'🌙 Dîner')}
+    </div>`).join('')}</div>`);
 }
-
-function changeCanteenWeek(d){cnWeek+=d;loadCanteen();}
+function chgCN(d){cnWeek+=d;loadCN();}
 
 // ── DETAIL PANELS ──
-function showCourseDetail(l) {
-  document.getElementById('detail-title').textContent=l.subject;
-  document.getElementById('detail-body').innerHTML=`
-    <div class="stat" style="margin-bottom:12px;text-align:left;padding:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div class="dot" style="background:${l.color||'#22c55e'};width:12px;height:12px"></div>
-        <b style="font-size:16px">${l.subject}</b>
-        ${l.isCancelled?'<span class="bdg b-r">Annulé</span>':''}
-        ${l.isTest?'<span class="bdg b-o">Évaluation</span>':''}
-      </div>
-      <div class="rs">🕐 ${fmtTime(l.from)} – ${fmtTime(l.to)}</div>
-      ${l.teacher?`<div class="rs">👨‍🏫 ${l.teacher}</div>`:''}
-      ${l.room?`<div class="rs">📍 ${l.room}</div>`:''}
-      ${l.group?`<div class="rs">👥 ${l.group}</div>`:''}
-      ${l.notes?`<div style="margin-top:10px;font-size:13px;color:var(--t2);line-height:1.5">${l.notes}</div>`:''}
+function showCourseDP(l){
+  openDP(l.subject,`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+      <div class="dot" style="background:${l.color||'#22c55e'};width:12px;height:12px"></div>
+      <div style="font-size:20px;font-weight:800;letter-spacing:-.3px">${l.subject}</div>
+      ${l.isCancelled?'<span class="bdg b-r">Annulé</span>':''}
+      ${l.isTest?'<span class="bdg b-o">Évaluation</span>':''}
     </div>
-  `;
-  openDetail();
+    <div class="card" style="margin-bottom:12px">
+      <div class="row"><span style="color:var(--t2)">🕐 Horaires</span><span style="font-weight:600">${fmtTime(l.from)} – ${fmtTime(l.to)}</span></div>
+      ${l.teacher?`<div class="row"><span style="color:var(--t2)">👨‍🏫 Professeur</span><span style="font-weight:600">${l.teacher}</span></div>`:''}
+      ${l.room?`<div class="row"><span style="color:var(--t2)">📍 Salle</span><span style="font-weight:600">${l.room}</span></div>`:''}
+      ${l.group?`<div class="row" style="border:none"><span style="color:var(--t2)">👥 Groupe</span><span style="font-weight:600">${l.group}</span></div>`:''}
+    </div>
+    ${l.notes?`<div class="card"><div class="ct">Notes</div><div style="font-size:13px;line-height:1.6;color:var(--t2)">${l.notes}</div></div>`:''}
+  `);
 }
 
-function showGradeDetail(g) {
-  const sc=g.studentScore;
-  const display=sc.status||sc.value.toFixed(2);
+function showGradeDP(g){
+  const sc=g.studentScore;const disp=sc.status||sc.value.toFixed(2);
   const cls=sc.disabled?'dis':sc.value>=(g.outOf.value*.7)?'good':sc.value>=(g.outOf.value*.5)?'avg':'bad';
-  document.getElementById('detail-title').textContent=g.subjectName;
-  document.getElementById('detail-body').innerHTML=`
-    <div style="text-align:center;padding:20px 0 16px">
-      <div class="gval ${cls}" style="font-size:42px">${display}</div>
-      <div class="gden" style="font-size:14px;margin-top:4px">/ ${g.outOf.value} · coefficient ${g.coefficient}</div>
+  openDP(g.subjectName,`
+    <div style="text-align:center;padding:24px 0 20px">
+      <div class="gval ${cls}" style="font-size:52px;letter-spacing:-1px">${disp}</div>
+      <div style="font-size:14px;color:var(--t2);margin-top:6px">/ ${g.outOf.value} · coefficient ${g.coefficient}</div>
     </div>
     <div class="card">
-      <div class="ct">Détails</div>
-      ${g.description?`<div class="row"><span style="color:var(--t2)">Intitulé</span><span style="flex:1;text-align:right">${g.description}</span></div>`:''}
-      ${g.givenAt?`<div class="row"><span style="color:var(--t2)">Date</span><span style="flex:1;text-align:right">${fmtDate(new Date(g.givenAt))}</span></div>`:''}
-      ${!g.averageScore?.disabled?`<div class="row"><span style="color:var(--t2)">Moyenne classe</span><span style="flex:1;text-align:right">${g.averageScore.value.toFixed(2)}</span></div>`:''}
-      ${!g.minScore?.disabled?`<div class="row"><span style="color:var(--t2)">Note minimale</span><span style="flex:1;text-align:right;color:var(--red)">${g.minScore.value.toFixed(2)}</span></div>`:''}
-      ${!g.maxScore?.disabled?`<div class="row"><span style="color:var(--t2)">Note maximale</span><span style="flex:1;text-align:right;color:var(--gl)">${g.maxScore.value.toFixed(2)}</span></div>`:''}
-      ${g.isBonus?`<div class="row"><span class="bdg b-g">Bonus</span></div>`:''}
-      ${g.isOptional?`<div class="row"><span class="bdg b-b">Optionnel</span></div>`:''}
+      ${g.description?`<div class="row"><span style="color:var(--t2)">Intitulé</span><span style="flex:1;text-align:right;font-weight:600">${g.description}</span></div>`:''}
+      ${g.givenAt?`<div class="row"><span style="color:var(--t2)">Date</span><span style="font-weight:600">${fmtDate(new Date(g.givenAt))}</span></div>`:''}
+      ${!g.averageScore?.disabled?`<div class="row"><span style="color:var(--t2)">Moy. classe</span><span style="font-weight:600">${g.averageScore.value.toFixed(2)}</span></div>`:''}
+      ${!g.minScore?.disabled?`<div class="row"><span style="color:var(--t2)">Note min.</span><span style="font-weight:600;color:var(--red)">${g.minScore.value.toFixed(2)}</span></div>`:''}
+      ${!g.maxScore?.disabled?`<div class="row" style="border:none"><span style="color:var(--t2)">Note max.</span><span style="font-weight:600;color:var(--acc)">${g.maxScore.value.toFixed(2)}</span></div>`:''}
     </div>
-  `;
-  openDetail();
+    ${g.isBonus||g.isOptional?`<div style="display:flex;gap:8px;margin-top:12px">${g.isBonus?'<span class="bdg b-g">Bonus</span>':''}${g.isOptional?'<span class="bdg b-b">Optionnel</span>':''}</div>`:''}
+  `);
 }
 
-function showHWDetail(h) {
-  document.getElementById('detail-title').textContent=h.subject;
-  document.getElementById('detail-body').innerHTML=`
+function showHWDP(h){
+  openDP(h.subject,`
     <div class="card" style="margin-bottom:12px">
-      <div class="ct">Contenu</div>
-      <div style="font-size:13px;line-height:1.6;color:var(--t)">${h.content}</div>
+      <div class="ct">Consigne</div>
+      <div style="font-size:14px;line-height:1.7;color:var(--t)">${h.content}</div>
     </div>
-    ${h.dueDate?`<div class="card" style="margin-bottom:12px"><div class="ct">À rendre pour le</div><div style="font-size:14px;font-weight:600">${fmtDate(new Date(h.dueDate))}</div></div>`:''}
-    ${h.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${h.attachments.map(a=>`
-      <div class="row" style="cursor:pointer" onclick="window.papillon.openExternal('${a.url}')">
-        <span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span>
-      </div>`).join('')}</div>`:''}
-  `;
-  openDetail();
+    ${h.dueDate?`<div class="card" style="margin-bottom:12px"><div class="ct">À rendre pour le</div><div style="font-size:16px;font-weight:700;color:var(--acc)">${fmtDayFull(new Date(h.dueDate))}</div></div>`:''}
+    ${h.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${h.attachments.map(a=>`<div class="row clickable" onclick="window.papillon.openExternal('${a.url}')"><span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span><span style="color:var(--t3)">↗</span></div>`).join('')}</div>`:''}
+  `);
 }
 
-function showNewsDetail(n) {
-  document.getElementById('detail-title').textContent=n.title;
-  document.getElementById('detail-body').innerHTML=`
-    <div class="nmeta" style="margin-bottom:12px">
+function showNewsDP(n){
+  openDP(n.title,`
+    <div class="nmeta" style="margin-bottom:14px">
       <span class="nsrc">${n.category||n.author||'Établissement'}</span>
       ${n.createdAt?`<span class="ndate">${fmtDate(new Date(n.createdAt))}</span>`:''}
     </div>
-    <div style="font-size:13px;line-height:1.7;color:var(--t);margin-bottom:14px">${n.content||'Pas de contenu'}</div>
-    ${n.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${n.attachments.map(a=>`
-      <div class="row" style="cursor:pointer" onclick="window.papillon.openExternal('${a.url}')">
-        <span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span>
-      </div>`).join('')}</div>`:''}
-  `;
-  openDetail();
+    <div style="font-size:14px;line-height:1.8;color:var(--t);margin-bottom:16px">${n.content||'Pas de contenu.'}</div>
+    ${n.attachments?.length?`<div class="card"><div class="ct">Pièces jointes</div>${n.attachments.map(a=>`<div class="row clickable" onclick="window.papillon.openExternal('${a.url}')"><span>📎</span><span style="flex:1;color:var(--blu)">${a.name}</span></div>`).join('')}</div>`:''}
+  `);
 }
 
-function openDetail(){document.getElementById('detail').classList.add('open');}
-function closeDetail(){document.getElementById('detail').classList.remove('open');}
+function openDP(title,body){document.getElementById('dp-title').textContent=title;document.getElementById('dp-body').innerHTML=body;document.getElementById('dp').classList.add('open');}
+function closeDP(){document.getElementById('dp').classList.remove('open');}
 
 // ── UTILS ──
-function setEl(id,html){const e=document.getElementById(id);if(e)e.innerHTML=html;}
-function errHTML(msg){return`<div class="err-box">⚠️ ${msg}</div>`;}
-function fmtTime(iso){if(!iso)return'';return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});}
-function fmtDate(d){if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});}
-function fmtDayFull(d){if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});}
-function weekDate(off){const d=new Date();d.setDate(d.getDate()+off*7);return d;}
-function gradeColor(v,max){if(!v)return'var(--t3)';return v>=(max*.7)?'var(--gl)':v>=(max*.5)?'var(--ora)':'var(--red)';}
-function updateWLbl(id,d){
+const setEl=(id,h)=>{const e=document.getElementById(id);if(e)e.innerHTML=h;};
+const errBox=(m)=>`<div class="err-box">⚠️ ${m}</div>`;
+const esc=(o)=>JSON.stringify(o).replace(/"/g,'&quot;').replace(/'/g,'\\x27');
+const fmtTime=(iso)=>{if(!iso)return'';return new Date(iso).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});};
+const fmtDate=(d)=>{if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'});};
+const fmtDayFull=(d)=>{if(!d||isNaN(d))return'';return d.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'});};
+const wkDate=(off)=>{const d=new Date();d.setDate(d.getDate()+off*7);return d;};
+const gClr=(v,m)=>{if(!v&&v!==0)return'var(--t3)';return v>=(m*.7)?'var(--acc)':v>=(m*.5)?'var(--ora)':'var(--red)';};
+const setBadge=(id,n)=>{const e=document.getElementById(id);if(!e)return;e.style.display=n>0?'inline-flex':'none';e.textContent=n;};
+function wkLbl(id,d){
   const s=new Date(d);const day=s.getDay();s.setDate(s.getDate()-day+(day===0?-6:1));
   const e=new Date(s);e.setDate(s.getDate()+4);
-  setEl(id,`${fmtDate(s)} – ${fmtDate(e)}`);
+  setEl(id,fmtDate(s)+' – '+fmtDate(e));
 }
 </script>
 </body>

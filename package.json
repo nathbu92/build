@@ -1,14 +1,15 @@
 {
   "name": "papillon-desktop",
   "version": "8.4.2",
-  "description": "Papillon — Application scolaire pour Windows",
+  "description": "Papillon \u2014 Application scolaire pour Windows",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win --x64"
   },
   "dependencies": {
-    "pawnote": "latest"
+    "pawnote": "latest",
+    "@blockshub/blocksdirecte": "latest"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -17,7 +18,7 @@
   "build": {
     "appId": "xyz.getpapillon.desktop",
     "productName": "Papillon",
-    "copyright": "Copyright © 2024 Papillon",
+    "copyright": "Copyright \u00a9 2024 Papillon",
     "directories": {
       "output": "dist",
       "buildResources": "assets"
@@ -30,8 +31,18 @@
     ],
     "win": {
       "target": [
-        { "target": "nsis", "arch": ["x64"] },
-        { "target": "portable", "arch": ["x64"] }
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
       ],
       "icon": "assets/icon.ico",
       "publisherName": "Papillon"
