@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><title>Papillon — Mise à jour</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1710;color:#f0f7f1;font-family:'Inter',system-ui,sans-serif;width:100vw;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-app-region:drag}
+.bg{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 60%,rgba(34,197,94,.08),transparent 65%);pointer-events:none}
+.card{position:relative;z-index:10;width:420px;background:rgba(255,255,255,.03);border:1px solid rgba(34,197,94,.2);border-radius:18px;padding:32px 28px 24px;display:flex;flex-direction:column;align-items:center;-webkit-app-region:no-drag;animation:cardIn .4s cubic-bezier(.16,1,.3,1) both}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:20px;padding:4px 12px;font-size:10px;letter-spacing:1.5px;color:#22c55e;text-transform:uppercase;margin-bottom:16px}
+.badge-dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.logo{width:52px;height:52px;border-radius:13px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+h1{font-size:22px;font-weight:800;letter-spacing:-.4px;background:linear-gradient(135deg,#22c55e,#4ade80);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.sub{font-size:11px;color:rgba(240,247,241,.4);letter-spacing:.5px;margin-bottom:20px}
+.vers{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.vbox{display:flex;flex-direction:column;align-items:center;gap:3px}
+.vlbl{font-size:9px;letter-spacing:1.5px;color:rgba(240,247,241,.3);text-transform:uppercase}
+.vnum{font-size:15px;font-weight:700;color:rgba(240,247,241,.5)}
+.vnum.new{color:#22c55e;font-size:18px;text-shadow:0 0 12px rgba(34,197,94,.4)}
+.varr{font-size:18px;color:rgba(34,197,94,.4);margin-top:12px}
+.sep{width:100%;height:1px;background:rgba(34,197,94,.1);margin:0 0 18px}
+.notes{width:100%;background:rgba(0,0,0,.2);border:1px solid rgba(34,197,94,.1);border-radius:10px;padding:12px 14px;margin-bottom:20px;max-height:80px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(34,197,94,.3) transparent}
+.notes-title{font-size:9px;letter-spacing:1.5px;color:rgba(34,197,94,.5);text-transform:uppercase;margin-bottom:5px}
+.notes-body{font-size:11px;color:rgba(240,247,241,.5);line-height:1.6;white-space:pre-wrap}
+/* Progress */
+.prog-zone{width:100%;margin-bottom:18px;display:none;flex-direction:column;gap:7px}
+.prog-zone.show{display:flex}
+.prog-lbl{display:flex;justify-content:space-between}
+.prog-status{font-size:11px;color:rgba(34,197,94,.8)}
+.prog-pct{font-size:11px;color:rgba(240,247,241,.4)}
+.prog-track{width:100%;height:5px;background:rgba(255,255,255,.06);border-radius:10px;overflow:hidden}
+.prog-bar{height:100%;width:0;background:linear-gradient(90deg,#16a34a,#22c55e);border-radius:10px;transition:width .25s ease;box-shadow:0 0 8px rgba(34,197,94,.5)}
+.prog-size{font-size:10px;color:rgba(240,247,241,.25);text-align:right}
+/* Confirm */
+.confirm-zone{width:100%;margin-bottom:18px;display:none;flex-direction:column;align-items:center;gap:8px}
+.confirm-zone.show{display:flex}
+.confirm-icon{font-size:32px}
+.confirm-txt{font-size:13px;color:rgba(240,247,241,.7);text-align:center;line-height:1.5}
+.confirm-txt strong{color:#22c55e}
+/* Buttons */
+.actions{display:flex;gap:8px;width:100%}
+.btn{flex:1;padding:11px 0;border-radius:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .14s}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important}
+.btn-skip{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(240,247,241,.5)}
+.btn-skip:hover:not(:disabled){background:rgba(255,255,255,.08);color:rgba(240,247,241,.7)}
+.btn-main{background:linear-gradient(135deg,#16a34a,#22c55e);color:#000;box-shadow:0 4px 14px rgba(34,197,94,.3)}
+.btn-main:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,197,94,.4)}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div class="card">
+  <div class="badge"><div class="badge-dot"></div>Mise à jour disponible</div>
+  <img class="logo" src="../assets/icon.png" alt="">
+  <h1>Nouvelle version</h1>
+  <div class="sub">Papillon Desktop · Mise à jour disponible</div>
+  <div class="vers">
+    <div class="vbox"><div class="vlbl">Actuel</div><div class="vnum" id="v-cur">—</div></div>
+    <div class="varr">→</div>
+    <div class="vbox"><div class="vlbl">Nouveau</div><div class="vnum new" id="v-new">—</div></div>
+  </div>
+  <div class="sep"></div>
+  <div class="notes">
+    <div class="notes-title">Notes de version</div>
+    <div class="notes-body" id="notes-body">—</div>
+  </div>
+  <div class="prog-zone" id="prog-zone">
+    <div class="prog-lbl"><span class="prog-status" id="prog-status">Téléchargement…</span><span class="prog-pct" id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-bar" id="prog-bar"></div></div>
+    <div class="prog-size" id="prog-size"></div>
+  </div>
+  <div class="confirm-zone" id="confirm-zone">
+    <div class="confirm-icon">✅</div>
+    <div class="confirm-txt">Téléchargement terminé.<br>Cliquer sur <strong>Installer</strong> lancera l'installeur et fermera Papillon.</div>
+  </div>
+  <div class="actions">
+    <button class="btn btn-skip" id="btn-skip" onclick="skip()">Plus tard</button>
+    <button class="btn btn-main" id="btn-main" onclick="main()">Télécharger</button>
+  </div>
+</div>
+<script>
+const p = new URLSearchParams(window.location.search);
+const cur = p.get('current')||'—', latest = p.get('latest')||'—';
+const exeUrl = decodeURIComponent(p.get('exeUrl')||'');
+const notes = decodeURIComponent(p.get('body')||'');
+document.getElementById('v-cur').textContent = 'v'+cur;
+document.getElementById('v-new').textContent = 'v'+latest;
+document.getElementById('notes-body').textContent = notes||'Aucune note de version.';
+
+let phase = 'idle'; // idle | downloading | confirm
+
+function skip() {
+  if(phase==='downloading') return;
+  if(phase==='confirm') { window.updater.cancelInstall(); }
+  window.close();
+}
+
+async function main() {
+  if(phase==='idle') startDownload();
+  else if(phase==='confirm') launch();
+}
+
+async function startDownload() {
+  if(!exeUrl){window.updater.openRelease('');return;}
+  phase='downloading';
+  document.getElementById('btn-main').disabled=true;
+  document.getElementById('btn-skip').disabled=true;
+  document.getElementById('prog-zone').classList.add('show');
+  document.getElementById('btn-main').textContent='Téléchargement…';
+  const r = await window.updater.startDownload(exeUrl, latest);
+  if(r.ok){
+    phase='confirm';
+    document.getElementById('prog-zone').classList.remove('show');
+    document.getElementById('confirm-zone').classList.add('show');
+    document.getElementById('btn-main').textContent='Installer maintenant';
+    document.getElementById('btn-main').disabled=false;
+    document.getElementById('btn-skip').disabled=false;
+  } else {
+    phase='idle';
+    document.getElementById('prog-zone').classList.remove('show');
+    document.getElementById('notes-body').textContent='❌ Erreur : '+(r.error||'inconnue')+'\n\nCliquez "Télécharger" pour ouvrir la page GitHub.';
+    document.getElementById('btn-main').textContent='Ouvrir GitHub';
+    document.getElementById('btn-main').disabled=false;
+    document.getElementById('btn-skip').disabled=false;
+  }
+}
+
+async function launch() {
+  document.getElementById('btn-main').disabled=true;
+  await window.updater.launchInstaller();
+}
+
+// Listen for progress
+window.updater.onProgress((received, total) => {
+  const pct = total>0 ? Math.round(received/total*100) : 0;
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  const mb = (b)=>(b/1024/1024).toFixed(1)+' Mo';
+  document.getElementById('prog-size').textContent=mb(received)+(total>0?' / '+mb(total):'');
+  document.getElementById('prog-status').textContent='Téléchargement en cours…';
+});
+</script>
+</body>
+</html>

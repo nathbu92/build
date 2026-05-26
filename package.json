@@ -1,6 +1,6 @@
 {
   "name": "papillon-desktop",
-  "version": "8.4.2",
+  "version": "1.0.0",
   "description": "Papillon \u2014 Application scolaire pour Windows",
   "main": "src/main.js",
   "scripts": {
@@ -8,8 +8,7 @@
     "build": "electron-builder --win --x64"
   },
   "dependencies": {
-    "pawnote": "latest",
-    "@blockshub/blocksdirecte": "latest"
+    "pawnote": "latest"
   },
   "devDependencies": {
     "electron": "^31.0.0",
@@ -54,7 +53,10 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Papillon",
       "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico"
+      "uninstallerIcon": "assets/icon.ico",
+      "installerLanguages": [
+        "1036"
+      ]
     },
     "portable": {
       "artifactName": "Papillon-${version}-portable.exe"

@@ -2,7 +2,7 @@ name: Build Windows (Electron)
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main]
     tags: ["v*"]
   workflow_dispatch:
 
@@ -26,10 +26,10 @@ jobs:
       - name: Build EXE
         run: npm run build
 
-      - name: Upload installer
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Papillon-Windows-Setup
+          name: Papillon-Windows-v1.0.0
           path: dist/*.exe
           retention-days: 30
 
@@ -45,20 +45,29 @@ jobs:
           path: artifacts/
 
       - name: Get version
-        id: version
+        id: ver
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          name: Papillon ${{ steps.version.outputs.VERSION }} — Windows
+          name: Papillon ${{ steps.ver.outputs.VERSION }} — Windows
+          tag_name: ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+          generate_release_notes: true
           files: artifacts/**/*.exe
           body: |
-            ## 🪟 Papillon ${{ steps.version.outputs.VERSION }} pour Windows
+            ## 🌿 Papillon ${{ steps.ver.outputs.VERSION }} pour Windows
 
-            - **Setup.exe** : installateur (recommandé)
-            - **portable.exe** : version portable, sans installation
+            ### Installation
+            - **Setup.exe** — Installateur recommandé
+            - **portable.exe** — Version portable, sans installation
 
-            Windows 10/11 64-bit requis.
+            ### Configuration requise
+            Windows 10/11 64-bit
+
+            ### Connexion
+            Compatible **PRONOTE** via ENT (recherche par ville ou géolocalisation).
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
