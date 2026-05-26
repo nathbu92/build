@@ -66,9 +66,7 @@
       "shortcutName": "Papillon",
 
       "installerIcon": "assets/icon.ico",
-      "uninstallerIcon": "assets/icon.ico",
-
-      "language": "French"
+      "uninstallerIcon": "assets/icon.ico"
     },
 
     "portable": {
