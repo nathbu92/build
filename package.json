@@ -5,70 +5,49 @@
   "author": "Papillon",
   "main": "src/main.js",
   "private": true,
-
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win --x64"
   },
-
   "dependencies": {
     "pawnote": "latest"
   },
-
   "devDependencies": {
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3"
   },
-
   "build": {
     "appId": "xyz.getpapillon.desktop",
     "productName": "Papillon",
     "copyright": "Copyright © 2024 Papillon",
-
+    "publish": null,
     "directories": {
       "output": "dist",
       "buildResources": "assets"
     },
-
     "files": [
       "src/**/*",
       "assets/**/*",
       "node_modules/**/*",
       "package.json"
     ],
-
     "win": {
       "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        },
-        {
-          "target": "portable",
-          "arch": [
-            "x64"
-          ]
-        }
+        { "target": "nsis", "arch": ["x64"] },
+        { "target": "portable", "arch": ["x64"] }
       ],
-
       "icon": "assets/icon.ico",
       "publisherName": "Papillon"
     },
-
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Papillon",
-
       "installerIcon": "assets/icon.ico",
       "uninstallerIcon": "assets/icon.ico"
     },
-
     "portable": {
       "artifactName": "Papillon-${version}-portable.exe"
     }

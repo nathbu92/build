@@ -26,11 +26,18 @@ jobs:
       - name: Build EXE
         run: npm run build
 
-      - name: Upload artifacts
+      - name: Upload Setup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Papillon-Windows-v1.0.0
-          path: dist/*.exe
+          name: Papillon-Windows-Setup
+          path: dist/Papillon Setup*.exe
+          retention-days: 30
+
+      - name: Upload Portable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Papillon-Windows-Portable
+          path: dist/Papillon-*-portable.exe
           retention-days: 30
 
   release:
@@ -60,14 +67,14 @@ jobs:
           body: |
             ## 🌿 Papillon ${{ steps.ver.outputs.VERSION }} pour Windows
 
-            ### Installation
-            - **Setup.exe** — Installateur recommandé
-            - **portable.exe** — Version portable, sans installation
+            ### Téléchargement
+            - **Papillon Setup.exe** — Installateur recommandé
+            - **Papillon-portable.exe** — Version portable, sans installation
 
             ### Configuration requise
             Windows 10/11 64-bit
 
             ### Connexion
-            Compatible **PRONOTE** via ENT (recherche par ville ou géolocalisation).
+            Compatible **PRONOTE** via recherche par ville ou géolocalisation.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
